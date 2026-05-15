@@ -20,6 +20,10 @@ abstract class TextStyles {
     fontWeight: FontWeight.w700,
     fontSize: 40,
   );
+  static const TextStyle bold32 = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 32,
+  );
 
   static const TextStyle regular33 = TextStyle(
     fontWeight: FontWeight.w400,

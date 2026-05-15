@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/on_generate_routes.dart';
 import 'package:uni/core/utils/app_colors.dart';
+import 'package:uni/core/utils/app_fonts.dart';
+import 'package:uni/features/splash/presentation/views/splash_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Cairo',
+        fontFamily: AppFonts.arabicFont,
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
 
       debugShowCheckedModeBanner: false,
       onGenerateRoute: onGenerateRoute,
-      // initialRoute: SplashView.routeName,
+      initialRoute: SplashView.routeName,
     );
   }
 }

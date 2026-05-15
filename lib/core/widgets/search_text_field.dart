@@ -1,7 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
 class SearchTextField extends StatelessWidget {
@@ -25,11 +22,11 @@ class SearchTextField extends StatelessWidget {
         decoration: InputDecoration(
           prefixIcon: SizedBox(
             width: 20,
-            child: Center(child: SvgPicture.asset(Assets.imagesSearch)),
+            // child: Center(child: SvgPicture.asset(Assets.imagesSearch)),
           ),
           suffixIcon: SizedBox(
             width: 20,
-            child: Center(child: SvgPicture.asset(Assets.imagesFilter)),
+            // child: Center(child: SvgPicture.asset(Assets.imagesFilter)),
           ),
           hintText: 'ابحث عن.......',
           hintStyle: TextStyles.regular13.copyWith(
