@@ -16,7 +16,7 @@ class OnBoardingView extends StatelessWidget {
           textDirection: TextDirection.rtl,
           child: OnBoardingViewBody(
             onDone: () {
-              // Prefs.setBool(kIsOnBoardingViewSeenKey, true);
+              Prefs.setBool(kIsOnBoardingViewSeenKey, true);
               // Navigator.pushReplacementNamed(context, '/home');
             },
           ),

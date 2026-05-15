@@ -28,7 +28,7 @@ class Prefs {
   }
 
   static getBool(String key) {
-    return _instance._prefs!.getBool(key) ?? false;
+    return _instance._prefs?.getBool(key) ?? false;
   }
 
   static setString(String key, String value) async {
