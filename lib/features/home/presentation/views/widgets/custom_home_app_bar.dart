@@ -16,7 +16,7 @@ class CustomHomeAppBar extends StatelessWidget {
         height: 50,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1.6, color: const Color(0xFFE5E7EB)),
+            side: BorderSide(width: 1.6, color: AppColors.borderColor),
             borderRadius: BorderRadius.circular(100),
           ),
         ),
@@ -25,7 +25,7 @@ class CustomHomeAppBar extends StatelessWidget {
       title: Text(
         'اهلا بيك يا 👋',
         textAlign: TextAlign.right,
-        style: TextStyles.regular12.copyWith(color: Color(0xFF697282)),
+        style: TextStyles.regular12.copyWith(color: AppColors.subtitleColor),
       ),
       subtitle: Text(
         'محمد مجدي عبدالغني',

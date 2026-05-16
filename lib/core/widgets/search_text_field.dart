@@ -14,12 +14,15 @@ class SearchTextField extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1.6, color: const Color(0x33154517)),
+          side: BorderSide(
+            width: 1.6,
+            color: AppColors.primaryColor.withOpacity(0.2),
+          ),
           borderRadius: BorderRadius.circular(16),
         ),
         shadows: [
           BoxShadow(
-            color: Color(0x19000000),
+            color: AppColors.shadowBlack,
             blurRadius: 3,
             offset: Offset(0, 1),
             spreadRadius: 0,
@@ -27,7 +30,6 @@ class SearchTextField extends StatelessWidget {
         ],
       ),
       child: TextField(
-        keyboardType: TextInputType.text,
         decoration: InputDecoration(
           prefixIcon: SizedBox(
             width: 20,
@@ -56,7 +58,7 @@ class SearchTextField extends StatelessWidget {
           ),
           hintText: 'دور عن جامعة، كلية، أو تخصص...',
           hintStyle: TextStyles.regular16.copyWith(
-            color: const Color(0x66154517),
+            color: AppColors.subtitleColor.withOpacity(0.6),
           ),
           border: buildBorder(),
           enabledBorder: buildBorder(),
