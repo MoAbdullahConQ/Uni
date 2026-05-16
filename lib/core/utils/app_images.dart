@@ -45,5 +45,13 @@ class Assets {
   /// Assets for imagesPageViewItem3Image
   /// assets/images/page_view_item3_image.png
   static const String imagesPageViewItem3Image = "assets/images/page_view_item3_image.png";
+
+  /// Assets for imagesUniPic
+  /// assets/images/uni_pic.png
+  static const String imagesUniPic = "assets/images/uni_pic.png";
+
+  /// Assets for imagesZagIcon
+  /// assets/images/zag_icon.png
+  static const String imagesZagIcon = "assets/images/zag_icon.png";
 }
 
