@@ -4,6 +4,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_text_field.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_home_app_bar.dart';
+import 'package:uni/features/home/presentation/views/widgets/faheem_banner_widget.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -20,7 +21,7 @@ class HomeViewBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const CustomHomeAppBar(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text.rich(
               TextSpan(
                 children: [
@@ -41,17 +42,18 @@ class HomeViewBody extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'هتلاقي كل الجامعات المصريه بسهوله',
               style: TextStyles.regular14.copyWith(
-                color: Color(0xFF99A1AE),
+                color: AppColors.subtitleColor.withOpacity(0.8),
                 height: 1.43,
               ),
             ),
-            SizedBox(height: 16),
-            SearchTextField(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
+            const SearchTextField(),
+            const SizedBox(height: 16),
+            const FaheemBannerWidget(),
           ],
         ),
       ),
