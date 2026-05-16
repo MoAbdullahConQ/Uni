@@ -5,6 +5,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_text_field.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_home_app_bar.dart';
 import 'package:uni/features/home/presentation/views/widgets/faheem_banner_widget.dart';
+import 'package:uni/features/home/presentation/views/widgets/uni_tile.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -54,6 +55,8 @@ class HomeViewBody extends StatelessWidget {
             const SearchTextField(),
             const SizedBox(height: 16),
             const FaheemBannerWidget(),
+            const SizedBox(height: 16),
+            const UniversityTile(),
           ],
         ),
       ),
