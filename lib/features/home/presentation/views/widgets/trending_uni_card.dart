@@ -38,10 +38,12 @@ class TrendingUniCard extends StatelessWidget {
               border: Border.all(color: AppColors.borderColor, width: 1.2),
             ),
             child: Center(
-              child: Image.asset(
-                trendingUniEntity.logoPath!,
-                fit: BoxFit.contain,
-              ),
+              child: trendingUniEntity.logoPath != null
+                  ? Image.asset(
+                      trendingUniEntity.logoPath!,
+                      fit: BoxFit.contain,
+                    )
+                  : const Icon(Icons.school, color: AppColors.primaryColor),
             ),
           ),
 

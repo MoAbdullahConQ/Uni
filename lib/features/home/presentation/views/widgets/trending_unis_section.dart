@@ -19,7 +19,7 @@ class TrendingUnisSection extends StatelessWidget {
       TrendingUniEntity(
         name: 'الجامعة الألمانية',
         interestPercent: 15,
-        logoPath: Assets.imagesCairoUni,
+        logoPath: null,
       ),
       TrendingUniEntity(
         name: 'الجامعه الامريكية',
@@ -51,7 +51,7 @@ class TrendingUnisSection extends StatelessWidget {
 
         // Horizontal List
         SizedBox(
-          height: 80,
+          height: 85,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
