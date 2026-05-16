@@ -2,6 +2,10 @@
 class Assets {
   Assets._();
   
+  /// Assets for imagesCairoUni
+  /// assets/images/cairo_uni.png
+  static const String imagesCairoUni = "assets/images/cairo_uni.png";
+
   /// Assets for imagesExplore
   /// assets/images/explore.svg
   static const String imagesExplore = "assets/images/explore.svg";
