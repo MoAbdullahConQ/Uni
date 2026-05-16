@@ -5,19 +5,39 @@ abstract class TextStyles {
     fontWeight: FontWeight.w400,
     fontSize: 48,
   );
+  static const TextStyle regular14 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+  );
 
   static const TextStyle bold48 = TextStyle(
     fontWeight: FontWeight.w700,
     fontSize: 48,
   );
+  static const TextStyle bold24 = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 24,
+  );
+  static const TextStyle bold14 = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 14,
+  );
   static const TextStyle bold36 = TextStyle(
     fontWeight: FontWeight.w700,
     fontSize: 36,
+  );
+  static const TextStyle bold18 = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 18,
   );
 
   static const TextStyle regular40 = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 40,
+  );
+  static const TextStyle regular12 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
   );
 
   static const TextStyle bold40 = TextStyle(
