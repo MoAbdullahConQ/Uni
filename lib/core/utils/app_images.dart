@@ -50,6 +50,10 @@ class Assets {
   /// assets/images/uni_pic.png
   static const String imagesUniPic = "assets/images/uni_pic.png";
 
+  /// Assets for imagesVideoThumb
+  /// assets/images/VideoThumb.png
+  static const String imagesVideoThumb = "assets/images/VideoThumb.png";
+
   /// Assets for imagesZagIcon
   /// assets/images/zag_icon.png
   static const String imagesZagIcon = "assets/images/zag_icon.png";
