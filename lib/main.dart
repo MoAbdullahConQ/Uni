@@ -4,6 +4,8 @@ import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_fonts.dart';
 import 'package:uni/features/splash/presentation/views/splash_view.dart';
+import 'package:uni/generated/l10n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +28,16 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      locale: const Locale('ar'),
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: onGenerateRoute,
       initialRoute: SplashView.routeName,

@@ -2,6 +2,22 @@
 class Assets {
   Assets._();
   
+  /// Assets for imagesBoldNavDalil
+  /// assets/images/bold/nav_dalil.svg
+  static const String imagesBoldNavDalil = "assets/images/bold/nav_dalil.svg";
+
+  /// Assets for imagesBoldNavFav
+  /// assets/images/bold/nav_fav.svg
+  static const String imagesBoldNavFav = "assets/images/bold/nav_fav.svg";
+
+  /// Assets for imagesBoldNavHome
+  /// assets/images/bold/nav_home.svg
+  static const String imagesBoldNavHome = "assets/images/bold/nav_home.svg";
+
+  /// Assets for imagesBoldNavProfile
+  /// assets/images/bold/nav_profile.svg
+  static const String imagesBoldNavProfile = "assets/images/bold/nav_profile.svg";
+
   /// Assets for imagesCairoUni
   /// assets/images/cairo_uni.png
   static const String imagesCairoUni = "assets/images/cairo_uni.png";
@@ -33,6 +49,22 @@ class Assets {
   /// Assets for imagesNotification
   /// assets/images/notification.svg
   static const String imagesNotification = "assets/images/notification.svg";
+
+  /// Assets for imagesOutlineNavDalil
+  /// assets/images/outline/nav_dalil.svg
+  static const String imagesOutlineNavDalil = "assets/images/outline/nav_dalil.svg";
+
+  /// Assets for imagesOutlineNavFav
+  /// assets/images/outline/nav_fav.svg
+  static const String imagesOutlineNavFav = "assets/images/outline/nav_fav.svg";
+
+  /// Assets for imagesOutlineNavHome
+  /// assets/images/outline/nav_home.svg
+  static const String imagesOutlineNavHome = "assets/images/outline/nav_home.svg";
+
+  /// Assets for imagesOutlineNavProfile
+  /// assets/images/outline/nav_profile.svg
+  static const String imagesOutlineNavProfile = "assets/images/outline/nav_profile.svg";
 
   /// Assets for imagesPageViewItem1Image
   /// assets/images/page_view_item1_image.png
