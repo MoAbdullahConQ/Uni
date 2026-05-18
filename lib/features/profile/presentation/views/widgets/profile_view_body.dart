@@ -12,29 +12,38 @@ class ProfileViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return const Padding(
       padding: EdgeInsets.symmetric(
         horizontal: kHorizontalPadding,
         vertical: kTopPadding,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ProfileHeader(),
           SizedBox(height: 10),
           Divider(height: 1, color: AppColors.borderColor),
-          SizedBox(height: 24),
-          ProfileAvatarSection(
-            name: 'مجدي عبد الغني',
-            email: 'ahmed.m@example.com',
-            role: 'طالب - علمي رياضة',
+          Expanded(
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 24),
+                  ProfileAvatarSection(
+                    name: 'مجدي عبد الغني',
+                    email: 'ahmed.m@example.com',
+                    role: 'طالب - علمي رياضة',
+                  ),
+                  SizedBox(height: 24),
+                  ProfileMenuSection(),
+                  SizedBox(height: 24),
+                  ProfileLogoutButton(),
+                  SizedBox(height: 24),
+                  VersionInfo(),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 24),
-          ProfileMenuSection(),
-          SizedBox(height: 24),
-          ProfileLogoutButton(),
-          SizedBox(height: 24),
-          VersionInfo(),
         ],
       ),
     );
