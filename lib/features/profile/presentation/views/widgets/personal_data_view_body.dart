@@ -5,6 +5,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
+import 'package:uni/features/profile/presentation/views/widgets/personal_data_study_type_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 
 class PersonalDataViewBody extends StatefulWidget {
@@ -16,6 +17,9 @@ class PersonalDataViewBody extends StatefulWidget {
 
 class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
   final _formKey = GlobalKey<FormState>();
+
+  String studyCategory = 'علمي';
+  String studyTrack = 'رياضة';
 
   @override
   Widget build(BuildContext context) {
@@ -42,36 +46,56 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
               physics: const BouncingScrollPhysics(),
               child: Form(
                 key: _formKey,
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
                     // ── Avatar ──
-                    AvatarProfile(),
-                    SizedBox(height: 30),
+                    const AvatarProfile(),
+                    const SizedBox(height: 30),
 
                     // ── Name ──
-                    PersonalDataFieldLabel(label: 'الاسم بالكامل'),
-                    SizedBox(height: 8),
-                    CustomTextFormField(
+                    const PersonalDataFieldLabel(label: 'الاسم بالكامل'),
+                    const SizedBox(height: 8),
+                    const CustomTextFormField(
                       hintText: 'مجدي عبدالغني',
                       prefixIcon: Icons.person_outline,
                       keyboardType: TextInputType.name,
                       textAlign: TextAlign.start,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     // ── Email──
-                    PersonalDataFieldLabel(label: 'البريد الإلكتروني'),
-                    SizedBox(height: 8),
-                    CustomTextFormField(
+                    const PersonalDataFieldLabel(label: 'البريد الإلكتروني'),
+                    const SizedBox(height: 8),
+                    const CustomTextFormField(
                       hintText: 'ahmed.m@example.com',
                       prefixIcon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       textAlign: TextAlign.end,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
+
+                    // ── الشعبة الدراسية ──
+                    const PersonalDataFieldLabel(label: 'الشعبة الدراسية'),
+                    const SizedBox(height: 6),
+                    PersonalDataStudyTypeSelector(
+                      options: const ['أدبي', 'علمي'],
+                      selected: studyCategory,
+                      onSelected: (v) => setState(() => studyCategory = v),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // ── الشعبة العلمية ──
+                    const PersonalDataFieldLabel(label: 'الشعبة العلمية'),
+                    const SizedBox(height: 6),
+                    PersonalDataStudyTypeSelector(
+                      options: const ['علوم', 'رياضة'],
+                      selected: studyTrack,
+                      onSelected: (v) => setState(() => studyTrack = v),
+                    ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
