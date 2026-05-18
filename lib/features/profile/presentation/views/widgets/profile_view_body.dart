@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 
 class ProfileViewBody extends StatelessWidget {
   const ProfileViewBody({super.key});
@@ -13,7 +14,7 @@ class ProfileViewBody extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [],
+        children: [ProfileHeader()],
       ),
     );
   }
