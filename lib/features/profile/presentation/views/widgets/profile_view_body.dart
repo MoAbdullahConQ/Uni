@@ -5,6 +5,7 @@ import 'package:uni/features/profile/presentation/views/widgets/profile_avatar_s
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_logout_button.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_menu_section.dart';
+import 'package:uni/features/profile/presentation/views/widgets/version_info.dart';
 
 class ProfileViewBody extends StatelessWidget {
   const ProfileViewBody({super.key});
@@ -33,6 +34,7 @@ class ProfileViewBody extends StatelessWidget {
           SizedBox(height: 24),
           ProfileLogoutButton(),
           SizedBox(height: 24),
+          VersionInfo(),
         ],
       ),
     );
