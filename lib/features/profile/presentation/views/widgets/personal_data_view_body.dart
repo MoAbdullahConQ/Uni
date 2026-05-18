@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 
 class PersonalDataViewBody extends StatelessWidget {
@@ -30,7 +31,15 @@ class PersonalDataViewBody extends StatelessWidget {
           const Expanded(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-              child: Column(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 24),
+
+                  // ── Avatar ──
+                  AvatarProfile(),
+                ],
+              ),
             ),
           ),
         ],
