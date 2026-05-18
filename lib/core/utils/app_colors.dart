@@ -10,5 +10,6 @@ abstract class AppColors {
   static const Color borderColor = Color(0xFFE5E7EB);
   static const Color subtitleColor = Color(0xFF697282);
   static const Color shadowBlack = Color(0x19000000);
+  static const Color red = Color(0xFFE7000A);
 
 }
