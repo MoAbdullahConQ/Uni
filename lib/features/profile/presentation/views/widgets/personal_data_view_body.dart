@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
-import 'package:uni/features/profile/presentation/views/widgets/personal_data_form_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 
 class PersonalDataViewBody extends StatefulWidget {
@@ -54,7 +54,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── Name ──
                     PersonalDataFieldLabel(label: 'الاسم بالكامل'),
                     SizedBox(height: 8),
-                    PersonalDataFormField(
+                    CustomTextFormField(
                       hintText: 'مجدي عبدالغني',
                       prefixIcon: Icons.person_outline,
                       keyboardType: TextInputType.name,
@@ -65,7 +65,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── Email──
                     PersonalDataFieldLabel(label: 'البريد الإلكتروني'),
                     SizedBox(height: 8),
-                    PersonalDataFormField(
+                    CustomTextFormField(
                       hintText: 'ahmed.m@example.com',
                       prefixIcon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,

@@ -22,13 +22,13 @@ class _PasswordFieldState extends State<PasswordField> {
           obscureText = !obscureText;
           setState(() {});
         },
-        icon:
-            obscureText
-                ? Icon(Icons.remove_red_eye, color: Color(0xFFC9CECF))
-                : Icon(Icons.visibility_off, color: Color(0xFFC9CECF)),
+        icon: obscureText
+            ? Icon(Icons.remove_red_eye, color: Color(0xFFC9CECF))
+            : Icon(Icons.visibility_off, color: Color(0xFFC9CECF)),
       ),
       hintText: 'كلمة المرور',
       keyboardType: TextInputType.visiblePassword,
+      textAlign: TextAlign.start,
     );
   }
 }
