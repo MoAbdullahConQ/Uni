@@ -6,7 +6,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/location_widget.dart';
 import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
 import 'package:uni/features/fav/presentation/views/widgets/rating.dart';
-import 'package:uni/features/fav/presentation/views/widgets/type_badge.dart';
+import 'package:uni/core/widgets/type_badge_widget.dart';
 
 class FavUniCardInfo extends StatelessWidget {
   const FavUniCardInfo({
@@ -28,7 +28,7 @@ class FavUniCardInfo extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TypeBadge(type: selectedFilterFavUniEntity.type),
+              TypeBadgeWidget(type: selectedFilterFavUniEntity.type),
               const Spacer(),
               Rating(rating: selectedFilterFavUniEntity.rating),
             ],

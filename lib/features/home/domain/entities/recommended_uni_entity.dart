@@ -4,7 +4,8 @@ class RecommendedUniEntity {
   final String imagePath;
   final String? logoPath;
   final List<String> tags;
-  final bool isPrivate;
+  // final bool isPrivate;
+   final String type; // 'خاصة' | 'حكومية' | 'معهد عالي'
 
   const RecommendedUniEntity({
     required this.name,
@@ -12,6 +13,7 @@ class RecommendedUniEntity {
     required this.imagePath,
     this.logoPath,
     required this.tags,
-    this.isPrivate = false,
+    required this.type,
+    // this.isPrivate = false,
   });
 }

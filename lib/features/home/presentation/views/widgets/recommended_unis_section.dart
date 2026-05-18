@@ -15,7 +15,7 @@ class RecommendedUnisSection extends StatelessWidget {
       location: 'القاهرة الجديدة',
       logoPath: Assets.imagesZagIcon,
       tags: ['حاسبات', 'طب', 'هندسة'],
-      isPrivate: true,
+      type: 'خاصة',
     ),
     RecommendedUniEntity(
       name: 'الجامعة الألمانية',
@@ -23,6 +23,15 @@ class RecommendedUnisSection extends StatelessWidget {
       location: 'العبور',
       logoPath: null,
       tags: ['هندسة'],
+      type: 'معهد عالي',
+    ),
+    RecommendedUniEntity(
+      name: 'الجامعة الألمانية',
+      imagePath: Assets.imagesUniPic,
+      location: 'العبور',
+      logoPath: null,
+      tags: ['هندسة'],
+      type: 'حكومية',
     ),
   ];
 

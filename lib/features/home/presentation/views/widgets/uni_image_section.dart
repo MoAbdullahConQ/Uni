@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
-import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/type_badge_widget.dart';
 import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
 
 class UniImageSection extends StatelessWidget {
@@ -43,24 +43,11 @@ class UniImageSection extends StatelessWidget {
           ),
         ),
 
-        if (recommendedUniEntity.isPrivate)
-          Positioned(
-            bottom: -10,
-            left: 10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'خاصة',
-                style: TextStyles.bold11.copyWith(
-                  color: AppColors.secondaryColor,
-                ),
-              ),
-            ),
-          ),
+        Positioned(
+          bottom: -10,
+          left: 10,
+          child: TypeBadgeWidget(type: recommendedUniEntity.type),
+        ),
 
         // Logo
         Positioned(

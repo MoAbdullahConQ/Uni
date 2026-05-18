@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class TypeBadge extends StatelessWidget {
+class TypeBadgeWidget extends StatelessWidget {
   final String type;
 
-  const TypeBadge({super.key, required this.type});
+  const TypeBadgeWidget({super.key, required this.type});
 
   Color _getBadgeColor() {
     switch (type) {
