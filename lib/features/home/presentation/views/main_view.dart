@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/features/fav/presentation/views/fav_view.dart';
 import 'package:uni/features/home/presentation/views/widgets/home_view.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
+import 'package:uni/features/profile/presentation/views/profile_view.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -19,7 +20,7 @@ class _MainViewState extends State<MainView> {
     const HomeView(),
     const HomeView(),
     const FavView(),
-    const HomeView(),
+    const ProfileView(),
   ];
 
   @override
