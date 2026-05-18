@@ -59,7 +59,6 @@ class _FavViewBodyState extends State<FavViewBody> {
       rating: 3.1,
       averageFees: '110k EGP',
     ),
-  
   ];
 
   List<FavUniEntity> get selectedFilterFavUniEntities {
@@ -97,7 +96,9 @@ class _FavViewBodyState extends State<FavViewBody> {
             const SizedBox(height: 16),
 
             // List
-            FavListWidget(selectedFilterFavUniEntities: selectedFilterFavUniEntities),
+            FavListWidget(
+              selectedFilterFavUniEntities: selectedFilterFavUniEntities,
+            ),
             // const SizedBox(height: 32),
           ],
         ),

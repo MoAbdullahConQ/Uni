@@ -11,12 +11,12 @@ class FavFilterTabBar extends StatelessWidget {
     required this.onFilterChanged,
   });
 
-  static const List<String> filters = ['الكل', 'حكومية', 'خاصة', 'معاهد عليا'];
+  static const List<String> filters = ['الكل', 'حكومية', 'خاصة', 'معهد عالي'];
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 38,
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: filters.length,
