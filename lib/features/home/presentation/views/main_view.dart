@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/features/fav/presentation/views/fav_view.dart';
 import 'package:uni/features/home/presentation/views/widgets/home_view.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
 
@@ -16,9 +17,8 @@ class _MainViewState extends State<MainView> {
 
   List<Widget> get views => [
     const HomeView(),
-    // ProductsView(),
     const HomeView(),
-    const HomeView(),
+    const FavView(),
     const HomeView(),
   ];
 
