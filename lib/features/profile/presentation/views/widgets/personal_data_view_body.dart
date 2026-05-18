@@ -7,6 +7,7 @@ import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.d
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_study_type_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
+import 'package:uni/features/profile/presentation/views/widgets/stats_Section.dart';
 
 class PersonalDataViewBody extends StatefulWidget {
   const PersonalDataViewBody({super.key});
@@ -96,6 +97,12 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                       onSelected: (v) => setState(() => studyTrack = v),
                     ),
                     const SizedBox(height: 16),
+
+                    // ── Row: عمر / نسبة / محافظة ──
+                    const StatsSection(),
+                    const SizedBox(height: 16),
+
+                  
                   ],
                 ),
               ),
