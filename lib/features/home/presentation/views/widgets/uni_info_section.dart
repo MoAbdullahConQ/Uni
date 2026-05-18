@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/location_widget.dart';
 import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
 import 'package:uni/features/home/presentation/views/widgets/tag_chip.dart';
 
@@ -28,23 +29,7 @@ class UniInfoSection extends StatelessWidget {
           const SizedBox(height: 6),
 
           // Location
-          Row(
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: 14,
-                color: AppColors.subtitleColor.withOpacity(0.7),
-              ),
-              const SizedBox(width: 2),
-              Text(
-                recommendedUniEntity.location,
-                style: TextStyles.regular12.copyWith(
-                  color: AppColors.subtitleColor.withOpacity(0.7),
-                  height: 1.33,
-                ),
-              ),
-            ],
-          ),
+          LocationRow(location: recommendedUniEntity.location, iconSize: 14),
 
           const SizedBox(height: 8),
 

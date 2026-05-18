@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/location_widget.dart';
 import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
 import 'package:uni/features/fav/presentation/views/widgets/rating.dart';
 import 'package:uni/features/fav/presentation/views/widgets/type_badge.dart';
@@ -44,22 +45,9 @@ class FavUniCardInfo extends StatelessWidget {
           const SizedBox(height: 4),
 
           // Location
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: 13,
-                color: AppColors.subtitleColor.withOpacity(0.7),
-              ),
-              const SizedBox(width: 2),
-              Text(
-                selectedFilterFavUniEntity.location,
-                style: TextStyles.regular12.copyWith(
-                  color: AppColors.subtitleColor.withOpacity(0.8),
-                ),
-              ),
-            ],
+          LocationRow(
+            location: selectedFilterFavUniEntity.location,
+            iconSize: 13,
           ),
 
           const SizedBox(height: 12),
