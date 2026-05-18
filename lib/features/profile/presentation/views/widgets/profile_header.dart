@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
-import 'package:uni/core/utils/app_text_style.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  const ProfileHeader({
+    super.key,
+    this.onPressed,
+    required this.textHeader,
+    required this.textStyle,
+  });
+  final void Function()? onPressed;
+  final String textHeader;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +23,17 @@ class ProfileHeader extends StatelessWidget {
             color: AppColors.borderColor.withOpacity(.3),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
-            Icons.arrow_back,
-            size: 20,
-            color: AppColors.primaryColor,
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 20,
+              color: AppColors.primaryColor,
+            ),
+            onPressed: onPressed,
           ),
         ),
         const Spacer(flex: 2),
-        Text(
-          'الملف الشخصي',
-          style: TextStyles.bold20.copyWith(color: AppColors.primaryColor),
-        ),
+        Text(textHeader, style: textStyle),
         const Spacer(flex: 3),
       ],
     );

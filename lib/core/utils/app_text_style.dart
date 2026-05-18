@@ -9,6 +9,10 @@ abstract class TextStyles {
     fontWeight: FontWeight.w400,
     fontSize: 14,
   );
+  static const TextStyle regular20 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 20,
+  );
 
   static const TextStyle bold48 = TextStyle(
     fontWeight: FontWeight.w700,

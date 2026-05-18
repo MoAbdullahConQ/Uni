@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
+import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_avatar_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_logout_button.dart';
@@ -12,17 +13,22 @@ class ProfileViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
         horizontal: kHorizontalPadding,
         vertical: kTopPadding,
       ),
       child: Column(
         children: [
-          ProfileHeader(),
-          SizedBox(height: 10),
-          Divider(height: 1, color: AppColors.borderColor),
-          Expanded(
+          ProfileHeader(
+            textHeader: 'الملف الشخصي',
+            textStyle: TextStyles.bold20.copyWith(
+              color: AppColors.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Divider(height: 1, color: AppColors.borderColor),
+          const Expanded(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Column(

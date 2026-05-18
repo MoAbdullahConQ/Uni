@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/profile/presentation/views/personal_data_view.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_menu_item.dart';
 
 class ProfileMenuSection extends StatelessWidget {
@@ -38,7 +39,7 @@ class ProfileMenuSection extends StatelessWidget {
                 icon: Icons.person_outline,
                 label: 'البيانات الشخصية',
                 onTap: () {
-                  // TODO: navigate to personal data screen
+                  Navigator.pushNamed(context, PersonalDataView.routeName);
                 },
               ),
               const Divider(
