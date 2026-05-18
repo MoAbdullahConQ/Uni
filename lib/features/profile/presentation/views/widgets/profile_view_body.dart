@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/features/profile/presentation/views/widgets/profile_avatar_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 
 class ProfileViewBody extends StatelessWidget {
@@ -14,7 +15,15 @@ class ProfileViewBody extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [ProfileHeader()],
+        children: [
+          ProfileHeader(),
+          SizedBox(height: 24),
+          ProfileAvatarSection(
+            name: 'مجدي عبد الغني',
+            email: 'ahmed.m@example.com',
+            role: 'طالب - علمي رياضة',
+          ),
+        ],
       ),
     );
   }
