@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_avatar_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
+import 'package:uni/features/profile/presentation/views/widgets/profile_menu_section.dart';
 
 class ProfileViewBody extends StatelessWidget {
   const ProfileViewBody({super.key});
@@ -23,6 +24,8 @@ class ProfileViewBody extends StatelessWidget {
             email: 'ahmed.m@example.com',
             role: 'طالب - علمي رياضة',
           ),
+          SizedBox(height: 32),
+          ProfileMenuSection(),
         ],
       ),
     );
