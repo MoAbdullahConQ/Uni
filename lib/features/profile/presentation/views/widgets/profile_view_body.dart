@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_avatar_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_logout_button.dart';
@@ -19,6 +20,8 @@ class ProfileViewBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ProfileHeader(),
+          SizedBox(height: 10),
+          Divider(height: 1, color: AppColors.borderColor),
           SizedBox(height: 24),
           ProfileAvatarSection(
             name: 'مجدي عبد الغني',
