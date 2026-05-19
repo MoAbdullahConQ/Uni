@@ -44,6 +44,7 @@ class ProfileViewBody extends StatelessWidget {
                   ProfileLogoutButton(),
                   SizedBox(height: 24),
                   VersionInfo(),
+                  SizedBox(height: 32),
                 ],
               ),
             ),

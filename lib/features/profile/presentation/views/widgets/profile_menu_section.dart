@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/profile/presentation/views/contact_us_view.dart';
 import 'package:uni/features/profile/presentation/views/personal_data_view.dart';
 import 'package:uni/features/profile/presentation/views/security_view.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_menu_item.dart';
@@ -89,7 +90,7 @@ class ProfileMenuSection extends StatelessWidget {
             iconBackgroundColor: AppColors.secondaryColor,
             iconColor: AppColors.primaryColor,
             onTap: () {
-              // TODO: navigate to contact us screen
+              Navigator.pushNamed(context, ContactUsView.routeName);
             },
           ),
         ),
