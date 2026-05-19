@@ -3,6 +3,7 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
+import 'package:uni/features/profile/presentation/views/widgets/quick_contact.dart';
 import 'package:uni/features/profile/presentation/views/widgets/robot_section.dart';
 
 class ContactUsViewBody extends StatelessWidget {
@@ -26,16 +27,30 @@ class ContactUsViewBody extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Divider(height: 1, color: AppColors.borderColor),
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // ── Robot illustration placeholder ──
-                  RobotSection(),
-                  SizedBox(height: 24),
+                  const RobotSection(),
+                  const SizedBox(height: 24),
+
+                  // ── Quick contact──
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'تواصل سريع',
+                      style: TextStyles.semiBold13.copyWith(
+                        color: AppColors.subtitleColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const QuickContact(),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
