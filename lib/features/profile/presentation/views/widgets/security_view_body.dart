@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/password_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
-import 'package:uni/features/profile/presentation/views/widgets/security_password_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/top_section_security.dart';
 
 class SecurityViewBody extends StatelessWidget {
@@ -42,8 +42,10 @@ class SecurityViewBody extends StatelessWidget {
                   // ── كلمة المرور الحالية ──
                   const PersonalDataFieldLabel(label: 'كلمة المرور الحالية'),
                   const SizedBox(height: 8),
-                  const SecurityPasswordField(
+                  const PasswordField(
                     hintText: '••••••••',
+                    textAlign: TextAlign.start,
+                    keyboardType: TextInputType.visiblePassword,
                     prefixIcon: Icons.lock_outline,
                   ),
                   const SizedBox(height: 4),
@@ -65,7 +67,6 @@ class SecurityViewBody extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-
                 ],
               ),
             ),
