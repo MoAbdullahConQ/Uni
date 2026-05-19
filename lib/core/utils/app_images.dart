@@ -82,6 +82,10 @@ class Assets {
   /// assets/images/page_view_item3_image.png
   static const String imagesPageViewItem3Image = "assets/images/page_view_item3_image.png";
 
+  /// Assets for imagesRobot
+  /// assets/images/robot.svg
+  static const String imagesRobot = "assets/images/robot.svg";
+
   /// Assets for imagesUniPic
   /// assets/images/uni_pic.png
   static const String imagesUniPic = "assets/images/uni_pic.png";
