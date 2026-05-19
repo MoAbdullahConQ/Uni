@@ -13,6 +13,7 @@ class PasswordField extends StatefulWidget {
     this.validator,
     required this.textAlign,
     required this.keyboardType,
+    this.borderColor,
   });
 
   final String hintText;
@@ -23,6 +24,7 @@ class PasswordField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextAlign textAlign;
   final TextInputType keyboardType;
+  final Color? borderColor;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -47,6 +49,9 @@ class _PasswordFieldState extends State<PasswordField> {
       textAlign: widget.textAlign,
       obscureText: obscureText,
       onSaved: widget.onSaved,
+      onChanged: widget.onChanged,
+      validator: widget.validator,
+      borderColor: widget.borderColor,
 
       suffixIcon: IconButton(
         onPressed: () {

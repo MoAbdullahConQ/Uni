@@ -6,6 +6,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/password_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
+import 'package:uni/features/profile/presentation/views/widgets/security_strength_indicator.dart';
 import 'package:uni/features/profile/presentation/views/widgets/top_section_security.dart';
 
 class SecurityViewBody extends StatefulWidget {
@@ -18,11 +19,14 @@ class SecurityViewBody extends StatefulWidget {
 class _SecurityViewBodyState extends State<SecurityViewBody> {
   final _formKey = GlobalKey<FormState>();
   final newPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   double passwordStrength = 0.5; // 0.0 → 1.0
+  bool? passwordsMatch;
 
   @override
   void dispose() {
     newPasswordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -55,16 +59,17 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
 
                     // ── Shield icon + description ──
                     const TopSectionSecurity(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
 
-                    // ── كلمة المرور الحالية ──
+                    // ── nowPasswordController──
                     const PersonalDataFieldLabel(label: 'كلمة المرور الحالية'),
                     const SizedBox(height: 8),
-                    const PasswordField(
+                    PasswordField(
                       hintText: '••••••••',
                       textAlign: TextAlign.start,
                       keyboardType: TextInputType.visiblePassword,
                       prefixIcon: Icons.lock_outline,
+                      borderColor: AppColors.primaryColor.withOpacity(.1),
                     ),
                     const SizedBox(height: 4),
                     Align(
@@ -84,15 +89,16 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 30),
 
-                    // ── كلمة المرور الجديدة ──
+                    // ── newPasswordController ──
                     const PersonalDataFieldLabel(label: 'كلمة المرور الجديدة'),
                     const SizedBox(height: 8),
                     PasswordField(
                       hintText: '••••••••',
                       prefixIcon: Icons.lock_outline,
                       controller: newPasswordController,
+                      borderColor: AppColors.primaryColor.withOpacity(.1),
                       onChanged: (value) {
                         setState(() {
                           passwordStrength = calcStrength(value);
@@ -103,7 +109,11 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
                     ),
                     const SizedBox(height: 8),
 
-                    // ── تأكيد كلمة المرور الجديدة ──
+                    // ── Strength indicator ──
+                    SecurityStrengthIndicator(strength: passwordStrength),
+                    const SizedBox(height: 24),
+
+                    // ── confirmPasswordController ──
                     const PersonalDataFieldLabel(
                       label: 'تأكيد كلمة المرور الجديدة',
                     ),
@@ -111,6 +121,22 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
                     PasswordField(
                       hintText: '••••••••',
                       prefixIcon: Icons.lock_outline,
+                      controller: confirmPasswordController,
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isEmpty) {
+                            passwordsMatch = null;
+                          } else {
+                            passwordsMatch =
+                                value == newPasswordController.text;
+                          }
+                        });
+                      },
+                      borderColor: passwordsMatch == null
+                          ? null
+                          : passwordsMatch!
+                          ? AppColors.secondaryColor
+                          : AppColors.red,
                       validator: (value) {
                         if (value != newPasswordController.text) {
                           return 'كلمتا المرور غير متطابقتين';
@@ -120,6 +146,23 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
                       textAlign: TextAlign.start,
                       keyboardType: TextInputType.visiblePassword,
                     ),
+                    if (passwordsMatch != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            passwordsMatch!
+                                ? 'كلمتا المرور متطابقتان ✓'
+                                : 'كلمتا المرور غير متطابقتين',
+                            style: TextStyles.regular12.copyWith(
+                              color: passwordsMatch!
+                                  ? const Color(0xFF6BBF26)
+                                  : Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

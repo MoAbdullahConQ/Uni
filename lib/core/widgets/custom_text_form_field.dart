@@ -13,6 +13,9 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixIcon,
     required this.textAlign,
     this.controller,
+    this.onChanged,
+    this.validator,
+    this.borderColor,
   });
 
   final Widget? suffixIcon;
@@ -25,6 +28,9 @@ class CustomTextFormField extends StatelessWidget {
   final void Function(String?)? onSaved;
   final TextAlign textAlign;
   final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +38,14 @@ class CustomTextFormField extends StatelessWidget {
       obscureText: obscureText,
       controller: controller,
       onSaved: onSaved,
+      onChanged: onChanged,
       textAlign: textAlign,
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'هذا الحقل مطلوب';
-        return null;
-      },
+      validator:
+          validator ??
+          (value) {
+            if (value == null || value.isEmpty) return 'هذا الحقل مطلوب';
+            return null;
+          },
       keyboardType: keyboardType,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
@@ -57,25 +66,30 @@ class CustomTextFormField extends StatelessWidget {
           horizontal: 16,
           vertical: 16,
         ),
-        border: buildBorder(),
-        enabledBorder: buildBorder(),
-        focusedBorder: buildFocusedBorder(),
+        border: buildBorder(borderColor),
+        enabledBorder: buildBorder(borderColor),
+        focusedBorder: buildFocusedBorder(
+          borderColor ?? AppColors.primaryColor.withOpacity(.1),
+        ),
         errorBorder: buildBorder(),
         focusedErrorBorder: buildFocusedBorder(),
       ),
     );
   }
 
-  OutlineInputBorder buildBorder() {
+  OutlineInputBorder buildBorder([Color? color]) {
     return OutlineInputBorder(
-      borderSide: BorderSide(color: const Color(0xFFE6E9E9), width: 1),
+      borderSide: BorderSide(color: color ?? const Color(0xFFE6E9E9), width: 1),
       borderRadius: BorderRadius.circular(12),
     );
   }
 
-  OutlineInputBorder buildFocusedBorder() {
+  OutlineInputBorder buildFocusedBorder([Color? color]) {
     return OutlineInputBorder(
-      borderSide: const BorderSide(color: Color(0xFF6BBF26), width: 1.5),
+      borderSide: BorderSide(
+        color: color ?? AppColors.secondaryColor,
+        width: 1.5,
+      ),
       borderRadius: BorderRadius.circular(12),
     );
   }
