@@ -40,6 +40,7 @@ class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return CustomTextFormField(
+      controller: widget.controller,
       hintText: widget.hintText,
       prefixIcon: widget.prefixIcon,
       keyboardType: widget.keyboardType,
