@@ -115,6 +115,8 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
 
                     // ── حفظ التعديلات ──
                     CustomButton(
+                      backgroundColor: AppColors.secondaryColor,
+                      style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
