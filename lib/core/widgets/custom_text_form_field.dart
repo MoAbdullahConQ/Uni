@@ -72,6 +72,7 @@ class CustomTextFormField extends StatelessWidget {
           borderColor ?? AppColors.primaryColor.withOpacity(.1),
         ),
         errorBorder: buildBorder(),
+        errorStyle: const TextStyle(fontSize: 0, height: 0),
         focusedErrorBorder: buildFocusedBorder(),
       ),
     );
