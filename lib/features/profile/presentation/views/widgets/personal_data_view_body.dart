@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/documents_section.dart';
@@ -27,12 +28,10 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kHorizontalPadding,
-        vertical: kTopPadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kHorizontalPadding),
       child: Column(
         children: [
+          const SizedBox(height: kTopPadding),
           ProfileHeader(
             textHeader: 'تعديل البيانات',
             textStyle: TextStyles.regular20.copyWith(
@@ -113,6 +112,18 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── مستندات مهمة ──
                     const DocumentsSection(),
                     const SizedBox(height: 32),
+
+                    // ── حفظ التعديلات ──
+                    CustomButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          // TODO: dispatch save event
+                        }
+                      },
+                      text: 'حفظ التعديلات',
+                    ),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
