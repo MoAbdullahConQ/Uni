@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/profile/presentation/views/widgets/footer.dart';
 import 'package:uni/features/profile/presentation/views/widgets/message_form_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/quick_contact.dart';
@@ -89,6 +90,10 @@ class _ContactUsViewBodyState extends State<ContactUsViewBody> {
                   // ── Message form ──
                   MessageFormSection(formKey: _formKey, topics: topics),
                   const SizedBox(height: 24),
+
+                  // ── Footer ──
+                  const Footer(),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
