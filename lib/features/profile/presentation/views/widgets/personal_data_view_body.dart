@@ -4,6 +4,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
+import 'package:uni/features/profile/presentation/views/widgets/documents_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_interests_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_study_type_selector.dart';
@@ -108,6 +109,10 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 6),
                     const PersonalDataInterestsSelector(),
                     const SizedBox(height: 24),
+
+                    // ── مستندات مهمة ──
+                    const DocumentsSection(),
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
