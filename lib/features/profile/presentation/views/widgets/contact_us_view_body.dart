@@ -43,7 +43,7 @@ class ContactUsViewBody extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: Text(
                       'تواصل سريع',
-                      style: TextStyles.semiBold13.copyWith(
+                      style: TextStyles.bold13.copyWith(
                         color: AppColors.subtitleColor,
                       ),
                     ),
@@ -51,6 +51,26 @@ class ContactUsViewBody extends StatelessWidget {
                   const SizedBox(height: 12),
                   const QuickContact(),
                   const SizedBox(height: 16),
+
+                  // ── Divider ──
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'أو اترك رسالة',
+                          style: TextStyles.semiBold13.copyWith(
+                            color: AppColors.subtitleColor.withOpacity(.6),
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  
                 ],
               ),
             ),
