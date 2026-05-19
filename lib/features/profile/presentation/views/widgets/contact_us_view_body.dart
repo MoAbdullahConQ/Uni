@@ -2,12 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/profile/presentation/views/widgets/message_form_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/quick_contact.dart';
 import 'package:uni/features/profile/presentation/views/widgets/robot_section.dart';
 
-class ContactUsViewBody extends StatelessWidget {
+class ContactUsViewBody extends StatefulWidget {
   const ContactUsViewBody({super.key});
+
+  @override
+  State<ContactUsViewBody> createState() => _ContactUsViewBodyState();
+}
+
+class _ContactUsViewBodyState extends State<ContactUsViewBody> {
+  final _formKey = GlobalKey<FormState>();
+
+  final List<String> topics = [
+    'مشكلة تقنية',
+    'استفسار عام',
+    'شكوى',
+    'اقتراح',
+    'أخرى',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +86,9 @@ class ContactUsViewBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  
+                  // ── Message form ──
+                  MessageFormSection(formKey: _formKey, topics: topics),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
