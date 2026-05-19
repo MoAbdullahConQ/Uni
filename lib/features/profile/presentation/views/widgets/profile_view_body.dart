@@ -14,12 +14,10 @@ class ProfileViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kHorizontalPadding,
-        vertical: kTopPadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kHorizontalPadding),
       child: Column(
         children: [
+          const SizedBox(height: kTopPadding),
           ProfileHeader(
             textHeader: 'الملف الشخصي',
             textStyle: TextStyles.bold20.copyWith(

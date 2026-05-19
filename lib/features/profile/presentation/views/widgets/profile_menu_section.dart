@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/profile/presentation/views/personal_data_view.dart';
+import 'package:uni/features/profile/presentation/views/security_view.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_menu_item.dart';
 
 class ProfileMenuSection extends StatelessWidget {
@@ -52,7 +53,7 @@ class ProfileMenuSection extends StatelessWidget {
                 icon: Icons.shield_outlined,
                 label: 'الأمان وكلمة المرور',
                 onTap: () {
-                  // TODO: navigate to security screen
+                  Navigator.pushNamed(context, SecurityView.routeName);
                 },
               ),
             ],

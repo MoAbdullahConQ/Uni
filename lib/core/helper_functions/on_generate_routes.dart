@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/features/home/presentation/views/main_view.dart';
 import 'package:uni/features/on_boarding/presentation/views/on_boarding_view.dart';
 import 'package:uni/features/profile/presentation/views/personal_data_view.dart';
+import 'package:uni/features/profile/presentation/views/security_view.dart';
 import 'package:uni/features/splash/presentation/views/splash_view.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -14,6 +15,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const MainView());
     case PersonalDataView.routeName:
       return MaterialPageRoute(builder: (context) => const PersonalDataView());
+    case SecurityView.routeName:
+      return MaterialPageRoute(builder: (context) => const SecurityView());
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());
   }

@@ -4,7 +4,7 @@ import 'package:uni/features/profile/presentation/views/widgets/personal_data_vi
 class PersonalDataView extends StatelessWidget {
   const PersonalDataView({super.key});
 
-  static const String routeName = '/profile/personal-data';
+  static const String routeName = 'personal_data_view';
 
   @override
   Widget build(BuildContext context) {
