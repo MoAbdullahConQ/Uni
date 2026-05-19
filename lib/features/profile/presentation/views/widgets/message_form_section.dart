@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:uni/core/utils/app_colors.dart';
+import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/details_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
@@ -42,16 +45,34 @@ class MessageFormSection extends StatelessWidget {
               keyboardType: TextInputType.name,
               textAlign: TextAlign.start,
             ),
+
             const SizedBox(height: 16),
 
             const PersonalDataFieldLabel(label: 'موضوع الرسالة'),
             const SizedBox(height: 8),
             TopicDropdown(topics: topics),
+
             const SizedBox(height: 16),
 
             const PersonalDataFieldLabel(label: 'التفاصيل'),
             const SizedBox(height: 8),
             const DetailsField(),
+
+            const SizedBox(height: 16),
+
+            // ── Send button ──
+            CustomButton(
+              backgroundColor: AppColors.primaryColor,
+              style: TextStyles.bold14.copyWith(
+                color: AppColors.secondaryColor,
+              ),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  // TODO: dispatch send message event
+                }
+              },
+              text: 'إرسال الرسالة',
+            ),
           ],
         ),
       ),
