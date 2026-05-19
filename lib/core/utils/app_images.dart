@@ -86,6 +86,10 @@ class Assets {
   /// assets/images/uni_pic.png
   static const String imagesUniPic = "assets/images/uni_pic.png";
 
+  /// Assets for imagesVerified
+  /// assets/images/verified.svg
+  static const String imagesVerified = "assets/images/verified.svg";
+
   /// Assets for imagesVideoThumb
   /// assets/images/VideoThumb.png
   static const String imagesVideoThumb = "assets/images/VideoThumb.png";

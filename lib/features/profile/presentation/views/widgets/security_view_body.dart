@@ -3,6 +3,7 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
+import 'package:uni/features/profile/presentation/views/widgets/top_section_security.dart';
 
 class SecurityViewBody extends StatelessWidget {
   const SecurityViewBody({super.key});
@@ -28,7 +29,17 @@ class SecurityViewBody extends StatelessWidget {
           const Expanded(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-              child: Column(),
+              child: Column(
+                children: [
+                  SizedBox(height: 32),
+
+                  // ── Shield icon + description ──
+                  TopSectionSecurity(),
+                  SizedBox(height: 32),
+
+
+                ],
+              ),
             ),
           ),
         ],
