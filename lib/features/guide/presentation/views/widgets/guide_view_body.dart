@@ -5,11 +5,11 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/featured_guide_video_section.dart';
 import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
 import 'package:uni/features/guide/presentation/views/widgets/featured_guide_podcasts_section.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_article_card.dart';
-import 'package:uni/features/guide/presentation/views/widgets/guide_search_bar.dart';
 
 class GuideViewBody extends StatelessWidget {
   const GuideViewBody({super.key});
@@ -31,7 +31,10 @@ class GuideViewBody extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Search bar
-          const GuideSearchBar(),
+          const SearchBarField(
+            hintText: 'ابحث عن مقالات، فيديوهات، بودكاست...',
+            height: 60,
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(

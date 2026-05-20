@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
+import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_count_header.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_filter_tab_bar.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_list_widget.dart';
-import 'package:uni/features/fav/presentation/views/widgets/fav_search_bar.dart';
 
 class FavViewBody extends StatefulWidget {
   const FavViewBody({super.key});
@@ -77,8 +79,17 @@ class _FavViewBodyState extends State<FavViewBody> {
         child: Column(
           children: [
             // Search bar
-            const FavSearchBar(),
-            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SearchBarField(
+                hintText: 'دور في المفضله',
+                height: 55,
+                hintStyle: TextStyles.regular16.copyWith(
+                  color: AppColors.subtitleColor.withOpacity(0.6),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
 
             // Filter tab bar
             FavFilterTabBar(
