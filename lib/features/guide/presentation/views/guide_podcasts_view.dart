@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni/features/guide/presentation/views/guide_podcasts_view_body.dart';
+import 'package:uni/features/guide/presentation/views/widgets/guide_podcasts_view_body.dart';
 
 class GuidePodcastsView extends StatelessWidget {
   const GuidePodcastsView({super.key});
