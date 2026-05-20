@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/featured_guide_video_section.dart';
 import 'package:uni/core/widgets/search_text_field.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_home_app_bar.dart';
 import 'package:uni/features/home/presentation/views/widgets/faheem_banner_widget.dart';
-import 'package:uni/features/home/presentation/views/widgets/guide_video_section.dart';
 import 'package:uni/features/home/presentation/views/widgets/recommended_unis_section.dart';
 import 'package:uni/features/home/presentation/views/widgets/trending_unis_section.dart';
 import 'package:uni/features/home/presentation/views/widgets/uni_tile.dart';
@@ -65,8 +65,21 @@ class HomeViewBody extends StatelessWidget {
             const SizedBox(height: 32),
             const RecommendedUnisSection(),
             const SizedBox(height: 32),
-            const GuideVideoSection(),
-
+            FeaturedGuideVideoSection(
+              title: 'جديد دليلك الجامعي 🗞️',
+              titleStyle: TextStyles.bold18.copyWith(
+                color: AppColors.primaryColor,
+                height: 1.56,
+              ),
+              onTap: () {
+                //TODO 
+              },
+              subTitle: 'الذهاب للدليل',
+              subTitleStyle: TextStyles.bold11.copyWith(
+                color: AppColors.subtitleColor,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
       ),
