@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:uni/features/fav/presentation/views/fav_view.dart';
-import 'package:uni/features/guide/presentation/views/guide_view.dart';
-import 'package:uni/features/home/presentation/views/widgets/home_view.dart';
+import 'package:uni/features/fav/presentation/views/widgets/fav_view_body.dart';
+import 'package:uni/features/guide/presentation/views/widgets/guide_view_body.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
-import 'package:uni/features/profile/presentation/views/profile_view.dart';
+import 'package:uni/features/home/presentation/views/widgets/home_view_body.dart';
+import 'package:uni/features/profile/presentation/views/widgets/profile_view_body.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -18,10 +18,10 @@ class _MainViewState extends State<MainView> {
   int currentIndex = 0;
 
   List<Widget> get views => [
-    const HomeView(),
-    const GuideView(),
-    const FavView(),
-    const ProfileView(),
+    const HomeViewBody(),
+    const GuideViewBody(),
+    const FavViewBody(),
+    const ProfileViewBody(),
   ];
 
   @override

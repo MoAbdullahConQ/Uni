@@ -72,7 +72,7 @@ class HomeViewBody extends StatelessWidget {
                 height: 1.56,
               ),
               onTap: () {
-                //TODO 
+                // Navigator.pushNamed(context, GuideView.routeName);
               },
               subTitle: 'الذهاب للدليل',
               subTitleStyle: TextStyles.bold11.copyWith(
