@@ -8,7 +8,7 @@ import 'package:uni/features/home/presentation/views/widgets/custom_home_app_bar
 import 'package:uni/features/home/presentation/views/widgets/faheem_banner_widget.dart';
 import 'package:uni/features/home/presentation/views/widgets/recommended_unis_section.dart';
 import 'package:uni/features/home/presentation/views/widgets/trending_unis_section.dart';
-import 'package:uni/features/home/presentation/views/widgets/uni_tile.dart';
+import 'package:uni/features/home/presentation/views/widgets/browse_tile.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -59,7 +59,7 @@ class HomeViewBody extends StatelessWidget {
             const SizedBox(height: 16),
             const FaheemBannerWidget(),
             const SizedBox(height: 16),
-            const UniversityTile(),
+            const BrowseTile(),
             const SizedBox(height: 32),
             const TrendingUnisSection(),
             const SizedBox(height: 32),

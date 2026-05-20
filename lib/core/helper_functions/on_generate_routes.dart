@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/features/browse/presentation/views/browse_view.dart';
 import 'package:uni/features/fav/presentation/views/fav_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_podcasts_view.dart';
@@ -41,6 +42,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const GuidePodcastsView());
     case GuideArticlesView.routeName:
       return MaterialPageRoute(builder: (context) => const GuideArticlesView());
+    case BrowseView.routeName:
+      return MaterialPageRoute(builder: (context) => const BrowseView());
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());
   }

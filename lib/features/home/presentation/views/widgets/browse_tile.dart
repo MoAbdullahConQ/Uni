@@ -3,11 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/browse/presentation/views/browse_view.dart';
 
-class UniversityTile extends StatelessWidget {
+class BrowseTile extends StatelessWidget {
   final VoidCallback? onTap;
 
-  const UniversityTile({super.key, this.onTap});
+  const BrowseTile({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class UniversityTile extends StatelessWidget {
         side: const BorderSide(color: Color(0x66AFEC70), width: 1.6),
       ),
       leading: SvgPicture.asset(Assets.imagesExplore),
-
+      
       title: Text(
         'تصفح الجامعات',
         style: TextStyles.bold14.copyWith(color: AppColors.primaryColor),
@@ -39,7 +40,7 @@ class UniversityTile extends StatelessWidget {
       ),
 
       onTap: () {
-        // Navigate
+        Navigator.pushNamed(context, BrowseView.routeName);
       },
     );
   }
