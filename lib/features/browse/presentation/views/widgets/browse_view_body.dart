@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/widgets/filter_button_badge.dart';
+import 'package:uni/core/widgets/search_bar_field.dart';
 
 class BrowseViewBody extends StatelessWidget {
   const BrowseViewBody({super.key});
@@ -8,14 +10,29 @@ class BrowseViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return SingleChildScrollView(
-      child: const Padding(
-        padding: EdgeInsets.symmetric(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
           horizontal: kHorizontalPadding,
           vertical: kTopPadding,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [],
+          children: [
+            // App bar
+            SearchBarField(
+              hintText: 'اكتب اسم الجامعه',
+              showBackButton: true,
+              height: 50,
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: FilterButtonBadge(
+                  activeFiltersCount: 3,
+                  onFilterTap: () {},
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );
