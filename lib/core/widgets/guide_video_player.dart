@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni/features/home/domain/entities/guide_video_entity.dart';
+import 'package:uni/core/entities/guide_video_entity.dart';
 
 class GuideVideoPlayer extends StatelessWidget {
   final GuideVideoEntity entity;

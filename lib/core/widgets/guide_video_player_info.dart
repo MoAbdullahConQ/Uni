@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/features/home/domain/entities/guide_video_entity.dart';
+import 'package:uni/core/entities/guide_video_entity.dart';
 
-class InfoPlayer extends StatelessWidget {
-  const InfoPlayer({super.key, required this.guideVideoEntity});
+class GuideVideoPlayerInfo extends StatelessWidget {
+  const GuideVideoPlayerInfo({super.key, required this.guideVideoEntity});
 
   final GuideVideoEntity guideVideoEntity;
 

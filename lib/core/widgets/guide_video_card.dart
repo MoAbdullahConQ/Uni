@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
-import 'package:uni/features/home/domain/entities/guide_video_entity.dart';
-import 'package:uni/features/home/presentation/views/widgets/guide_video_player.dart';
-import 'package:uni/features/home/presentation/views/widgets/info_player.dart';
+import 'package:uni/core/entities/guide_video_entity.dart';
+import 'package:uni/core/widgets/guide_video_player.dart';
+import 'package:uni/core/widgets/guide_video_player_info.dart';
 
 class GuideVideoCard extends StatelessWidget {
   final GuideVideoEntity guideVideoEntity;
@@ -37,7 +37,7 @@ class GuideVideoCard extends StatelessWidget {
           GuideVideoPlayer(entity: guideVideoEntity),
 
           // Info Player
-          InfoPlayer(guideVideoEntity: guideVideoEntity),
+          GuideVideoPlayerInfo(guideVideoEntity: guideVideoEntity),
         ],
       ),
     );
