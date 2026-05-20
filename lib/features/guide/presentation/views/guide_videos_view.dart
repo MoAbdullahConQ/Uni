@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni/features/guide/presentation/views/guide_videos_view_body.dart';
+import 'package:uni/features/guide/presentation/views/widgets/guide_videos_view_body.dart';
 
 class GuideVideosView extends StatelessWidget {
   const GuideVideosView({super.key});

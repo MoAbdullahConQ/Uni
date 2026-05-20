@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/features/fav/presentation/views/fav_view.dart';
+import 'package:uni/features/guide/presentation/views/guide_podcasts_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_view.dart';
 import 'package:uni/features/home/presentation/views/main_view.dart';
@@ -35,6 +36,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const GuideView());
     case GuideVideosView.routeName:
       return MaterialPageRoute(builder: (context) => const GuideVideosView());
+    case GuidePodcastsView.routeName:
+      return MaterialPageRoute(builder: (context) => const GuidePodcastsView());
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());
   }
