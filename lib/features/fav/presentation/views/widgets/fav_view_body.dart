@@ -5,7 +5,7 @@ import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
-import 'package:uni/features/fav/presentation/views/widgets/fav_count_header.dart';
+import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_list_widget.dart';
 
@@ -103,7 +103,10 @@ class _FavViewBodyState extends State<FavViewBody> {
             const SizedBox(height: 24),
 
             // Count + sort
-            FavCountHeader(count: selectedFilterFavUniEntities.length),
+            UniCountHeader(
+              count: selectedFilterFavUniEntities.length,
+              label: 'جامعات مفضلة',
+            ),
             const SizedBox(height: 16),
 
             // List

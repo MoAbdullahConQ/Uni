@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class FavCountHeader extends StatelessWidget {
-  final int count;
+class UniCountHeader extends StatelessWidget {
+  const UniCountHeader({super.key, required this.count, required this.label});
 
-  const FavCountHeader({super.key, required this.count});
+  final int count;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class FavCountHeader extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: '$count جامعات مفضلة',
+                text: '$count $label',
                 style: TextStyles.bold14.copyWith(
                   color: AppColors.primaryColor,
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
+import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 
 class BrowseViewBody extends StatefulWidget {
@@ -49,6 +50,13 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
               },
             ),
             const SizedBox(height: 16),
+
+             // Count header
+                const UniCountHeader(
+                  count: 0,
+                  label: 'جامعة مطابقة',
+                ),
+                const SizedBox(height: 12),
           ],
         ),
       ),
