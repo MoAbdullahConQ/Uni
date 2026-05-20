@@ -34,7 +34,7 @@ class FeaturedGuidePodcastsSection extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         SizedBox(
-          height: 260,
+          height: 230,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: podcasts.length,

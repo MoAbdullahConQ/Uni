@@ -68,6 +68,8 @@ class GuidePodcastCard extends StatelessWidget {
           // Program name
           Text(
             guidePodcastEntity.programName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyles.regular11.copyWith(
               color: AppColors.subtitleColor.withOpacity(0.8),
             ),
