@@ -5,6 +5,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/featured_guide_video_section.dart';
 import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
 import 'package:uni/features/guide/presentation/views/widgets/featured_guide_podcasts_section.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_article_card.dart';
@@ -67,7 +68,7 @@ class GuideViewBody extends StatelessWidget {
                       color: AppColors.primaryColor,
                     ),
                     onTap: () {
-                      // TODO: navigate to all articles
+                      Navigator.pushNamed(context, GuideArticlesView.routeName);
                     },
                     subTitle: 'عرض الكل',
                     subTitleStyle: TextStyles.regular13.copyWith(
