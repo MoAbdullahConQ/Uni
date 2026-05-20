@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_filter_tab_bar_item.dart';
 
-class FavFilterTabBar extends StatelessWidget {
+class UniFilterTabBar extends StatelessWidget {
   final String selectedFilter;
   final ValueChanged<String> onFilterChanged;
 
-  const FavFilterTabBar({
+  const UniFilterTabBar({
     super.key,
     required this.selectedFilter,
     required this.onFilterChanged,

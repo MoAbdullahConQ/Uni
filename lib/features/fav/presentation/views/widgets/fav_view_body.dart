@@ -6,7 +6,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_count_header.dart';
-import 'package:uni/features/fav/presentation/views/widgets/fav_filter_tab_bar.dart';
+import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_list_widget.dart';
 
 class FavViewBody extends StatefulWidget {
@@ -92,7 +92,7 @@ class _FavViewBodyState extends State<FavViewBody> {
             const SizedBox(height: 16),
 
             // Filter tab bar
-            FavFilterTabBar(
+            UniFilterTabBar(
               selectedFilter: selectedFilter,
               onFilterChanged: (filter) {
                 setState(() {

@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
+import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 
-class BrowseViewBody extends StatelessWidget {
+class BrowseViewBody extends StatefulWidget {
   const BrowseViewBody({super.key});
+
+  @override
+  State<BrowseViewBody> createState() => _BrowseViewBodyState();
+}
+
+class _BrowseViewBodyState extends State<BrowseViewBody> {
+  String selectedFilter = 'الكل';
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +40,15 @@ class BrowseViewBody extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+
+            // Filter tab bar
+            UniFilterTabBar(
+              selectedFilter: selectedFilter,
+              onFilterChanged: (filter) {
+                setState(() => selectedFilter = filter);
+              },
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
