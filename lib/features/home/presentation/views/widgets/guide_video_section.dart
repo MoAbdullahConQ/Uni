@@ -3,7 +3,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/guide_section_header.dart';
 import 'package:uni/core/widgets/guide_video_card.dart';
-import 'package:uni/core/helper_functions/getDummyGuideVideoEntity.dart';
+import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
 
 class GuideVideoSection extends StatelessWidget {
   const GuideVideoSection({super.key});
