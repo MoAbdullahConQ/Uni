@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
+import 'package:uni/core/utils/app_fonts.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
 class UniDetailTabBar extends StatelessWidget {
@@ -12,8 +13,10 @@ class UniDetailTabBar extends StatelessWidget {
     return TabBar(
       controller: tabController,
       isScrollable: false,
-      labelStyle: TextStyles.bold16,
-      unselectedLabelStyle: TextStyles.semiBold14,
+      labelStyle: TextStyles.bold16.copyWith(fontFamily: AppFonts.arabicFont),
+      unselectedLabelStyle: TextStyles.semiBold14.copyWith(
+        fontFamily: AppFonts.arabicFont,
+      ),
       labelColor: AppColors.primaryColor,
       unselectedLabelColor: AppColors.subtitleColor,
       indicatorColor: AppColors.primaryColor,
@@ -27,7 +30,7 @@ class UniDetailTabBar extends StatelessWidget {
       splashFactory: NoSplash.splashFactory,
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       labelPadding: const EdgeInsets.only(bottom: 0),
-      padding: const EdgeInsets.only(left: 50),
+      padding: const EdgeInsets.only(left: 24),
       tabs: const [
         Tab(text: 'نبذة عامة'),
         Tab(text: 'الكليات والمصاريف'),
