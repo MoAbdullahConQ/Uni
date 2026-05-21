@@ -18,9 +18,13 @@ class UniCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(24),
+      overlayColor: WidgetStatePropertyAll(
+        AppColors.secondaryColor.withOpacity(0.2),
+      ),
       onTap: onTap,
-      child: Container(
+      child: Ink(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,

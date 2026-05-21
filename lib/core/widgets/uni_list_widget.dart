@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/widgets/uni_card.dart';
+import 'package:uni/features/uni_detail/presentation/views/uni_detail_view.dart';
 
 class UniListWidget extends StatelessWidget {
   const UniListWidget({
     super.key,
     required this.selectedFilterUniEntities,
-    required this.itemCount, this.onDelete, this.onTap,
+    required this.itemCount,
+    this.onDelete,
+
   });
 
   final List<UniEntity> selectedFilterUniEntities;
   final int itemCount;
   final VoidCallback? onDelete;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,9 @@ class UniListWidget extends StatelessWidget {
         return UniCard(
           selectedFilterUniEntity: selectedFilterUniEntities[index],
           onDelete: onDelete,
-          onTap: onTap,
+          onTap: () {
+            Navigator.pushNamed(context, UniDetailView.routeName);
+          },
         );
       },
     );

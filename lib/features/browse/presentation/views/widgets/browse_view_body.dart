@@ -71,7 +71,6 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
               selectedFilterUniEntities: filteredEntities,
               itemCount: filteredEntities.length,
               onDelete: () {},
-              onTap: () {},
             ),
 
             const SizedBox(height: 32),

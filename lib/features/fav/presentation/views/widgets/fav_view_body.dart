@@ -72,7 +72,6 @@ class _FavViewBodyState extends State<FavViewBody> {
               selectedFilterUniEntities: selectedFilterFavUniEntities,
               itemCount: selectedFilterFavUniEntities.length,
               onDelete: () {},
-              onTap: () {},
             ),
             // const SizedBox(height: 32),
           ],
