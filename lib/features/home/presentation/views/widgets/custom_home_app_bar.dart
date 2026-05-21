@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/notifications/presentation/views/notifications_view.dart';
 
 class CustomHomeAppBar extends StatelessWidget {
   const CustomHomeAppBar({super.key});
@@ -32,16 +33,21 @@ class CustomHomeAppBar extends StatelessWidget {
         textAlign: TextAlign.right,
         style: TextStyles.bold18.copyWith(color: AppColors.primaryColor),
       ),
-      trailing: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1.6, color: Colors.grey.shade200),
-            borderRadius: BorderRadius.circular(30),
+      trailing: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: () {
+          Navigator.pushNamed(context, NotificationsView.routeName);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1.6, color: Colors.grey.shade200),
+              borderRadius: BorderRadius.circular(30),
+            ),
           ),
+          child: SvgPicture.asset(Assets.imagesNotification),
         ),
-        child: SvgPicture.asset(Assets.imagesNotification),
       ),
     );
   }
