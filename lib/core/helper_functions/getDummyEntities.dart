@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:uni/core/entities/guide_video_entity.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/utils/app_images.dart';
+import 'package:uni/features/faheem/domain/entities/suggestion_item_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
@@ -132,14 +134,16 @@ List<NotificationEntity> getDummyTodayNotifications() {
   return const [
     NotificationEntity(
       title: 'تحديث مصاريف الجامعات',
-      body: 'تم تحديث قائمة المصاريف للجامعة الألمانية (GUC) للعام الدراسي الجديد. تصفح التحديثات الآن.',
+      body:
+          'تم تحديث قائمة المصاريف للجامعة الألمانية (GUC) للعام الدراسي الجديد. تصفح التحديثات الآن.',
       timeLabel: 'منذ 10 د',
       type: NotificationType.update,
       isRead: false,
     ),
     NotificationEntity(
       title: 'فهيم أفندي 🤖',
-      body: 'رديت على استفسارك بخصوص كليات الهندسة المتاحة بمجموع 85%. افتح المحادثة للتفاصيل.',
+      body:
+          'رديت على استفسارك بخصوص كليات الهندسة المتاحة بمجموع 85%. افتح المحادثة للتفاصيل.',
       timeLabel: 'منذ ساعتين',
       type: NotificationType.faheem,
       isRead: false,
@@ -151,7 +155,8 @@ List<NotificationEntity> getDummyYesterdayNotifications() {
   return const [
     NotificationEntity(
       title: 'منحة دراسية جديدة',
-      body: 'أعلنت جامعة النيل عن منح دراسية تصل إلى 50% لطلاب شعبة علمي رياضة. قدم الآن!',
+      body:
+          'أعلنت جامعة النيل عن منح دراسية تصل إلى 50% لطلاب شعبة علمي رياضة. قدم الآن!',
       timeLabel: '10:30 ص',
       type: NotificationType.scholarship,
       isRead: true,
@@ -163,17 +168,37 @@ List<NotificationEntity> getDummyThisWeekNotifications() {
   return const [
     NotificationEntity(
       title: 'أهلاً بك في جامعتي 🎓',
-      body: 'سعداء بانضمامك لنا! ابدأ بتحديد اهتماماتك لنرشح لك أفضل الجامعات المناسبة لك.',
+      body:
+          'سعداء بانضمامك لنا! ابدأ بتحديد اهتماماتك لنرشح لك أفضل الجامعات المناسبة لك.',
       timeLabel: 'الثلاثاء',
       type: NotificationType.welcome,
       isRead: true,
     ),
     NotificationEntity(
       title: 'استكمل بياناتك',
-      body: 'ملفك الشخصي مكتمل بنسبة 50%. أضف المحافظة الخاصة بك للحصول على نتائج أدق.',
+      body:
+          'ملفك الشخصي مكتمل بنسبة 50%. أضف المحافظة الخاصة بك للحصول على نتائج أدق.',
       timeLabel: 'الإثنين',
       type: NotificationType.profile,
       isRead: true,
+    ),
+  ];
+}
+
+List<SuggestionItemEntity> getDummySuggestionItems() {
+  return const [
+    SuggestionItemEntity(
+      icon: Icons.compare_arrows_rounded,
+      label: 'مقارنة جامعات',
+    ),
+    SuggestionItemEntity(
+      icon: Icons.build_outlined,
+      label: 'أرخص كليات هندسة؟',
+    ),
+    SuggestionItemEntity(icon: Icons.auto_awesome_rounded, label: 'اكتشف شغفي'),
+    SuggestionItemEntity(
+      icon: Icons.workspace_premium_outlined,
+      label: 'منح المتفوقين',
     ),
   ];
 }

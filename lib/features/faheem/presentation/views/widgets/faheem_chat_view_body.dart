@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/faheem_chat_app_bar.dart';
+import 'package:uni/features/faheem/presentation/views/widgets/faheem_welcome_widget.dart';
 
 class FaheemChatViewBody extends StatefulWidget {
   const FaheemChatViewBody({super.key});
@@ -27,7 +28,13 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
             },
           ),
 
-          
+          // Content
+          const Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: kHorizontalPadding),
+              child: FaheemWelcomeWidget(),
+            ),
+          ),
         ],
       ),
     );

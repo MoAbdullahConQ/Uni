@@ -52,7 +52,20 @@ class _ContactUsViewBodyState extends State<ContactUsViewBody> {
                   const SizedBox(height: 32),
 
                   // ── Robot illustration placeholder ──
-                  const RobotSection(),
+                  RobotSection(
+                    heightImage: 150,
+                    title: 'كيف يمكننا مساعدتك؟',
+                    titleStyle: TextStyles.bold24.copyWith(
+                      color: AppColors.primaryColor,
+                    ),
+                    subTitle: Text(
+                      'فريقنا متواجد دائماً للرد على استفساراتك ومساعدتك في رحلتك الجامعية تواصل معنا عبر القنوات المتاحة.',
+                      textAlign: TextAlign.center,
+                      style: TextStyles.regular14.copyWith(
+                        color: AppColors.subtitleColor,
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 24),
 
                   // ── Quick contact──
