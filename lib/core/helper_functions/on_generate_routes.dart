@@ -7,6 +7,7 @@ import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_view.dart';
 import 'package:uni/features/home/presentation/views/main_view.dart';
 import 'package:uni/features/home/presentation/views/widgets/home_view.dart';
+import 'package:uni/features/notifications/presentation/views/notifications_view.dart';
 import 'package:uni/features/on_boarding/presentation/views/on_boarding_view.dart';
 import 'package:uni/features/profile/presentation/views/contact_us_view.dart';
 import 'package:uni/features/profile/presentation/views/personal_data_view.dart';
@@ -44,6 +45,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const GuideArticlesView());
     case BrowseView.routeName:
       return MaterialPageRoute(builder: (context) => const BrowseView());
+    case NotificationsView.routeName:
+      return MaterialPageRoute(builder: (context) => const NotificationsView());
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());
   }
