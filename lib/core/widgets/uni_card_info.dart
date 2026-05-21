@@ -4,18 +4,18 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/location_widget.dart';
-import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
-import 'package:uni/features/fav/presentation/views/widgets/rating.dart';
+import 'package:uni/core/entities/uni_entity.dart';
+import 'package:uni/core/widgets/rating.dart';
 import 'package:uni/core/widgets/type_badge_widget.dart';
 
-class FavUniCardInfo extends StatelessWidget {
-  const FavUniCardInfo({
+class UniCardInfo extends StatelessWidget {
+  const UniCardInfo({
     super.key,
-    required this.selectedFilterFavUniEntity,
+    required this.selectedFilterUniEntity,
     required this.onDelete,
   });
 
-  final FavUniEntity selectedFilterFavUniEntity;
+  final UniEntity selectedFilterUniEntity;
   final VoidCallback? onDelete;
 
   @override
@@ -28,9 +28,9 @@ class FavUniCardInfo extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TypeBadgeWidget(type: selectedFilterFavUniEntity.type),
+              TypeBadgeWidget(type: selectedFilterUniEntity.type),
               const Spacer(),
-              Rating(rating: selectedFilterFavUniEntity.rating),
+              Rating(rating: selectedFilterUniEntity.rating),
             ],
           ),
 
@@ -38,7 +38,7 @@ class FavUniCardInfo extends StatelessWidget {
 
           // Uni name
           Text(
-            selectedFilterFavUniEntity.name,
+            selectedFilterUniEntity.name,
             style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
           ),
 
@@ -46,7 +46,7 @@ class FavUniCardInfo extends StatelessWidget {
 
           // Location
           LocationRow(
-            location: selectedFilterFavUniEntity.location,
+            location: selectedFilterUniEntity.location,
             iconSize: 13,
           ),
 
@@ -67,7 +67,7 @@ class FavUniCardInfo extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    selectedFilterFavUniEntity.averageFees,
+                    selectedFilterUniEntity.averageFees,
                     style: TextStyles.bold14.copyWith(
                       color: AppColors.primaryColor,
                     ),

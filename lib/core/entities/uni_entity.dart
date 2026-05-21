@@ -1,4 +1,4 @@
-class FavUniEntity {
+class UniEntity {
   final String name;
   final String location;
   final String imagePath;
@@ -6,7 +6,7 @@ class FavUniEntity {
   final double rating;
   final String averageFees;
 
-  const FavUniEntity({
+  const UniEntity({
     required this.name,
     required this.location,
     required this.imagePath,

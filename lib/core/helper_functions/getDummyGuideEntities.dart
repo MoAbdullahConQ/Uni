@@ -1,4 +1,5 @@
 import 'package:uni/core/entities/guide_video_entity.dart';
+import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
@@ -77,6 +78,51 @@ List<GuideArticleEntity> getDummyGuideArticleEntities() {
       category: 'أخبار الجامعات',
       readTime: 'قراءة 2 دقيقة',
       imagePath: Assets.imagesUniPic,
+    ),
+  ];
+}
+
+List<UniEntity> getDummyUniEntities() {
+  return const [
+    UniEntity(
+      name: 'الجامعة البريطانية في مصر',
+      location: 'مدينة الشروق',
+      imagePath: Assets.imagesUniPic,
+      type: 'خاصة',
+      rating: 4.8,
+      averageFees: '180k EGP',
+    ),
+    UniEntity(
+      name: 'جامعة عين شمس',
+      location: 'العباسية، القاهرة',
+      imagePath: Assets.imagesUniPic,
+      type: 'حكومية',
+      rating: 4.5,
+      averageFees: '25k EGP',
+    ),
+    UniEntity(
+      name: 'جامعة الجلالة',
+      location: 'هضبة الجلالة',
+      imagePath: Assets.imagesUniPic,
+      type: 'معهد عالي',
+      rating: 3.1,
+      averageFees: '110k EGP',
+    ),
+    UniEntity(
+      name: 'جامعة عين شمس',
+      location: 'العباسية، القاهرة',
+      imagePath: Assets.imagesUniPic,
+      type: 'حكومية',
+      rating: 4.5,
+      averageFees: '25k EGP',
+    ),
+    UniEntity(
+      name: 'جامعة الجلالة',
+      location: 'هضبة الجلالة',
+      imagePath: Assets.imagesUniPic,
+      type: 'معهد عالي',
+      rating: 3.1,
+      averageFees: '110k EGP',
     ),
   ];
 }

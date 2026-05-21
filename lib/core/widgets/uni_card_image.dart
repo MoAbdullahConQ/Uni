@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class FavUniCardImage extends StatelessWidget {
-  final String imagePath;
+class UniCardImage extends StatelessWidget {
+  const UniCardImage({super.key, required this.imagePath});
 
-  const FavUniCardImage({super.key, required this.imagePath});
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {

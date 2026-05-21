@@ -4,10 +4,10 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
-import 'package:uni/features/fav/domain/entities/fav_uni_entity.dart';
+import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
-import 'package:uni/features/fav/presentation/views/widgets/fav_list_widget.dart';
+import 'package:uni/core/widgets/uni_list_widget.dart';
 
 class FavViewBody extends StatefulWidget {
   const FavViewBody({super.key});
@@ -20,8 +20,8 @@ class _FavViewBodyState extends State<FavViewBody> {
   String selectedFilter = 'الكل';
 
   // TODO: replace with real data from cubit
-  final List<FavUniEntity> allFavUniEntities = const [
-    FavUniEntity(
+  final List<UniEntity> allFavUniEntities = const [
+    UniEntity(
       name: 'الجامعة البريطانية في مصر',
       location: 'مدينة الشروق',
       imagePath: Assets.imagesUniPic,
@@ -29,7 +29,7 @@ class _FavViewBodyState extends State<FavViewBody> {
       rating: 4.8,
       averageFees: '180k EGP',
     ),
-    FavUniEntity(
+    UniEntity(
       name: 'جامعة عين شمس',
       location: 'العباسية، القاهرة',
       imagePath: Assets.imagesUniPic,
@@ -37,7 +37,7 @@ class _FavViewBodyState extends State<FavViewBody> {
       rating: 4.5,
       averageFees: '25k EGP',
     ),
-    FavUniEntity(
+    UniEntity(
       name: 'جامعة الجلالة',
       location: 'هضبة الجلالة',
       imagePath: Assets.imagesUniPic,
@@ -45,7 +45,7 @@ class _FavViewBodyState extends State<FavViewBody> {
       rating: 3.1,
       averageFees: '110k EGP',
     ),
-    FavUniEntity(
+    UniEntity(
       name: 'جامعة عين شمس',
       location: 'العباسية، القاهرة',
       imagePath: Assets.imagesUniPic,
@@ -53,7 +53,7 @@ class _FavViewBodyState extends State<FavViewBody> {
       rating: 4.5,
       averageFees: '25k EGP',
     ),
-    FavUniEntity(
+    UniEntity(
       name: 'جامعة الجلالة',
       location: 'هضبة الجلالة',
       imagePath: Assets.imagesUniPic,
@@ -63,7 +63,7 @@ class _FavViewBodyState extends State<FavViewBody> {
     ),
   ];
 
-  List<FavUniEntity> get selectedFilterFavUniEntities {
+  List<UniEntity> get selectedFilterFavUniEntities {
     if (selectedFilter == 'الكل') return allFavUniEntities;
     return allFavUniEntities.where((e) => e.type == selectedFilter).toList();
   }
@@ -110,8 +110,11 @@ class _FavViewBodyState extends State<FavViewBody> {
             const SizedBox(height: 16),
 
             // List
-            FavListWidget(
-              selectedFilterFavUniEntities: selectedFilterFavUniEntities,
+            UniListWidget(
+              selectedFilterUniEntities: selectedFilterFavUniEntities,
+              itemCount: selectedFilterFavUniEntities.length,
+              onDelete: () {},
+              onTap: () {},
             ),
             // const SizedBox(height: 32),
           ],

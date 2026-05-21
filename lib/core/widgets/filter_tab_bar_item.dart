@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class FavFilterTabBarItem extends StatelessWidget {
-  const FavFilterTabBarItem({
+class FilterTabBarItem extends StatelessWidget {
+  const FilterTabBarItem({
     super.key,
     required this.onFilterChanged,
     required this.filter,

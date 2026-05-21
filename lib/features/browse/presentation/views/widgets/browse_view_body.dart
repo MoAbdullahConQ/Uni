@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/entities/uni_entity.dart';
+import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
+import 'package:uni/core/widgets/uni_list_widget.dart';
 
 class BrowseViewBody extends StatefulWidget {
   const BrowseViewBody({super.key});
@@ -14,6 +17,14 @@ class BrowseViewBody extends StatefulWidget {
 
 class _BrowseViewBodyState extends State<BrowseViewBody> {
   String selectedFilter = 'الكل';
+
+  // TODO: replace with cubit
+  final List<UniEntity> allBrowseUniEntities = getDummyUniEntities();
+
+  List<UniEntity> get filteredEntities {
+    if (selectedFilter == 'الكل') return allBrowseUniEntities;
+    return allBrowseUniEntities.where((e) => e.type == selectedFilter).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +62,19 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
             ),
             const SizedBox(height: 16),
 
-             // Count header
-                const UniCountHeader(
-                  count: 0,
-                  label: 'جامعة مطابقة',
-                ),
-                const SizedBox(height: 12),
+            // Count header
+            const UniCountHeader(count: 0, label: 'جامعة مطابقة'),
+            const SizedBox(height: 12),
+
+            // List
+            UniListWidget(
+              selectedFilterUniEntities: filteredEntities,
+              itemCount: filteredEntities.length,
+              onDelete: () {},
+              onTap: () {},
+            ),
+
+            const SizedBox(height: 32),
           ],
         ),
       ),

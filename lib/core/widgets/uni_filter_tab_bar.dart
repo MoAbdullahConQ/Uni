@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni/features/fav/presentation/views/widgets/fav_filter_tab_bar_item.dart';
+import 'package:uni/core/widgets/filter_tab_bar_item.dart';
 
 class UniFilterTabBar extends StatelessWidget {
   final String selectedFilter;
@@ -22,7 +22,7 @@ class UniFilterTabBar extends StatelessWidget {
         itemCount: filters.length,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
-          return FavFilterTabBarItem(
+          return FilterTabBarItem(
             onFilterChanged: onFilterChanged,
             filter: filters[index],
             isSelected: filters[index] == selectedFilter,
