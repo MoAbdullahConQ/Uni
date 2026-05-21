@@ -75,6 +75,31 @@ class FaheemHistoryViewBody extends StatelessWidget {
             ),
           ),
         ),
+        // FAB
+        Positioned(
+          bottom: 24,
+          left: 16,
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryColor.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.add_comment_outlined,
+              color: AppColors.secondaryColor,
+              size: 24,
+            ),
+          ),
+        ),
       ],
     );
   }
