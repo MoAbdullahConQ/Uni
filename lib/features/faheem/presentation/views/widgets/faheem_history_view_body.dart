@@ -3,6 +3,7 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/back_button.dart';
+import 'package:uni/core/widgets/search_bar_field.dart';
 
 class FaheemHistoryViewBody extends StatelessWidget {
   const FaheemHistoryViewBody({super.key});
@@ -49,6 +50,10 @@ class FaheemHistoryViewBody extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
+
+                 // Search
+                SearchBarField(hintText: 'ابحث في المحادثات السابقة...'),
+                const SizedBox(height: 24),
               ],
             ),
           ),
