@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/entities/guide_video_entity.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/utils/app_images.dart';
+import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
 import 'package:uni/features/faheem/domain/entities/suggestion_item_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
@@ -200,5 +201,48 @@ List<SuggestionItemEntity> getDummySuggestionItems() {
       icon: Icons.workspace_premium_outlined,
       label: 'منح المتفوقين',
     ),
+  ];
+}
+
+List<ChatMessageEntity> getDummyChatMessages() {
+  return const [
+    ChatMessageEntity(
+      text: 'عايزك بناءا علي المجموع بتاعي تقولي انسب الجامعات ليا',
+      sender: MessageSender.user,
+    ),
+    ChatMessageEntity(
+      text:
+          '👋 أهلاً محمد!\nبناءً على مجموعك 85% واهتمامك بالتكنولوجيا، دي أفضل ترشيحات ليك لكليات الحاسبات والمعلومات:',
+      sender: MessageSender.faheem,
+    ),
+    ChatMessageEntity(
+      sender: MessageSender.faheem,
+      contentType: MessageContentType.uniCards,
+      uniCards: [
+        FaheemUniCardEntity(
+          name: 'الجامعة المصرية اليابانية',
+          location: 'برج العرب',
+          imagePath: Assets.imagesUniPic,
+          matchPercent: 88,
+        ),
+        FaheemUniCardEntity(
+          name: 'الجامعة المصرية اليابانية',
+          location: 'برج العرب',
+          imagePath: Assets.imagesUniPic,
+          matchPercent: 88,
+        ),
+        FaheemUniCardEntity(
+          name: 'الجامعة المصرية اليابانية',
+          location: 'برج العرب',
+          imagePath: Assets.imagesUniPic,
+          matchPercent: 88,
+        ),
+      ],
+    ),
+    ChatMessageEntity(
+      text: 'طب إيه أخبار المصاريف في الجامعات دي؟ 🤔',
+      sender: MessageSender.user,
+    ),
+    ChatMessageEntity(sender: MessageSender.faheem, isTyping: true),
   ];
 }

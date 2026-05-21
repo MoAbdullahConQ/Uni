@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/chat_input_bar.dart';
+import 'package:uni/features/faheem/presentation/views/widgets/chat_messages_list.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/faheem_chat_app_bar.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/faheem_welcome_widget.dart';
 
@@ -14,9 +16,18 @@ class FaheemChatViewBody extends StatefulWidget {
 
 class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   // TODO: replace with cubit
-  List<ChatMessageEntity> messages = [];
+  late List<ChatMessageEntity> messages;
+
+  @override
+  void initState() {
+    super.initState();
+    messages = List.from(getDummyChatMessages());
+  }
+
+  bool get _hasMessages => messages.isNotEmpty;
 
   void _sendMessage() {
     final text = _controller.text.trim();
@@ -26,6 +37,23 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
       messages.add(ChatMessageEntity(text: text, sender: MessageSender.user));
       _controller.clear();
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,11 +74,18 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
           ),
 
           // Content
-          const Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: kHorizontalPadding),
-              child: FaheemWelcomeWidget(),
-            ),
+          Expanded(
+            child: _hasMessages
+                ? ChatMessagesList(
+                    messages: messages,
+                    scrollController: _scrollController,
+                  )
+                : const SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: kHorizontalPadding,
+                    ),
+                    child: FaheemWelcomeWidget(),
+                  ),
           ),
 
           // Input
