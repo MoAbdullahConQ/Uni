@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
 import 'package:uni/core/utils/app_colors.dart';
-import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/entities/uni_entity.dart';
@@ -20,49 +20,7 @@ class _FavViewBodyState extends State<FavViewBody> {
   String selectedFilter = 'الكل';
 
   // TODO: replace with real data from cubit
-  final List<UniEntity> allFavUniEntities = const [
-    UniEntity(
-      name: 'الجامعة البريطانية في مصر',
-      location: 'مدينة الشروق',
-      imagePath: Assets.imagesUniPic,
-      type: 'خاصة',
-      rating: 4.8,
-      averageFees: '180k EGP',
-    ),
-    UniEntity(
-      name: 'جامعة عين شمس',
-      location: 'العباسية، القاهرة',
-      imagePath: Assets.imagesUniPic,
-      type: 'حكومية',
-      rating: 4.5,
-      averageFees: '25k EGP',
-    ),
-    UniEntity(
-      name: 'جامعة الجلالة',
-      location: 'هضبة الجلالة',
-      imagePath: Assets.imagesUniPic,
-      type: 'معهد عالي',
-      rating: 3.1,
-      averageFees: '110k EGP',
-    ),
-    UniEntity(
-      name: 'جامعة عين شمس',
-      location: 'العباسية، القاهرة',
-      imagePath: Assets.imagesUniPic,
-      type: 'حكومية',
-      rating: 4.5,
-      averageFees: '25k EGP',
-    ),
-    UniEntity(
-      name: 'جامعة الجلالة',
-      location: 'هضبة الجلالة',
-      imagePath: Assets.imagesUniPic,
-      type: 'معهد عالي',
-      rating: 3.1,
-      averageFees: '110k EGP',
-    ),
-  ];
-
+  final List<UniEntity> allFavUniEntities = getDummyUniEntities();
   List<UniEntity> get selectedFilterFavUniEntities {
     if (selectedFilter == 'الكل') return allFavUniEntities;
     return allFavUniEntities.where((e) => e.type == selectedFilter).toList();
