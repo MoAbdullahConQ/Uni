@@ -8,6 +8,7 @@ import 'package:uni/features/faheem/domain/entities/suggestion_item_entity.dart'
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
+import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
 
 List<GuideVideoEntity> getDummyGuideVideoEntities() {
   return const [
@@ -284,4 +285,19 @@ List<ChatHistoryEntity> getDummyThisWeekChats() {
       imagePath: Assets.imagesFaheemRobot,
     ),
   ];
+}
+
+UniDetailEntity getDummyUniDetailEntity() {
+  return const UniDetailEntity(
+    name: 'جامعة المنوفية',
+    type: 'جامعة حكومية',
+    address: 'شارع جمال عبد الناصر، مدينة شبين الكوم، محافظة المنوفية',
+    heroImagePath: Assets.imagesUniPic,
+    logoImagePath: Assets.imagesZagIcon,
+    about:
+        'تُعد من الجامعات الإقليمية الكبرى والرائدة في قلب الدلتا، وتلعب دوراً محورياً في البحث العلمي والتطبيقي لخدمة المجتمع المحيط. تتميز الجامعة بقوة كلياتها وتفردها في بعض التخصصات مثل الهندسة الإلكترونية (بمنوف) والزراعة والطب',
+    studentsCount: 80000,
+    foundedYear: 1976,
+    worldRanking: '1201 - 1400',
+  );
 }
