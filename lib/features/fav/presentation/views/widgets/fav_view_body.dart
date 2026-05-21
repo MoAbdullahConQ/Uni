@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
+import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';

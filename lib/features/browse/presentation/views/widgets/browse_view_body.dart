@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/entities/uni_entity.dart';
-import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
+import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/uni_count_header.dart';

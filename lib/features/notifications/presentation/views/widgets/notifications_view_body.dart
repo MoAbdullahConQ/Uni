@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
+import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/features/notifications/presentation/views/widgets/notification_group_section.dart';
 import 'package:uni/features/notifications/presentation/views/widgets/notifications_app_bar.dart';
 

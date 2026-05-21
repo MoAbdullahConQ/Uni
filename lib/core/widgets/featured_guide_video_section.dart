@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni/core/helper_functions/getDummyGuideEntities.dart';
+import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/widgets/guide_section_header.dart';
 import 'package:uni/core/widgets/guide_video_card.dart';
 
