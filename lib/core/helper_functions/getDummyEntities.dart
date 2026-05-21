@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/entities/guide_video_entity.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/utils/app_images.dart';
+import 'package:uni/features/faheem/domain/entities/chat_history_entity.dart';
 import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
 import 'package:uni/features/faheem/domain/entities/suggestion_item_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
@@ -244,5 +245,43 @@ List<ChatMessageEntity> getDummyChatMessages() {
       sender: MessageSender.user,
     ),
     ChatMessageEntity(sender: MessageSender.faheem, isTyping: true),
+  ];
+}
+
+List<ChatHistoryEntity> getDummyTodayChats() {
+  return const [
+    ChatHistoryEntity(
+      title: 'أفضل كليات الهندسة الخاصة',
+      lastMessage:
+          '%, أرشح لك الجامعة البريطانية أو85بناءً على مجموعك الألمانية. ميزانيتك تتوافق تماماً مع متطلباتهم الحالية.',
+      timeLabel: '10:30 ص',
+      imagePath: Assets.imagesFaheemRobot,
+    ),
+    ChatHistoryEntity(
+      title: 'خطوات التقديم للمنح',
+      lastMessage:
+          'لتقديم طلب الحصول على منحة تفوق، هتحتاج تجهز شهادة الثانوية العامة، صورة البطاقة، وشهادات إثبات التفوق الرياضي.',
+      timeLabel: '08:15 ص',
+      imagePath: Assets.imagesFaheemRobot,
+    ),
+  ];
+}
+
+List<ChatHistoryEntity> getDummyThisWeekChats() {
+  return const [
+    ChatHistoryEntity(
+      title: 'الفرق بين حاسبات وذكاء اصطناعي',
+      lastMessage:
+          'الفرق الأساسي يكمن في التركيز. حاسبات بتركز بشكل عام على هندسة البرمجيات والنظم، بينما الذكاء الاصطناعي يتخصص في',
+      timeLabel: 'الإثنين',
+      imagePath: Assets.imagesFaheemRobot,
+    ),
+    ChatHistoryEntity(
+      title: '2024مصاريف جامعة الجلالة',
+      lastMessage:
+          'ألف120مصاريف كلية الطب في جامعة الجلالة للعام الجديد هي جنيه مقسمة على قسطين، ويمكن تقسيطها من خلال بنوك.',
+      timeLabel: 'الأحد',
+      imagePath: Assets.imagesFaheemRobot,
+    ),
   ];
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/features/browse/presentation/views/browse_view.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_chat_view.dart';
+import 'package:uni/features/faheem/presentation/views/faheem_history_view.dart';
 import 'package:uni/features/fav/presentation/views/fav_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_podcasts_view.dart';
@@ -50,6 +51,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const NotificationsView());
     case FaheemChatView.routeName:
       return MaterialPageRoute(builder: (context) => const FaheemChatView());
+    case FaheemHistoryView.routeName:
+      return MaterialPageRoute(builder: (context) => const FaheemHistoryView());
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());
   }

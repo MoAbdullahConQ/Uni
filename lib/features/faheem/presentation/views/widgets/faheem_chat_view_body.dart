@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
+import 'package:uni/features/faheem/presentation/views/faheem_history_view.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/chat_input_bar.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/chat_messages_list.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/faheem_chat_app_bar.dart';
@@ -24,7 +24,8 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
   @override
   void initState() {
     super.initState();
-    messages = List.from(getDummyChatMessages());
+    // messages = List.from(getDummyChatMessages());
+    messages = [];
   }
 
   bool get _hasMessages => messages.isNotEmpty;
@@ -69,7 +70,7 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
           FaheemChatAppBar(
             showTitle: false,
             onHistoryTap: () {
-              print('history tapped!');
+              Navigator.pushNamed(context, FaheemHistoryView.routeName);
             },
           ),
 
