@@ -290,7 +290,7 @@ List<ChatHistoryEntity> getDummyThisWeekChats() {
 UniDetailEntity getDummyUniDetailEntity() {
   return const UniDetailEntity(
     name: 'جامعة المنوفية',
-    type: 'جامعة حكومية',
+    type: 'حكومية',
     address: 'شارع جمال عبد الناصر، مدينة شبين الكوم، محافظة المنوفية',
     heroImagePath: Assets.imagesUniPic,
     logoImagePath: Assets.imagesZagIcon,
