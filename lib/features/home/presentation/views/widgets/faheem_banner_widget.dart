@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/faheem/presentation/views/faheem_chat_view.dart';
 import 'package:uni/features/home/presentation/views/widgets/glowing_action_button.dart';
 import 'package:uni/features/home/presentation/views/widgets/top_tag.dart';
 
@@ -11,65 +12,73 @@ class FaheemBannerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.lightPrimaryColor.withOpacity(0.4),
-            blurRadius: 25,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Right side: Text and Button
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top Tag
-                const TopTag(),
-                const SizedBox(height: 5),
+    return InkWell(
+      borderRadius: BorderRadius.circular(24),
+      overlayColor: WidgetStatePropertyAll(Colors.white.withOpacity(0.18)),
 
-                // Headline
-                Text(
-                  'محتار تختار كليتك؟',
-                  style: TextStyles.bold24.copyWith(
-                    color: AppColors.secondaryColor,
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 5),
-
-                // Subtitle
-                Text(
-                  'فهيم هيقارن بين الجامعات ويقترحلك الأفضل لمجموعك.',
-                  style: TextStyles.regular14.copyWith(
-                    height: 1.43,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                // Glowing Action Button
-                const GlowingActionButton(),
-              ],
+      onTap: () {
+        Navigator.pushNamed(context, FaheemChatView.routeName);
+      },
+      child: Ink(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.lightPrimaryColor.withOpacity(0.4),
+              blurRadius: 25,
+              offset: const Offset(0, 5),
             ),
-          ),
-          const SizedBox(width: 12),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Right side: Text and Button
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Top Tag
+                  const TopTag(),
+                  const SizedBox(height: 5),
 
-          // Left side: Illustration
-          SvgPicture.asset(
-            Assets.imagesFaheemRobot,
-            height: 130,
-            fit: BoxFit.contain,
-          ),
-        ],
+                  // Headline
+                  Text(
+                    'محتار تختار كليتك؟',
+                    style: TextStyles.bold24.copyWith(
+                      color: AppColors.secondaryColor,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+
+                  // Subtitle
+                  Text(
+                    'فهيم هيقارن بين الجامعات ويقترحلك الأفضل لمجموعك.',
+                    style: TextStyles.regular14.copyWith(
+                      height: 1.43,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Glowing Action Button
+                  const GlowingActionButton(),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Left side: Illustration
+            SvgPicture.asset(
+              Assets.imagesFaheemRobot,
+              height: 130,
+              fit: BoxFit.contain,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/faheem/presentation/views/faheem_chat_view.dart';
 
 class GlowingActionButton extends StatelessWidget {
   const GlowingActionButton({super.key});
@@ -11,7 +12,7 @@ class GlowingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        // TODO: Trigger chat session
+        Navigator.pushNamed(context, FaheemChatView.routeName);
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.secondaryColor,

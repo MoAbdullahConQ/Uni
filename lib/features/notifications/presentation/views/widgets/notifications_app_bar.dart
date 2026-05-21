@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/back_button.dart';
 
 class NotificationsAppBar extends StatelessWidget {
   const NotificationsAppBar({super.key});
@@ -10,18 +11,7 @@ class NotificationsAppBar extends StatelessWidget {
     return Row(
       children: [
         // Back button
-        InkWell(
-          customBorder: const CircleBorder(),
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
-          ),
-        ),
+        const CustomBackButton(),
 
         const SizedBox(width: 16),
 
