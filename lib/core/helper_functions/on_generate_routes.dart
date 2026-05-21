@@ -16,6 +16,7 @@ import 'package:uni/features/profile/presentation/views/personal_data_view.dart'
 import 'package:uni/features/profile/presentation/views/profile_view.dart';
 import 'package:uni/features/profile/presentation/views/security_view.dart';
 import 'package:uni/features/splash/presentation/views/splash_view.dart';
+import 'package:uni/features/uni_detail/presentation/views/uni_detail_view.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -53,6 +54,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const FaheemChatView());
     case FaheemHistoryView.routeName:
       return MaterialPageRoute(builder: (context) => const FaheemHistoryView());
+    case UniDetailView.routeName:
+      return MaterialPageRoute(builder: (context) => const UniDetailView());
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());
   }
