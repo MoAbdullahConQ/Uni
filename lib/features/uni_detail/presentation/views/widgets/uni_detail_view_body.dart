@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_alumni_tab.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_bottom_bar.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_hero_image.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_info_header.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_tab_bar.dart';
@@ -83,6 +84,9 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
             ),
           ),
         ),
+
+        // Bottom action bar
+        const UniDetailBottomBar(),
       ],
     );
   }
