@@ -40,7 +40,6 @@ class UniAlumniTab extends StatelessWidget {
           photoPaths: campusPhotoPaths,
           totalCount: campusPhotoPaths.length,
         ),
-        const SizedBox(height: 32),
       ],
     );
   }

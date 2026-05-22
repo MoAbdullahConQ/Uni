@@ -61,12 +61,14 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
                       ),
                     ),
                     const SizedBox(height: 16),
-
-                    // Tab bar
-                    UniDetailTabBar(tabController: tabController),
-                    const Divider(height: 1),
                   ],
                 ),
+              ),
+
+              // Tab bar
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _StickyTabBarDelegate(tabController: tabController),
               ),
             ],
             body: TabBarView(
@@ -90,4 +92,37 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
       ],
     );
   }
+}
+
+class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabController tabController;
+  const _StickyTabBarDelegate({required this.tabController});
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          UniDetailTabBar(tabController: tabController),
+          const Divider(height: 1),
+        ],
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 49;
+
+  @override
+  double get minExtent => 49;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }
