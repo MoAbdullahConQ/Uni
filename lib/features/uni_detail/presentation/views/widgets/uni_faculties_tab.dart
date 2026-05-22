@@ -10,6 +10,7 @@ class UniFacultiesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      key: const PageStorageKey('faculties'),
       padding: const EdgeInsets.all(16),
       itemCount: uniFacultyEntities.length,
       separatorBuilder: (_, __) => const SizedBox(height: 12),

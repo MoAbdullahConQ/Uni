@@ -17,33 +17,31 @@ class UniAlumniTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ListView(
+      key: const PageStorageKey('alumni'),
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Success stories
-          Text(
-            'قصص نجاح ⭐',
-            style: TextStyles.bold18.copyWith(color: AppColors.primaryColor),
-          ),
-          const SizedBox(height: 12),
-          ...uniAlumniEntities.map((uniAlumniEntity) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: UniAlumniCard(uniAlumniEntity: uniAlumniEntity),
-            );
-          }),
-          const SizedBox(height: 10),
+      children: [
+        // Success stories
+        Text(
+          'قصص نجاح ⭐',
+          style: TextStyles.bold18.copyWith(color: AppColors.primaryColor),
+        ),
+        const SizedBox(height: 12),
+        ...uniAlumniEntities.map((uniAlumniEntity) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: UniAlumniCard(uniAlumniEntity: uniAlumniEntity),
+          );
+        }),
+        const SizedBox(height: 10),
 
-          // Campus photos
-          CampusPhotosGrid(
-            photoPaths: campusPhotoPaths,
-            totalCount: campusPhotoPaths.length,
-          ),
-          const SizedBox(height: 32),
-        ],
-      ),
+        // Campus photos
+        CampusPhotosGrid(
+          photoPaths: campusPhotoPaths,
+          totalCount: campusPhotoPaths.length,
+        ),
+        const SizedBox(height: 32),
+      ],
     );
   }
 }
