@@ -3,7 +3,7 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_podcast_card.dart';
 
 class GuidePodcastsViewBody extends StatelessWidget {
@@ -20,7 +20,7 @@ class GuidePodcastsViewBody extends StatelessWidget {
           children: [
             const SizedBox(height: 28),
 
-            GuideSectionHeader(
+            SectionHeaderItem(
               title: 'استمع وتعلّم',
               titleStyle: TextStyles.bold18.copyWith(
                 color: AppColors.primaryColor,

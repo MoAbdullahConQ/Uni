@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/core/widgets/section_header_item.dart';
 
 class CampusPhotosGrid extends StatelessWidget {
   const CampusPhotosGrid({
@@ -18,7 +18,7 @@ class CampusPhotosGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        GuideSectionHeader(
+        SectionHeaderItem(
           title: 'الحياة الجامعية 📸',
           titleStyle: TextStyles.bold18.copyWith(color: AppColors.primaryColor),
           subTitle: 'عرض الكل ($totalCount)',

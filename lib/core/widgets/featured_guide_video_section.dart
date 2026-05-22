@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/getDummyEntities.dart';
-import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/core/widgets/guide_video_card.dart';
 
 class FeaturedGuideVideoSection extends StatelessWidget {
@@ -20,7 +20,7 @@ class FeaturedGuideVideoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GuideSectionHeader(
+        SectionHeaderItem(
           title: title,
           titleStyle: titleStyle,
           onTap: onTap,

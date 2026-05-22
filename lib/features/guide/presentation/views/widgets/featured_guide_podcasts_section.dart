@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/features/guide/presentation/views/guide_podcasts_view.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_podcast_card.dart';
 
@@ -15,7 +15,7 @@ class FeaturedGuidePodcastsSection extends StatelessWidget {
 
     return Column(
       children: [
-        GuideSectionHeader(
+        SectionHeaderItem(
           title: 'استمع وتعلّم',
           titleStyle: TextStyles.regular18.copyWith(
             color: AppColors.primaryColor,

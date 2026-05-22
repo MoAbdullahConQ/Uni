@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class GuideSectionHeader extends StatelessWidget {
-  const GuideSectionHeader({
+class SectionHeaderItem extends StatelessWidget {
+  const SectionHeaderItem({
     super.key,
     required this.title,
     this.onTap,

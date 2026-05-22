@@ -4,7 +4,7 @@ import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/featured_guide_video_section.dart';
-import 'package:uni/core/widgets/guide_section_header.dart';
+import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
@@ -65,7 +65,7 @@ class GuideViewBody extends StatelessWidget {
                   const SizedBox(height: 28),
 
                   // ── Articles section ──
-                  GuideSectionHeader(
+                  SectionHeaderItem(
                     title: 'أحدث المقالات 📝',
                     titleStyle: TextStyles.regular18.copyWith(
                       color: AppColors.primaryColor,
