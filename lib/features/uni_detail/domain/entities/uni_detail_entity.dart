@@ -12,7 +12,7 @@ class UniDetailEntity {
   final int foundedYear;
   final String worldRanking;
   final List<UniFacultyEntity> uniFacultyEntities;
-  final List<UniAlumniEntity> alumni;
+  final List<UniAlumniEntity> uniAlumniEntities;
   final List<String> campusPhotoPaths;
 
   const UniDetailEntity({
@@ -26,7 +26,7 @@ class UniDetailEntity {
     required this.foundedYear,
     required this.worldRanking,
     required this.uniFacultyEntities,
-    required this.alumni,
+    required this.uniAlumniEntities,
     required this.campusPhotoPaths,
   });
 }

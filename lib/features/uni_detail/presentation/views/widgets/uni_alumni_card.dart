@@ -4,9 +4,9 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_alumni_entity.dart';
 
 class UniAlumniCard extends StatelessWidget {
-  const UniAlumniCard({super.key, required this.uniDetailEntity});
+  const UniAlumniCard({super.key, required this.uniAlumniEntity});
 
-  final UniAlumniEntity uniDetailEntity;
+  final UniAlumniEntity uniAlumniEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class UniAlumniCard extends StatelessWidget {
             children: [
               ClipOval(
                 child: Image.asset(
-                  uniDetailEntity.imagePath,
+                  uniAlumniEntity.imagePath,
                   width: 60,
                   height: 60,
                   fit: BoxFit.cover,
@@ -46,7 +46,7 @@ class UniAlumniCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  uniDetailEntity.graduationYear,
+                  uniAlumniEntity.graduationYear,
                   style: TextStyles.semiBold11.copyWith(
                     color: AppColors.primaryColor,
                   ),
@@ -63,14 +63,14 @@ class UniAlumniCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  uniDetailEntity.name,
+                  uniAlumniEntity.name,
                   style: TextStyles.bold16.copyWith(
                     color: AppColors.primaryColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  uniDetailEntity.description,
+                  uniAlumniEntity.description,
                   style: TextStyles.regular13.copyWith(
                     color: AppColors.subtitleColor,
                     height: 1.33,

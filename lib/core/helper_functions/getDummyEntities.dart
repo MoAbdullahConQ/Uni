@@ -336,7 +336,7 @@ UniDetailEntity getDummyUniDetailEntity() {
         requirements: ['شهادة الثانوية العامة'],
       ),
     ],
-    alumni: [
+    uniAlumniEntities: [
       UniAlumniEntity(
         name: 'د. عادل مبارك',
         description:
