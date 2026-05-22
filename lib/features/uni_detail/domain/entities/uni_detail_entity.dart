@@ -13,6 +13,7 @@ class UniDetailEntity {
   final String worldRanking;
   final List<UniFacultyEntity> uniFacultyEntities;
   final List<UniAlumniEntity> alumni;
+  final List<String> campusPhotoPaths;
 
   const UniDetailEntity({
     required this.name,
@@ -26,5 +27,6 @@ class UniDetailEntity {
     required this.worldRanking,
     required this.uniFacultyEntities,
     required this.alumni,
+    required this.campusPhotoPaths,
   });
 }

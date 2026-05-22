@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photos_grid.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_alumni_card.dart';
 
 class UniAlumniTab extends StatelessWidget {
@@ -28,7 +29,14 @@ class UniAlumniTab extends StatelessWidget {
               child: UniAlumniCard(uniDetailEntity: alumni),
             );
           }),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
+
+          // Campus photos
+          CampusPhotosGrid(
+            photoPaths: uniDetailEntity.campusPhotoPaths,
+            totalCount: uniDetailEntity.campusPhotoPaths.length,
+          ),
+          const SizedBox(height: 32),
         ],
       ),
     );

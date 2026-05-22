@@ -352,5 +352,12 @@ UniDetailEntity getDummyUniDetailEntity() {
         graduationYear: 'دفعة 1987',
       ),
     ],
+    campusPhotoPaths: [
+      Assets.imagesUniPic,
+      Assets.imagesUniPic,
+      Assets.imagesUniPic,
+      Assets.imagesUniPic,
+      Assets.imagesUniPic,
+    ],
   );
 }
