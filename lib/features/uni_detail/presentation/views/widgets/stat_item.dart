@@ -25,31 +25,29 @@ class StatItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
       ),
-      child: Expanded(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.secondaryColor.withOpacity(.5),
-              ),
-              child: Icon(icon, size: 20, color: AppColors.primaryColor),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: AppColors.secondaryColor.withOpacity(.5),
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyles.regular12.copyWith(
-                color: AppColors.subtitleColor,
-              ),
+            child: Icon(icon, size: 20, color: AppColors.primaryColor),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyles.regular12.copyWith(
+              color: AppColors.subtitleColor,
             ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
+          ),
+        ],
       ),
     );
   }
