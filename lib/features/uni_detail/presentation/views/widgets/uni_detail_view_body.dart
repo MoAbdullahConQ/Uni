@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/uni_alumni_tab.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_hero_image.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_info_header.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_tab_bar.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_faculties_tab.dart';
 
 class UniDetailViewBody extends StatefulWidget {
   const UniDetailViewBody({super.key});
@@ -66,9 +66,7 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
                 ),
               ),
             ],
-            body: UniFacultiesTab(
-              uniFacultyEntities: uniDetailEntity.uniFacultyEntities,
-            ),
+            body: UniAlumniTab(uniDetailEntity: uniDetailEntity),
           ),
         ),
       ],

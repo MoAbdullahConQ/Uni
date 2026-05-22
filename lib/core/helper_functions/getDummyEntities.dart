@@ -8,6 +8,7 @@ import 'package:uni/features/faheem/domain/entities/suggestion_item_entity.dart'
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
+import 'package:uni/features/uni_detail/domain/entities/uni_alumni_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_faculty_entity.dart';
 
@@ -333,6 +334,22 @@ UniDetailEntity getDummyUniDetailEntity() {
         minFees: '120,000 EGP',
         minGrade: 65,
         requirements: ['شهادة الثانوية العامة'],
+      ),
+    ],
+    alumni: [
+      UniAlumniEntity(
+        name: 'د. عادل مبارك',
+        description:
+            'رئيس جامعة المنوفية الأسبق، وأستاذ علم النفس التربوي، وصاحب إسهامات بارزة في تطوير البنية التحتية والتعليمية للجامعة',
+        imagePath: Assets.imagesUniPic,
+        graduationYear: 'دفعة 1981',
+      ),
+      UniAlumniEntity(
+        name: 'د. أحمد القاصد',
+        description:
+            'رئيس جامعة المنوفية الحالي، وأستاذ جراحة الأورام البارز، وقامة طبية وأكاديمية قدمت الكثير للقطاع الطبي بالدلتا',
+        imagePath: Assets.imagesUniPic,
+        graduationYear: 'دفعة 1987',
       ),
     ],
   );

@@ -1,3 +1,4 @@
+import 'package:uni/features/uni_detail/domain/entities/uni_alumni_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_faculty_entity.dart';
 
 class UniDetailEntity {
@@ -11,6 +12,7 @@ class UniDetailEntity {
   final int foundedYear;
   final String worldRanking;
   final List<UniFacultyEntity> uniFacultyEntities;
+  final List<UniAlumniEntity> alumni;
 
   const UniDetailEntity({
     required this.name,
@@ -23,5 +25,6 @@ class UniDetailEntity {
     required this.foundedYear,
     required this.worldRanking,
     required this.uniFacultyEntities,
+    required this.alumni,
   });
 }
