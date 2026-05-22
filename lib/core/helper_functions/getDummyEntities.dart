@@ -9,6 +9,7 @@ import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
+import 'package:uni/features/uni_detail/domain/entities/uni_faculty_entity.dart';
 
 List<GuideVideoEntity> getDummyGuideVideoEntities() {
   return const [
@@ -299,5 +300,40 @@ UniDetailEntity getDummyUniDetailEntity() {
     studentsCount: 80000,
     foundedYear: 1976,
     worldRanking: '1201 - 1400',
+    uniFacultyEntities: [
+      UniFacultyEntity(
+        name: 'كلية الهندسة',
+        icon: Icons.settings_outlined,
+        minFees: '180,000 EGP',
+        minGrade: 70,
+        requirements: [
+          'شهادة الثانوية العامة (شعبة علمي رياضة)',
+          'اجتياز اختبار اللغة الإنجليزية (IELTS/TOEFL)',
+          'كيلو كباب مشوي (معرفتش اكتب اي هنا)',
+        ],
+        isExpanded: true,
+      ),
+      UniFacultyEntity(
+        name: 'كلية إدارة الأعمال',
+        icon: Icons.work_outline_rounded,
+        minFees: '140,000 EGP',
+        minGrade: 70,
+        requirements: ['شهادة الثانوية العامة', 'اجتياز اختبار القدرات'],
+      ),
+      UniFacultyEntity(
+        name: 'كلية الصيدلة',
+        icon: Icons.science_outlined,
+        minFees: '165,000 EGP',
+        minGrade: 70,
+        requirements: ['شهادة الثانوية العامة (شعبة علمي علوم)'],
+      ),
+      UniFacultyEntity(
+        name: 'كلية الحاسبات والمعلومات',
+        icon: Icons.computer_outlined,
+        minFees: '120,000 EGP',
+        minGrade: 65,
+        requirements: ['شهادة الثانوية العامة'],
+      ),
+    ],
   );
 }
