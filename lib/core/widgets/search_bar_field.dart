@@ -23,6 +23,7 @@ class SearchBarField extends StatelessWidget {
     this.borderColor,
     this.fillColor = Colors.white,
     this.shadow,
+    this.onTap,
   });
 
   final String hintText;
@@ -34,6 +35,7 @@ class SearchBarField extends StatelessWidget {
   final Widget? trailing;
   final bool showBackButton;
   final VoidCallback? onBackPressed;
+  final void Function()? onTap;
 
   // ── Style ──
   final double height;
@@ -67,6 +69,8 @@ class SearchBarField extends StatelessWidget {
         ],
       ),
       child: TextField(
+        readOnly: onTap != null,
+        onTap: onTap,
         controller: controller,
         onChanged: onChanged,
         decoration: InputDecoration(
@@ -109,7 +113,7 @@ class SearchBarField extends StatelessWidget {
             onPressed: onBackPressed ?? () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
           ),
-        Expanded(child: field), 
+        Expanded(child: field),
         if (trailing != null) trailing!,
       ],
     );

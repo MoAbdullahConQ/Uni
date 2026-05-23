@@ -7,6 +7,7 @@ import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 import 'package:uni/core/widgets/uni_list_widget.dart';
+import 'package:uni/features/search/presentation/views/search_view.dart';
 
 class BrowseViewBody extends StatefulWidget {
   const BrowseViewBody({super.key});
@@ -43,6 +44,9 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
               hintText: 'اكتب اسم الجامعه',
               showBackButton: true,
               height: 50,
+              onTap: () {
+                Navigator.pushNamed(context, SearchView.routeName);
+              },
               trailing: Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: FilterButtonBadge(
