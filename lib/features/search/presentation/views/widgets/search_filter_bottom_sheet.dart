@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
 import 'package:uni/features/search/presentation/views/widgets/fees_range_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/results_btn_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/specialties_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/uni_Types_search_filter_bottom_sheet.dart';
 
-class SearchFilterBottomSheet extends StatelessWidget {
-  const SearchFilterBottomSheet({super.key});
+class SearchFilterBottomSheet extends StatefulWidget {
+  const SearchFilterBottomSheet({super.key, required this.initialSearchFilterEntity});
+
+  final SearchFilterEntity initialSearchFilterEntity;
 
   static const List<String> specialties = [
     'هندسة',
@@ -18,6 +21,22 @@ class SearchFilterBottomSheet extends StatelessWidget {
   ];
 
   static const List<String> types = ['حكومية', 'خاصة', 'معاهد عليا'];
+
+  @override
+  State<SearchFilterBottomSheet> createState() =>
+      _SearchFilterBottomSheetState();
+}
+
+class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
+  late SearchFilterEntity searchFilterEntity;
+  late RangeValues feesRange;
+
+  @override
+  void initState() {
+    super.initState();
+    searchFilterEntity = widget.initialSearchFilterEntity;
+    feesRange = RangeValues(searchFilterEntity.minFees, searchFilterEntity.maxFees);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +51,14 @@ class SearchFilterBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          HeaderSearchFilterBottomSheet(resetOnTap: () {}),
+          HeaderSearchFilterBottomSheet(
+            resetOnTap: () {
+              setState(() {
+                searchFilterEntity = const SearchFilterEntity();
+                feesRange = const RangeValues(10000, 250000);
+              });
+            },
+          ),
           const SizedBox(height: 24),
 
           // Fees Range
@@ -41,7 +67,7 @@ class SearchFilterBottomSheet extends StatelessWidget {
 
           // Specialties
           SpecialtiesSearchFilterBottomSheet(
-            specialties: specialties,
+            specialties: SearchFilterBottomSheet.specialties,
             isSelected: true,
             onTap: () {},
           ),
@@ -51,7 +77,7 @@ class SearchFilterBottomSheet extends StatelessWidget {
           UniTypesSearchFilterBottomSheet(
             isSelected: false,
             onTap: () {},
-            types: types,
+            types: SearchFilterBottomSheet.types,
           ),
           const SizedBox(height: 20),
 

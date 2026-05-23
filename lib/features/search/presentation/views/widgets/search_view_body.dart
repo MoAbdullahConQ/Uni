@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
+import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_filter_bottom_sheet.dart';
 
 class SearchViewBody extends StatefulWidget {
@@ -12,8 +13,8 @@ class SearchViewBody extends StatefulWidget {
 }
 
 class _SearchViewBodyState extends State<SearchViewBody> {
-  
   final TextEditingController controller = TextEditingController();
+  SearchFilterEntity searchFilterEntity = const SearchFilterEntity();
 
   void showFilterSheet() {
     showModalBottomSheet(
@@ -24,7 +25,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: const SearchFilterBottomSheet(),
+        child: SearchFilterBottomSheet(initialSearchFilterEntity: searchFilterEntity),
       ),
     );
   }
