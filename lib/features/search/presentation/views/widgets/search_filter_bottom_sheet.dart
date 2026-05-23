@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:uni/features/search/presentation/views/widgets/fees_range_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
+import 'package:uni/features/search/presentation/views/widgets/specialties_search_filter_bottom_sheet.dart';
 
 class SearchFilterBottomSheet extends StatelessWidget {
   const SearchFilterBottomSheet({super.key});
+
+  static const List<String> specialties = [
+    'هندسة',
+    'أرخص كليات هندسة؟',
+    'طب بشري',
+    'صيدلة',
+    'إدارة أعمال',
+    'فنون تطبيقية',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +33,14 @@ class SearchFilterBottomSheet extends StatelessWidget {
 
           // Fees Range
           const FeesRangeSearchFilterBottomSheet(),
+          const SizedBox(height: 20),
+
+          // Specialties
+          SpecialtiesSearchFilterBottomSheet(
+            specialties: specialties,
+            isSelected: true,
+            onTap: () {},
+          ),
           const SizedBox(height: 20),
         ],
       ),
