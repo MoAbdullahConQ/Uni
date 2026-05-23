@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/features/search/presentation/views/widgets/fees_range_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
+import 'package:uni/features/search/presentation/views/widgets/results_btn_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/specialties_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/uni_Types_search_filter_bottom_sheet.dart';
 
@@ -53,6 +54,9 @@ class SearchFilterBottomSheet extends StatelessWidget {
             types: types,
           ),
           const SizedBox(height: 20),
+
+          // Apply button + expected results
+          ResultsBtnSearchFilterBottomSheet(onPressed: () {}),
         ],
       ),
     );
