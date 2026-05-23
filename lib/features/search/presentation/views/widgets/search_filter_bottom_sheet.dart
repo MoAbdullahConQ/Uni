@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/features/search/presentation/views/widgets/fees_range_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/specialties_search_filter_bottom_sheet.dart';
+import 'package:uni/features/search/presentation/views/widgets/uni_Types_search_filter_bottom_sheet.dart';
 
 class SearchFilterBottomSheet extends StatelessWidget {
   const SearchFilterBottomSheet({super.key});
@@ -14,6 +15,8 @@ class SearchFilterBottomSheet extends StatelessWidget {
     'إدارة أعمال',
     'فنون تطبيقية',
   ];
+
+  static const List<String> types = ['حكومية', 'خاصة', 'معاهد عليا'];
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,14 @@ class SearchFilterBottomSheet extends StatelessWidget {
             specialties: specialties,
             isSelected: true,
             onTap: () {},
+          ),
+          const SizedBox(height: 20),
+
+          // Uni types
+          UniTypesSearchFilterBottomSheet(
+            isSelected: false,
+            onTap: () {},
+            types: types,
           ),
           const SizedBox(height: 20),
         ],
