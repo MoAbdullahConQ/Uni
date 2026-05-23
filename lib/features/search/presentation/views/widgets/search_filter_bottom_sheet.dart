@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:uni/features/search/presentation/views/widgets/fees_range_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
 
 class SearchFilterBottomSheet extends StatelessWidget {
   const SearchFilterBottomSheet({super.key});
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,6 +20,10 @@ class SearchFilterBottomSheet extends StatelessWidget {
           // Header
           HeaderSearchFilterBottomSheet(resetOnTap: () {}),
           const SizedBox(height: 24),
+
+          // Fees Range
+          const FeesRangeSearchFilterBottomSheet(),
+          const SizedBox(height: 20),
         ],
       ),
     );
