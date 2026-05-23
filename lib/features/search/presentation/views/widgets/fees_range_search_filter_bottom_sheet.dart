@@ -3,7 +3,14 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
 class FeesRangeSearchFilterBottomSheet extends StatelessWidget {
-  const FeesRangeSearchFilterBottomSheet({super.key});
+  const FeesRangeSearchFilterBottomSheet({
+    super.key,
+    required this.feesRange,
+    this.onChanged,
+  });
+
+  final RangeValues feesRange;
+  final void Function(RangeValues)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +24,7 @@ class FeesRangeSearchFilterBottomSheet extends StatelessWidget {
               style: TextStyles.bold18.copyWith(color: AppColors.primaryColor),
             ),
             Text(
-              'EGP 250k - 10k',
+              'EGP ${(feesRange.end / 1000).toStringAsFixed(0)}k - ${(feesRange.start / 1000).toStringAsFixed(0)}k',
               style: TextStyles.semiBold13.copyWith(
                 color: AppColors.primaryColor.withOpacity(.6),
               ),
@@ -43,10 +50,10 @@ class FeesRangeSearchFilterBottomSheet extends StatelessWidget {
               right: 8,
               top: 16,
             ),
-            values: const RangeValues(0, 500000),
+            values: feesRange,
             min: 0,
             max: 500000,
-            onChanged: (v) {},
+            onChanged: onChanged,
           ),
         ),
         Padding(

@@ -7,7 +7,10 @@ import 'package:uni/features/search/presentation/views/widgets/specialties_searc
 import 'package:uni/features/search/presentation/views/widgets/uni_Types_search_filter_bottom_sheet.dart';
 
 class SearchFilterBottomSheet extends StatefulWidget {
-  const SearchFilterBottomSheet({super.key, required this.initialSearchFilterEntity});
+  const SearchFilterBottomSheet({
+    super.key,
+    required this.initialSearchFilterEntity,
+  });
 
   final SearchFilterEntity initialSearchFilterEntity;
 
@@ -35,7 +38,10 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
   void initState() {
     super.initState();
     searchFilterEntity = widget.initialSearchFilterEntity;
-    feesRange = RangeValues(searchFilterEntity.minFees, searchFilterEntity.maxFees);
+    feesRange = RangeValues(
+      searchFilterEntity.minFees,
+      searchFilterEntity.maxFees,
+    );
   }
 
   @override
@@ -62,7 +68,14 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           const SizedBox(height: 24),
 
           // Fees Range
-          const FeesRangeSearchFilterBottomSheet(),
+          FeesRangeSearchFilterBottomSheet(
+            feesRange: feesRange,
+            onChanged: (value) {
+              setState(() {
+                feesRange = value;
+              });
+            },
+          ),
           const SizedBox(height: 20),
 
           // Specialties
