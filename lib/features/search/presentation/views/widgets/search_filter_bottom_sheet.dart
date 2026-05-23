@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni/features/search/presentation/views/widgets/HeaderSearchFilterBottomSheet.dart';
+import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
 
 class SearchFilterBottomSheet extends StatelessWidget {
   const SearchFilterBottomSheet({super.key});
