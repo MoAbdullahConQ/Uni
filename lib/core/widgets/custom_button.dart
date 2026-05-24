@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/core/utils/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -7,12 +8,15 @@ class CustomButton extends StatelessWidget {
     required this.text,
     this.backgroundColor,
     this.style,
+    this.borderColor,
+    this.prefixIcon,
   });
 
   final VoidCallback onPressed;
   final String text;
-  final Color? backgroundColor;
+  final Color? backgroundColor, borderColor;
   final TextStyle? style;
+  final Widget? prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +26,23 @@ class CustomButton extends StatelessWidget {
       child: TextButton(
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: borderColor ?? AppColors.borderColor,
+              width: 1.2,
+            ),
             borderRadius: BorderRadius.circular(16),
           ),
 
           backgroundColor: backgroundColor,
         ),
         onPressed: onPressed,
-        child: Text(text, style: style),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (prefixIcon != null) prefixIcon!,
+            Text(text, style: style),
+          ],
+        ),
       ),
     );
   }

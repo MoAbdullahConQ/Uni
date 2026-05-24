@@ -5,6 +5,7 @@ import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
+import 'package:uni/features/search/presentation/views/widgets/search_empty_widget.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_home_widget.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_results_widget.dart';
@@ -111,7 +112,15 @@ class _SearchViewBodyState extends State<SearchViewBody> {
                 results: results,
                 query: controller.text,
               ),
-              SearchState.empty => Text('empty'),
+              SearchState.empty => SearchEmptyWidget(
+                onClearFilters: () {
+                  setState(() {
+                    searchFilterEntity = const SearchFilterEntity();
+                    searchState = SearchState.home;
+                    controller.clear();
+                  });
+                },
+              ),
             },
           ),
         ],
