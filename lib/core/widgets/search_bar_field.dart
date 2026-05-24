@@ -24,6 +24,7 @@ class SearchBarField extends StatelessWidget {
     this.fillColor = Colors.white,
     this.shadow,
     this.onTap,
+    this.onClear,
   });
 
   final String hintText;
@@ -36,6 +37,7 @@ class SearchBarField extends StatelessWidget {
   final bool showBackButton;
   final VoidCallback? onBackPressed;
   final void Function()? onTap;
+  final VoidCallback? onClear;
 
   // ── Style ──
   final double height;
@@ -83,7 +85,16 @@ class SearchBarField extends StatelessWidget {
               ),
             ),
           ),
-          suffixIcon: suffixIcon,
+          suffixIcon: (controller?.text.isNotEmpty ?? false)
+              ? GestureDetector(
+                  onTap: onClear,
+                  child: const Icon(
+                    Icons.close_rounded,
+                    size: 18,
+                    color: AppColors.subtitleColor,
+                  ),
+                )
+              : suffixIcon,
           hintText: hintText,
           hintStyle:
               hintStyle ??

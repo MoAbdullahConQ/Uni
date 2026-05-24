@@ -57,6 +57,11 @@ class _SearchViewBodyState extends State<SearchViewBody> {
             controller: controller,
             hintText: 'ابحث عن جامعة، كلية، أو تخصص',
             showBackButton: true,
+            onChanged: (value) {},
+            onClear: (){
+              controller.clear();
+              setState(() {});
+            },
             trailing: Padding(
               padding: const EdgeInsets.only(right: 12),
               child: FilterButtonBadge(
