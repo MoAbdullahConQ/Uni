@@ -44,6 +44,16 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
     );
   }
 
+  void toggleSpecialty(String specialty) {
+    final list = List<String>.from(searchFilterEntity.selectedSpecialties);
+    list.contains(specialty) ? list.remove(specialty) : list.add(specialty);
+    setState(() {
+      searchFilterEntity = searchFilterEntity.copyWith(
+        selectedSpecialties: list,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -81,8 +91,11 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           // Specialties
           SpecialtiesSearchFilterBottomSheet(
             specialties: SearchFilterBottomSheet.specialties,
-            isSelected: true,
-            onTap: () {},
+            isSelected: (String s) =>
+                searchFilterEntity.selectedSpecialties.contains(s),
+            onTap: (String s) {
+              toggleSpecialty(s);
+            },
           ),
           const SizedBox(height: 20),
 

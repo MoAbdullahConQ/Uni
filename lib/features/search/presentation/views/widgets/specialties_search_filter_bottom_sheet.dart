@@ -12,8 +12,8 @@ class SpecialtiesSearchFilterBottomSheet extends StatelessWidget {
   });
 
   final List<String> specialties;
-  final bool isSelected;
-  final VoidCallback onTap;
+  final bool Function(String) isSelected;
+  final void Function(String) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +28,15 @@ class SpecialtiesSearchFilterBottomSheet extends StatelessWidget {
         Wrap(
           spacing: 10,
           runSpacing: 10,
-          children: specialties
-              .map(
-                (s) => FilterSpecialtyChip(
-                  label: s,
-                  isSelected: isSelected,
-                  onTap: onTap,
-                ),
-              )
-              .toList(),
+          children: specialties.map((s) {
+            return FilterSpecialtyChip(
+              label: s,
+              isSelected: isSelected(s),
+              onTap: () {
+                onTap(s);
+              },
+            );
+          }).toList(),
         ),
       ],
     );
