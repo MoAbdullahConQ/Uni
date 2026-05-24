@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/core/widgets/ask_faheem_button.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_view_body.dart';
 
 class SearchView extends StatelessWidget {
@@ -10,6 +11,10 @@ class SearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xFFF4FAE8),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 40),
+        child: AskFaheemButton(),
+      ),
       body: SafeArea(child: SearchViewBody()),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/core/widgets/ask_faheem_button.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_view_body.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_view_body.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
@@ -27,6 +28,9 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: currentIndex != 3
+          ? const AskFaheemButton()
+          : null,
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: currentIndex,
         onIndexChanged: (int index) {
