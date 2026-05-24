@@ -60,7 +60,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
             trailing: Padding(
               padding: const EdgeInsets.only(right: 12),
               child: FilterButtonBadge(
-                activeFiltersCount: 3,
+                activeFiltersCount: searchFilterEntity.activeFiltersCount,
                 onFilterTap: showFilterSheet,
               ),
             ),
