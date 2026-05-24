@@ -387,7 +387,7 @@ List<UniEntity> getDummySearchResults() {
       location: 'هضبة الجلالة',
       imagePath: Assets.imagesUniPic,
       // logoPath: Assets.imagesUniLogo,
-      type: 'أهلية',
+      type: 'خاصة',
       rating: 4.2,
       averageFees: '110k EGP',
     ),

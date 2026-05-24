@@ -7,6 +7,7 @@ import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_home_widget.dart';
+import 'package:uni/features/search/presentation/views/widgets/search_results_widget.dart';
 
 enum SearchState { home, results, empty }
 
@@ -106,7 +107,10 @@ class _SearchViewBodyState extends State<SearchViewBody> {
                 trendingSearches: getDummyTrendingSearches(),
                 onClearAll: () {},
               ),
-              SearchState.results => Text('results'),
+              SearchState.results => SearchResultsWidget(
+                results: results,
+                query: controller.text,
+              ),
               SearchState.empty => Text('empty'),
             },
           ),
