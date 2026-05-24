@@ -12,8 +12,8 @@ class UniTypesSearchFilterBottomSheet extends StatelessWidget {
   });
 
   final List<String> types;
-  final bool isSelected;
-  final VoidCallback onTap;
+  final bool Function(String) isSelected;
+  final void Function(String) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +36,10 @@ class UniTypesSearchFilterBottomSheet extends StatelessWidget {
               .map(
                 (t) => FilterTypeCheckbox(
                   label: t,
-                  isSelected: isSelected,
-                  onTap: onTap,
+                  isSelected: isSelected(t),
+                  onTap: () {
+                    onTap(t);
+                  },
                 ),
               )
               .toList(),

@@ -54,6 +54,14 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
     });
   }
 
+  void toggleType(String type) {
+    final list = List<String>.from(searchFilterEntity.selectedTypes);
+    list.contains(type) ? list.remove(type) : list.add(type);
+    setState(() {
+      searchFilterEntity = searchFilterEntity.copyWith(selectedTypes: list);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -101,8 +109,11 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
 
           // Uni types
           UniTypesSearchFilterBottomSheet(
-            isSelected: false,
-            onTap: () {},
+            isSelected: (String t) =>
+                searchFilterEntity.selectedTypes.contains(t),
+            onTap: (String t) {
+              toggleType(t);
+            },
             types: SearchFilterBottomSheet.types,
           ),
           const SizedBox(height: 20),
