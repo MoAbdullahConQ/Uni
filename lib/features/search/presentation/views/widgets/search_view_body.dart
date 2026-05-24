@@ -25,7 +25,14 @@ class _SearchViewBodyState extends State<SearchViewBody> {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: SearchFilterBottomSheet(initialSearchFilterEntity: searchFilterEntity),
+        child: SearchFilterBottomSheet(
+          initialSearchFilterEntity: searchFilterEntity,
+          onApply: (searchFilterEntity) {
+            setState(() {
+              this.searchFilterEntity = searchFilterEntity;
+            });
+          },
+        ),
       ),
     );
   }

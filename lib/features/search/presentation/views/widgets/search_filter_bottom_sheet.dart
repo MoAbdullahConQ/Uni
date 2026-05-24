@@ -10,9 +10,12 @@ class SearchFilterBottomSheet extends StatefulWidget {
   const SearchFilterBottomSheet({
     super.key,
     required this.initialSearchFilterEntity,
+    required this.onApply,
   });
 
   final SearchFilterEntity initialSearchFilterEntity;
+
+  final ValueChanged<SearchFilterEntity> onApply;
 
   static const List<String> specialties = [
     'هندسة',
@@ -119,7 +122,17 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           const SizedBox(height: 20),
 
           // Apply button + expected results
-          ResultsBtnSearchFilterBottomSheet(onPressed: () {}),
+          ResultsBtnSearchFilterBottomSheet(
+            onPressed: () {
+              widget.onApply(
+                searchFilterEntity.copyWith(
+                  minFees: feesRange.start,
+                  maxFees: feesRange.end,
+                ),
+              );
+              Navigator.pop(context);
+            },
+          ),
         ],
       ),
     );
