@@ -361,3 +361,54 @@ UniDetailEntity getDummyUniDetailEntity() {
     ],
   );
 }
+
+List<UniEntity> getDummySearchResults() {
+  return const [
+    UniEntity(
+      name: 'الجامعة البريطانية في مصر',
+      location: 'مدينة الشروق',
+      imagePath: Assets.imagesUniPic,
+      // logoPath: Assets.imagesUniLogo,
+      type: 'خاصة',
+      rating: 4.8,
+      averageFees: '180k EGP',
+    ),
+    UniEntity(
+      name: 'جامعة عين شمس',
+      location: 'العباسية، القاهرة',
+      imagePath: Assets.imagesUniPic,
+      // logoPath: Assets.imagesUniLogo,
+      type: 'حكومية',
+      rating: 4.5,
+      averageFees: '25k EGP',
+    ),
+    UniEntity(
+      name: 'جامعة الجلالة',
+      location: 'هضبة الجلالة',
+      imagePath: Assets.imagesUniPic,
+      // logoPath: Assets.imagesUniLogo,
+      type: 'أهلية',
+      rating: 4.2,
+      averageFees: '110k EGP',
+    ),
+  ];
+}
+
+List<String> getDummyRecentSearches() {
+  return [
+    'هندسة عين شمس',
+    'مصاريف الجامعة الألمانية',
+    'طب بشري',
+  ];
+}
+
+List<String> getDummyTrendingSearches() {
+  return [
+    'جامعة الجلالة',
+    'BUE',
+    'منح تفوق',
+    'ذكاء اصطناعي',
+    'جامعة النيل',
+    'فنون جميلة',
+  ];
+}
