@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/entities/uni_entity.dart';
+import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
 import 'package:uni/features/search/presentation/views/widgets/search_filter_bottom_sheet.dart';
+import 'package:uni/features/search/presentation/views/widgets/search_home_widget.dart';
+
+enum SearchState { home, results, empty }
 
 class SearchViewBody extends StatefulWidget {
   const SearchViewBody({super.key});
@@ -15,6 +20,26 @@ class SearchViewBody extends StatefulWidget {
 class _SearchViewBodyState extends State<SearchViewBody> {
   final TextEditingController controller = TextEditingController();
   SearchFilterEntity searchFilterEntity = const SearchFilterEntity();
+  SearchState searchState = SearchState.home;
+  List<UniEntity> results = [];
+
+  void onSearchChanged(String query) {
+    if (query.isEmpty) {
+      setState(() => searchState = SearchState.home);
+      return;
+    }
+
+    // TODO: replace with cubit search call
+    final allResults = getDummySearchResults();
+    final filtered = allResults
+        .where((e) => e.name.contains(query) || e.type.contains(query))
+        .toList();
+
+    setState(() {
+      results = filtered;
+      searchState = filtered.isEmpty ? SearchState.empty : SearchState.results;
+    });
+  }
 
   void showFilterSheet() {
     showModalBottomSheet(
@@ -57,10 +82,12 @@ class _SearchViewBodyState extends State<SearchViewBody> {
             controller: controller,
             hintText: 'ابحث عن جامعة، كلية، أو تخصص',
             showBackButton: true,
-            onChanged: (value) {},
-            onClear: (){
+            onChanged: onSearchChanged,
+            onClear: () {
               controller.clear();
-              setState(() {});
+              setState(() {
+                searchState = SearchState.home;
+              });
             },
             trailing: Padding(
               padding: const EdgeInsets.only(right: 12),
@@ -69,6 +96,19 @@ class _SearchViewBodyState extends State<SearchViewBody> {
                 onFilterTap: showFilterSheet,
               ),
             ),
+          ),
+
+          // Content
+          Expanded(
+            child: switch (searchState) {
+              SearchState.home => SearchHomeWidget(
+                recentSearches: getDummyRecentSearches(),
+                trendingSearches: getDummyTrendingSearches(),
+                onClearAll: () {},
+              ),
+              SearchState.results => Text('results'),
+              SearchState.empty => Text('empty'),
+            },
           ),
         ],
       ),
