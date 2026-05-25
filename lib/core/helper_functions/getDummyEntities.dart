@@ -98,7 +98,8 @@ List<UniEntity> getDummyUniEntities() {
       imagePath: Assets.imagesUniPic,
       type: 'خاصة',
       rating: 4.8,
-      averageFees: '180k EGP',
+      // averageFees: '180k EGP',
+      worldRanking: 350,
     ),
     UniEntity(
       name: 'جامعة عين شمس',
@@ -106,7 +107,8 @@ List<UniEntity> getDummyUniEntities() {
       imagePath: Assets.imagesUniPic,
       type: 'حكومية',
       rating: 4.5,
-      averageFees: '25k EGP',
+      // averageFees: '25k EGP',
+      worldRanking: 300,
     ),
     UniEntity(
       name: 'جامعة الجلالة',
@@ -114,7 +116,8 @@ List<UniEntity> getDummyUniEntities() {
       imagePath: Assets.imagesUniPic,
       type: 'معهد عالي',
       rating: 3.1,
-      averageFees: '110k EGP',
+      // averageFees: '110k EGP',
+      worldRanking: 300,
     ),
     UniEntity(
       name: 'جامعة عين شمس',
@@ -122,7 +125,8 @@ List<UniEntity> getDummyUniEntities() {
       imagePath: Assets.imagesUniPic,
       type: 'حكومية',
       rating: 4.5,
-      averageFees: '25k EGP',
+      // averageFees: '25k EGP',
+      worldRanking: 300,
     ),
     UniEntity(
       name: 'جامعة الجلالة',
@@ -130,7 +134,8 @@ List<UniEntity> getDummyUniEntities() {
       imagePath: Assets.imagesUniPic,
       type: 'معهد عالي',
       rating: 3.1,
-      averageFees: '110k EGP',
+      // averageFees: '110k EGP',
+      worldRanking: 300,
     ),
   ];
 }
@@ -371,7 +376,8 @@ List<UniEntity> getDummySearchResults() {
       // logoPath: Assets.imagesUniLogo,
       type: 'خاصة',
       rating: 4.8,
-      averageFees: '180k EGP',
+      // averageFees: '180k EGP',
+      worldRanking: 300,
     ),
     UniEntity(
       name: 'جامعة عين شمس',
@@ -380,7 +386,8 @@ List<UniEntity> getDummySearchResults() {
       // logoPath: Assets.imagesUniLogo,
       type: 'حكومية',
       rating: 4.5,
-      averageFees: '25k EGP',
+      // averageFees: '25k EGP',
+      worldRanking: 400,
     ),
     UniEntity(
       name: 'جامعة الجلالة',
@@ -389,17 +396,14 @@ List<UniEntity> getDummySearchResults() {
       // logoPath: Assets.imagesUniLogo,
       type: 'خاصة',
       rating: 4.2,
-      averageFees: '110k EGP',
+      // averageFees: '110k EGP',
+      worldRanking: 500,
     ),
   ];
 }
 
 List<String> getDummyRecentSearches() {
-  return [
-    'هندسة عين شمس',
-    'مصاريف الجامعة الألمانية',
-    'طب بشري',
-  ];
+  return ['هندسة عين شمس', 'مصاريف الجامعة الألمانية', 'طب بشري'];
 }
 
 List<String> getDummyTrendingSearches() {

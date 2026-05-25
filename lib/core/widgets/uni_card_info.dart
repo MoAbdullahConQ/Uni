@@ -61,13 +61,13 @@ class UniCardInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'متوسط المصاريف',
+                    'التصنيف العالمي',
                     style: TextStyles.regular11.copyWith(
                       color: AppColors.subtitleColor.withOpacity(0.8),
                     ),
                   ),
                   Text(
-                    selectedFilterUniEntity.averageFees,
+                    selectedFilterUniEntity.worldRanking.toString(),
                     style: TextStyles.bold14.copyWith(
                       color: AppColors.primaryColor,
                     ),

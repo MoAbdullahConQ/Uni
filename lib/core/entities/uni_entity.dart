@@ -4,7 +4,7 @@ class UniEntity {
   final String imagePath;
   final String type; // 'خاصة' | 'حكومية' | 'معهد عالي'
   final double rating;
-  final String averageFees;
+  final int worldRanking;
 
   const UniEntity({
     required this.name,
@@ -12,6 +12,6 @@ class UniEntity {
     required this.imagePath,
     required this.type,
     required this.rating,
-    required this.averageFees,
+    required this.worldRanking,
   });
 }
