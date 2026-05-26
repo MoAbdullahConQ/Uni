@@ -93,6 +93,7 @@ List<GuideArticleEntity> getDummyGuideArticleEntities() {
 List<UniEntity> getDummyUniEntities() {
   return const [
     UniEntity(
+      id: 1,
       name: 'الجامعة البريطانية في مصر',
       location: 'مدينة الشروق',
       imagePath: Assets.imagesUniPic,
@@ -102,6 +103,7 @@ List<UniEntity> getDummyUniEntities() {
       worldRanking: 350,
     ),
     UniEntity(
+      id: 2,
       name: 'جامعة عين شمس',
       location: 'العباسية، القاهرة',
       imagePath: Assets.imagesUniPic,
@@ -111,6 +113,7 @@ List<UniEntity> getDummyUniEntities() {
       worldRanking: 300,
     ),
     UniEntity(
+      id: 3,
       name: 'جامعة الجلالة',
       location: 'هضبة الجلالة',
       imagePath: Assets.imagesUniPic,
@@ -120,6 +123,7 @@ List<UniEntity> getDummyUniEntities() {
       worldRanking: 300,
     ),
     UniEntity(
+      id: 4,
       name: 'جامعة عين شمس',
       location: 'العباسية، القاهرة',
       imagePath: Assets.imagesUniPic,
@@ -129,6 +133,7 @@ List<UniEntity> getDummyUniEntities() {
       worldRanking: 300,
     ),
     UniEntity(
+      id: 5,
       name: 'جامعة الجلالة',
       location: 'هضبة الجلالة',
       imagePath: Assets.imagesUniPic,
@@ -370,6 +375,7 @@ UniDetailEntity getDummyUniDetailEntity() {
 List<UniEntity> getDummySearchResults() {
   return const [
     UniEntity(
+      id: 5,
       name: 'الجامعة البريطانية في مصر',
       location: 'مدينة الشروق',
       imagePath: Assets.imagesUniPic,
@@ -380,6 +386,7 @@ List<UniEntity> getDummySearchResults() {
       worldRanking: 300,
     ),
     UniEntity(
+      id: 4,
       name: 'جامعة عين شمس',
       location: 'العباسية، القاهرة',
       imagePath: Assets.imagesUniPic,
@@ -390,6 +397,7 @@ List<UniEntity> getDummySearchResults() {
       worldRanking: 400,
     ),
     UniEntity(
+      id: 1,
       name: 'جامعة الجلالة',
       location: 'هضبة الجلالة',
       imagePath: Assets.imagesUniPic,
