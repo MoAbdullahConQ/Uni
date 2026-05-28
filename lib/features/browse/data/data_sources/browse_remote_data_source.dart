@@ -23,7 +23,7 @@ class BrowseRemoteDataSourceImpl implements BrowseRemoteDataSource {
 
       return getUnisList(response);
     } on DioException catch (e) {
-      throw CustomExeptions(
+      throw CustomExceptions(
         message: e.response?.data['message'] ?? e.message ?? 'حدث خطأ ما',
       );
     }
