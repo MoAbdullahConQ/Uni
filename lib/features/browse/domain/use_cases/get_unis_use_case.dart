@@ -8,7 +8,7 @@ class GetUnisUseCase {
 
   GetUnisUseCase(this.browseRepo);
 
-  Future<Either<Failure, List<UniEntity>>> call({int pageNumber = 1}) {
-    return browseRepo.getUnis(pageNumber: pageNumber);
+  Future<Either<Failure, List<UniEntity>>> call() {
+    return browseRepo.getUnis();
   }
 }
