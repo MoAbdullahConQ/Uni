@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/errors/custom_exeptions.dart';
+import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/helper_functions/get_unis_list.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
@@ -23,9 +24,7 @@ class BrowseRemoteDataSourceImpl implements BrowseRemoteDataSource {
 
       return getUnisList(response);
     } on DioException catch (e) {
-      throw CustomExceptions(
-        message: e.response?.data['message'] ?? e.message ?? 'حدث خطأ ما',
-      );
+      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
     }
   }
 }
