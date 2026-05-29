@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/widgets/filter_tab_bar_item.dart';
 
 class UniFilterTabBar extends StatelessWidget {
-  final String selectedFilter;
-  final ValueChanged<String> onFilterChanged;
-
   const UniFilterTabBar({
     super.key,
     required this.selectedFilter,
     required this.onFilterChanged,
   });
 
-  static const List<String> filters = ['الكل', 'حكومية', 'خاصة', 'معهد عالي'];
+  final ValueChanged<String> onFilterChanged;
+  final String selectedFilter;
+
+  static const List<String> filters = ['الكل', 'حكومية', 'خاصة'];
 
   @override
   Widget build(BuildContext context) {

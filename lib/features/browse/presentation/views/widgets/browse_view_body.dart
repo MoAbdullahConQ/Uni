@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/entities/uni_entity.dart';
-import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 import 'package:uni/features/browse/presentation/views/widgets/header_and_list_bloc_builder.dart';
@@ -36,19 +35,12 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
           children: [
             // App bar
             SearchBarField(
-              hintText: 'اكتب اسم الجامعه',
+              hintText: 'اكتب اسم الجامعة',
               showBackButton: true,
               height: 50,
               onTap: () {
                 Navigator.pushNamed(context, SearchView.routeName);
               },
-              trailing: Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: FilterButtonBadge(
-                  activeFiltersCount: 3,
-                  onFilterTap: () {},
-                ),
-              ),
             ),
             const SizedBox(height: 20),
 
