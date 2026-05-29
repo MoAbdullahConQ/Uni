@@ -29,7 +29,5 @@ void setupGetIt() {
   );
 
   // GetUnisUseCase
-  getIt.registerFactory<GetUnisUseCase>(
-    () => GetUnisUseCase(getIt<BrowseRepo>()),
-  );
+  getIt.registerSingleton<GetUnisUseCase>(GetUnisUseCase(getIt<BrowseRepo>()));
 }
