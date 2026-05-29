@@ -41,7 +41,13 @@ class HeaderAndListBlocBuilder extends StatelessWidget {
             ],
           );
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return SizedBox(
+            height:
+                MediaQuery.of(context).size.height -
+                MediaQuery.of(context).padding.top -
+                200,
+            child: const Center(child: CircularProgressIndicator()),
+          );
         }
       },
     );
