@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:uni/core/entities/uni_entity.dart';
-import 'package:uni/core/errors/custom_exeptions.dart';
+import 'package:uni/core/errors/custom_exceptions.dart';
 import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/helper_functions/get_unis_list.dart';
 import 'package:uni/core/utils/api_service.dart';
