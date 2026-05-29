@@ -13,7 +13,7 @@ Future<void> main() async {
 
   await Prefs().init();
 
-  setupGetIt();
+  await setupGetIt();
 
   runApp(const MyApp());
 }

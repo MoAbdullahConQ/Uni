@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class UniCardImage extends StatelessWidget {
@@ -11,12 +12,22 @@ class UniCardImage extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.asset(
-            imagePath,
+          child: CachedNetworkImage(
+            imageUrl: imagePath,
             width: 120,
             height: 120,
             fit: BoxFit.cover,
+            placeholder: (context, url) => Container(color: Colors.grey[200]),
+            errorWidget: (context, url, error) =>
+                const Icon(Icons.broken_image),
           ),
+
+          // child: Image.network(
+          //   imagePath,
+          //   width: 120,
+          //   height: 120,
+          //   fit: BoxFit.cover,
+          // ),
         ),
         Positioned(
           top: 8,
