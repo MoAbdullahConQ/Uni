@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/on_generate_routes.dart';
+import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_fonts.dart';
@@ -11,6 +12,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Prefs().init();
+
+  setupGetIt();
 
   runApp(const MyApp());
 }

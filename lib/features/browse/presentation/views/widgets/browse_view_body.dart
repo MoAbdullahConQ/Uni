@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/entities/uni_entity.dart';
-import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
-import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
-import 'package:uni/core/widgets/uni_list_widget.dart';
+import 'package:uni/features/browse/presentation/views/widgets/header_and_list_bloc_builder.dart';
 import 'package:uni/features/search/presentation/views/search_view.dart';
 
 class BrowseViewBody extends StatefulWidget {
@@ -19,12 +17,9 @@ class BrowseViewBody extends StatefulWidget {
 class _BrowseViewBodyState extends State<BrowseViewBody> {
   String selectedFilter = 'الكل';
 
-  // TODO: replace with cubit
-  final List<UniEntity> allBrowseUniEntities = getDummyUniEntities();
-
-  List<UniEntity> get filteredEntities {
-    if (selectedFilter == 'الكل') return allBrowseUniEntities;
-    return allBrowseUniEntities.where((e) => e.type == selectedFilter).toList();
+  List<UniEntity> getFilteredEntitiesList(List<UniEntity> unis) {
+    if (selectedFilter == 'الكل') return unis;
+    return unis.where((e) => e.type == selectedFilter).toList();
   }
 
   @override
@@ -66,15 +61,8 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
             ),
             const SizedBox(height: 16),
 
-            // Count header
-            const UniCountHeader(count: 0, label: 'جامعة مطابقة'),
-            const SizedBox(height: 12),
-
-            // List
-            UniListWidget(
-              selectedFilterUniEntities: filteredEntities,
-              itemCount: filteredEntities.length,
-              onDelete: () {},
+            HeaderAndListBlocBuilder(
+              getFilteredEntitiesList: getFilteredEntitiesList,
             ),
 
             const SizedBox(height: 32),
