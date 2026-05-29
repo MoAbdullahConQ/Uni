@@ -32,6 +32,8 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
   }
 
   void onScroll() {
+    if (!mounted) return;
+
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.position.pixels;
     if (currentScroll >= maxScroll * 0.8) {
@@ -44,6 +46,7 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
 
   @override
   void dispose() {
+    scrollController.removeListener(onScroll);
     scrollController.dispose();
     super.dispose();
   }
