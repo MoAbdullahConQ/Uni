@@ -45,7 +45,7 @@ class UniCardInfo extends StatelessWidget {
           const SizedBox(height: 4),
 
           // Location
-          LocationRow(location: selectedFilterUniEntity.location, iconSize: 13),
+          LocationRow(location: selectedFilterUniEntity.location, iconSize: 15),
 
           const SizedBox(height: 12),
 

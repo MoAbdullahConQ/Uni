@@ -22,10 +22,14 @@ class LocationRow extends StatelessWidget {
           color: AppColors.subtitleColor.withOpacity(0.7),
         ),
         const SizedBox(width: 2),
-        Text(
-          location,
-          style: TextStyles.regular12.copyWith(
-            color: AppColors.subtitleColor.withOpacity(.7),
+        Expanded(
+          child: Text(
+            location,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyles.regular12.copyWith(
+              color: AppColors.subtitleColor.withOpacity(.7),
+            ),
           ),
         ),
       ],
