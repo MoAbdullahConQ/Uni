@@ -41,7 +41,11 @@ class UniCard extends StatelessWidget {
         child: Row(
           children: [
             // ── Right side: image + heart ──
-            UniCardImage(imagePath: selectedFilterUniEntity.imagePath),
+            UniCardImage(
+              imagePath: selectedFilterUniEntity.imagePath,
+              isFav: selectedFilterUniEntity.isFav,
+              onFavTap: () {},
+            ),
 
             const SizedBox(width: 12),
 
