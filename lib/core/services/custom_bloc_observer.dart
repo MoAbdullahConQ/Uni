@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomBlocObserver extends BlocObserver {
   @override
@@ -8,5 +8,4 @@ class CustomBlocObserver extends BlocObserver {
     super.onChange(bloc, change);
     log('[BLOC CHANGE] ${bloc.runtimeType}: $change');
   }
-
 }

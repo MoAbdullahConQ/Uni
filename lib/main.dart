@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/helper_functions/on_generate_routes.dart';
+import 'package:uni/core/services/custom_bloc_observer.dart';
 import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
@@ -14,6 +16,8 @@ Future<void> main() async {
   await Prefs().init();
 
   await setupGetIt();
+
+  Bloc.observer = CustomBlocObserver();
 
   runApp(const MyApp());
 }
