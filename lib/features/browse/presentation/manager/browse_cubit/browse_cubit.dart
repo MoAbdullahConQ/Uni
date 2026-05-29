@@ -9,56 +9,56 @@ class BrowseCubit extends Cubit<BrowseState> {
 
   BrowseCubit(this.getUnisUseCase) : super(BrowseInitial());
 
-  final List<UniEntity> allUnis = [];
-  String? nextCursor;
-  bool isLoadingMore = false;
+  final List<UniEntity> _allUnis = [];
+  String? _nextCursor;
+  bool _isLoadingMore = false;
 
-  bool get hasMore => nextCursor != null;
+  bool get hasMore => _nextCursor != null;
 
   Future<void> getUnis() async {
-    allUnis.clear();
-    nextCursor = null;
-    isLoadingMore = false;
+    _allUnis.clear();
+    _nextCursor = null;
+    _isLoadingMore = false;
 
     emit(BrowseLoading());
 
     final result = await getUnisUseCase.call();
 
     result.fold((failure) => emit(BrowseFailure(failure.message)), (response) {
-      allUnis.addAll(response.uniEntities);
-      nextCursor = response.nextCursor;
+      _allUnis.addAll(response.uniEntities);
+      _nextCursor = response.nextCursor;
       return emit(
-        BrowseSuccess(uniEntities: List.from(allUnis), nextCursor: nextCursor),
+        BrowseSuccess(uniEntities: List.from(_allUnis), nextCursor: _nextCursor),
       );
     });
   }
 
   Future<void> loadMore() async {
-    if (isLoadingMore || nextCursor == null) return;
+    if (_isLoadingMore || _nextCursor == null) return;
 
-    isLoadingMore = true;
-    emit(BrowsePaginationLoading(List.from(allUnis)));
+    _isLoadingMore = true;
+    emit(BrowsePaginationLoading(List.from(_allUnis)));
 
-    final result = await getUnisUseCase.call(cursor: nextCursor);
+    final result = await getUnisUseCase.call(cursor: _nextCursor);
 
     result.fold(
       (failure) {
-        isLoadingMore = false;
+        _isLoadingMore = false;
         emit(
           BrowsePaginationFailure(
             errMessage: failure.message,
-            currentUnis: List.from(allUnis),
+            currentUnis: List.from(_allUnis),
           ),
         );
       },
       (response) {
-        allUnis.addAll(response.uniEntities);
-        nextCursor = response.nextCursor;
-        isLoadingMore = false;
+        _allUnis.addAll(response.uniEntities);
+        _nextCursor = response.nextCursor;
+        _isLoadingMore = false;
         emit(
           BrowseSuccess(
-            uniEntities: List.from(allUnis),
-            nextCursor: nextCursor,
+            uniEntities: List.from(_allUnis),
+            nextCursor: _nextCursor,
           ),
         );
       },
