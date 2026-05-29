@@ -21,26 +21,22 @@ class HeaderAndListBlocBuilder extends StatelessWidget {
         // States
         if (state is BrowseFailure) {
           return CustomErrorWidget(message: state.errMessage);
-        } else if (state is BrowseSuccess) {
-          final filteredEntitiesList = getFilteredEntitiesList(state.unis);
-          return Column(
-            children: [
-              // Count header
-              UniCountHeader(
-                count: filteredEntitiesList.length,
-                label: 'جامعة مطابقة',
-              ),
-              const SizedBox(height: 12),
+        }
 
-              // List
-              UniListWidget(
-                selectedFilterUniEntities: filteredEntitiesList,
-                itemCount: filteredEntitiesList.length,
-                onDelete: () {},
-              ),
-            ],
-          );
+        List<UniEntity> currentUnis = [];
+        bool isPaginationLoading = false;
+        String? paginationError;
+
+        if (state is BrowseSuccess) {
+          currentUnis = state.uniEntities;
+        } else if (state is BrowsePaginationLoading) {
+          currentUnis = state.currentUnis;
+          isPaginationLoading = true;
+        } else if (state is BrowsePaginationFailure) {
+          currentUnis = state.currentUnis;
+          paginationError = state.errMessage;
         } else {
+          // BrowseInitial or BrowseLoading
           return SizedBox(
             height:
                 MediaQuery.of(context).size.height -
@@ -49,6 +45,40 @@ class HeaderAndListBlocBuilder extends StatelessWidget {
             child: const Center(child: CircularProgressIndicator()),
           );
         }
+        final filteredEntitiesList = getFilteredEntitiesList(
+          currentUnis,
+        );
+        return Column(
+          children: [
+            // Count header
+            UniCountHeader(
+              count: filteredEntitiesList.length,
+              label: 'جامعة مطابقة',
+            ),
+            const SizedBox(height: 12),
+
+            // List
+            UniListWidget(
+              selectedFilterUniEntities: filteredEntitiesList,
+              itemCount: filteredEntitiesList.length,
+              // onDelete: () {},
+            ),
+
+            // Pagination loading indicator
+            if (isPaginationLoading)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+
+            // Pagination error
+            if (paginationError != null)
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: CustomErrorWidget(message: paginationError),
+              ),
+          ],
+        );
       },
     );
   }

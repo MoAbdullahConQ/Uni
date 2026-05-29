@@ -6,10 +6,27 @@ class BrowseInitial extends BrowseState {}
 
 class BrowseLoading extends BrowseState {}
 
-class BrowseSuccess extends BrowseState {
-  final List<UniEntity> unis;
+class BrowsePaginationLoading extends BrowseState {
+  final List<UniEntity> currentUnis;
 
-  BrowseSuccess(this.unis);
+  BrowsePaginationLoading(this.currentUnis);
+}
+
+class BrowsePaginationFailure extends BrowseState {
+  final String errMessage;
+  final List<UniEntity> currentUnis;
+
+  BrowsePaginationFailure({
+    required this.errMessage,
+    required this.currentUnis,
+  });
+}
+
+class BrowseSuccess extends BrowseState {
+  final List<UniEntity> uniEntities;
+  final String? nextCursor;
+
+  BrowseSuccess({required this.uniEntities, this.nextCursor});
 }
 
 class BrowseFailure extends BrowseState {

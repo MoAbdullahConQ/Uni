@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/errors/custom_exceptions.dart';
 import 'package:uni/core/errors/failures.dart';
 import 'package:uni/features/browse/data/data_sources/browse_remote_data_source.dart';
+import 'package:uni/features/browse/domain/entities/unis_response.dart';
 import 'package:uni/features/browse/domain/repos/browse_repo.dart';
 
 class BrowseRepoImpl implements BrowseRepo {
@@ -11,10 +11,10 @@ class BrowseRepoImpl implements BrowseRepo {
   BrowseRepoImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failure, List<UniEntity>>> getUnis() async {
+  Future<Either<Failure, UnisResponse>> getUnis({String? cursor}) async {
     try {
-      final unis = await remoteDataSource.getUnis();
-      return right(unis);
+      final response = await remoteDataSource.getUnis(cursor: cursor);
+      return right(response);
     } on CustomExceptions catch (e) {
       return left(ServerFailure(e.message));
     }
