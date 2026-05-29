@@ -9,7 +9,6 @@ class UniListWidget extends StatelessWidget {
     required this.selectedFilterUniEntities,
     required this.itemCount,
     this.onDelete,
-
   });
 
   final List<UniEntity> selectedFilterUniEntities;
@@ -26,7 +25,7 @@ class UniListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         return UniCard(
           selectedFilterUniEntity: selectedFilterUniEntities[index],
-          onDelete: onDelete,
+          // onDelete: onDelete,
           onTap: () {
             Navigator.pushNamed(context, UniDetailView.routeName);
           },

@@ -45,10 +45,7 @@ class UniCardInfo extends StatelessWidget {
           const SizedBox(height: 4),
 
           // Location
-          LocationRow(
-            location: selectedFilterUniEntity.location,
-            iconSize: 13,
-          ),
+          LocationRow(location: selectedFilterUniEntity.location, iconSize: 13),
 
           const SizedBox(height: 12),
 
@@ -76,18 +73,19 @@ class UniCardInfo extends StatelessWidget {
               ),
 
               // Delete button
-              GestureDetector(
-                onTap: onDelete,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF7F9FA),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.borderColor),
+              if (onDelete != null)
+                GestureDetector(
+                  onTap: onDelete,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF7F9FA),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.borderColor),
+                    ),
+                    child: SvgPicture.asset(Assets.imagesDelete, height: 22),
                   ),
-                  child: SvgPicture.asset(Assets.imagesDelete, height: 22),
                 ),
-              ),
             ],
           ),
         ],
