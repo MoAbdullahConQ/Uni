@@ -18,7 +18,7 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<Dio>(Dio());
 
   // TODO: remove before production
-  await Prefs.setString('token', '277|91C9QiwRjkiM2YG3huAPAsA1NBI7mKqb8dQVZvre2857f569');
+  await Prefs.setString('token', '279|b1nFoLqCNimiULekXOn9P6kNPjv4YQYKKZ4KC5rhdf803846');
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));
