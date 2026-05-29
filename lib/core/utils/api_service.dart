@@ -1,11 +1,26 @@
 import 'package:dio/dio.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
 
 class ApiService {
   final Dio dio;
 
-  ApiService(this.dio);
+  ApiService(this.dio) {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          options.headers['Accept'] = 'application/json';
+
+          final token = Prefs.getString('token');
+          if (token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          return handler.next(options);
+        },
+      ),
+    );
+  }
 
   Future<Map<String, dynamic>> get({
     required String endpoint,
