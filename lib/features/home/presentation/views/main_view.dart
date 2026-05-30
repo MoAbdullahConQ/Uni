@@ -23,20 +23,25 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   int currentIndex = 0;
+  late final List<Widget> views;
 
-  List<Widget> get views => [
-    const HomeViewBody(),
-    const GuideViewBody(),
-    BlocProvider(
-      create: (context) => FavCubit(
-        getFavsUseCase: getIt<GetFavsUseCase>(),
-        addToFavUseCase: getIt<AddToFavUseCase>(),
-        removeFromFavUseCase: getIt<RemoveFromFavUseCase>(),
-      )..getFavs(),
-      child: const FavViewBody(),
-    ),
-    const ProfileViewBody(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    views = [
+      const HomeViewBody(),
+      const GuideViewBody(),
+      BlocProvider(
+        create: (context) => FavCubit(
+          getFavsUseCase: getIt<GetFavsUseCase>(),
+          addToFavUseCase: getIt<AddToFavUseCase>(),
+          removeFromFavUseCase: getIt<RemoveFromFavUseCase>(),
+        )..getFavs(),
+        child: const FavViewBody(),
+      ),
+      const ProfileViewBody(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
