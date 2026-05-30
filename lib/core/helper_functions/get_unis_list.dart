@@ -1,5 +1,5 @@
 import 'package:uni/core/entities/uni_entity.dart';
-import 'package:uni/features/browse/data/models/uni_model/uni_model.dart';
+import 'package:uni/core/models/uni_model/uni_model.dart';
 
 List<UniEntity> getUnisList(Map<String, dynamic> response) {
   List<UniEntity> Unis = <UniEntity>[];
