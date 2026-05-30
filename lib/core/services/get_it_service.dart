@@ -6,6 +6,12 @@ import 'package:uni/features/browse/data/data_sources/browse_remote_data_source.
 import 'package:uni/features/browse/data/repos/browse_repo_impl.dart';
 import 'package:uni/features/browse/domain/repos/browse_repo.dart';
 import 'package:uni/features/browse/domain/use_cases/get_unis_use_case.dart';
+import 'package:uni/features/fav/data/data_sources/fav_remote_data_source.dart';
+import 'package:uni/features/fav/data/repos/fav_repo_impl.dart';
+import 'package:uni/features/fav/domain/repos/fav_repo.dart';
+import 'package:uni/features/fav/domain/use_cases/add_to_fav_use_case.dart';
+import 'package:uni/features/fav/domain/use_cases/get_favs_use_case.dart';
+import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -18,7 +24,10 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<Dio>(Dio());
 
   // TODO: remove before production
-  await Prefs.setString('token', '279|b1nFoLqCNimiULekXOn9P6kNPjv4YQYKKZ4KC5rhdf803846');
+  await Prefs.setString(
+    'token',
+    '291|IWi0oJu9zp3MmRu9yADpClHUqyoVKiF4c6IsTCbS1d1714e6',
+  );
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));
@@ -35,4 +44,22 @@ Future<void> setupGetIt() async {
 
   // GetUnisUseCase
   getIt.registerSingleton<GetUnisUseCase>(GetUnisUseCase(getIt<BrowseRepo>()));
+
+
+  // ===== FAV =====
+
+  // FavRemoteDataSource
+  getIt.registerSingleton<FavRemoteDataSource>(
+    FavRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+
+  // FavRepo
+  getIt.registerSingleton<FavRepo>(FavRepoImpl(getIt<FavRemoteDataSource>()));
+
+  // Use Cases
+  getIt.registerSingleton<GetFavsUseCase>(GetFavsUseCase(getIt<FavRepo>()));
+  getIt.registerSingleton<AddToFavUseCase>(AddToFavUseCase(getIt<FavRepo>()));
+  getIt.registerSingleton<RemoveFromFavUseCase>(
+    RemoveFromFavUseCase(getIt<FavRepo>()),
+  );
 }
