@@ -53,7 +53,6 @@ class FavHeaderAndListBlocBuilder extends StatelessWidget {
             UniListWidget(
               selectedFilterUniEntities: filteredEntitiesList,
               itemCount: filteredEntitiesList.length,
-              // onDelete: (id) => context.read<FavCubit>().removeFromFav(id),
             ),
 
             if (isPaginationLoading)

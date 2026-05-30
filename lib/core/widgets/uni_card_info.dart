@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
-import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/location_widget.dart';
 import 'package:uni/core/entities/uni_entity.dart';
@@ -9,14 +7,9 @@ import 'package:uni/core/widgets/rating.dart';
 import 'package:uni/core/widgets/type_badge_widget.dart';
 
 class UniCardInfo extends StatelessWidget {
-  const UniCardInfo({
-    super.key,
-    required this.selectedFilterUniEntity,
-    required this.onDelete,
-  });
+  const UniCardInfo({super.key, required this.selectedFilterUniEntity});
 
   final UniEntity selectedFilterUniEntity;
-  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -71,21 +64,6 @@ class UniCardInfo extends StatelessWidget {
                   ),
                 ],
               ),
-
-              // Delete button
-              if (onDelete != null)
-                GestureDetector(
-                  onTap: onDelete,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF7F9FA),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.borderColor),
-                    ),
-                    child: SvgPicture.asset(Assets.imagesDelete, height: 22),
-                  ),
-                ),
             ],
           ),
         ],

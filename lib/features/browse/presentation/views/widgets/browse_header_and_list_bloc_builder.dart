@@ -45,9 +45,7 @@ class BrowseHeaderAndListBlocBuilder extends StatelessWidget {
             child: const Center(child: CircularProgressIndicator()),
           );
         }
-        final filteredEntitiesList = getFilteredEntitiesList(
-          currentUnis,
-        );
+        final filteredEntitiesList = getFilteredEntitiesList(currentUnis);
         return Column(
           children: [
             // Count header
@@ -61,7 +59,6 @@ class BrowseHeaderAndListBlocBuilder extends StatelessWidget {
             UniListWidget(
               selectedFilterUniEntities: filteredEntitiesList,
               itemCount: filteredEntitiesList.length,
-              // onDelete: () {},
             ),
 
             // Pagination loading indicator

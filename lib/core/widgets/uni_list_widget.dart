@@ -8,12 +8,10 @@ class UniListWidget extends StatelessWidget {
     super.key,
     required this.selectedFilterUniEntities,
     required this.itemCount,
-    this.onDelete,
   });
 
   final List<UniEntity> selectedFilterUniEntities;
   final int itemCount;
-  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +23,6 @@ class UniListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         return UniCardWithFav(
           selectedFilterUniEntity: selectedFilterUniEntities[index],
-          // onDelete: onDelete,
           onTap: () {
             Navigator.pushNamed(context, UniDetailView.routeName);
           },

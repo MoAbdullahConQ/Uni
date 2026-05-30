@@ -8,14 +8,12 @@ class UniCard extends StatelessWidget {
   const UniCard({
     super.key,
     required this.selectedFilterUniEntity,
-    this.onDelete,
     this.onTap,
     this.onFavTap,
     required this.isFav,
   });
 
   final UniEntity selectedFilterUniEntity;
-  final VoidCallback? onDelete;
   final VoidCallback? onTap;
   final void Function()? onFavTap;
   final bool isFav;
@@ -54,10 +52,7 @@ class UniCard extends StatelessWidget {
             const SizedBox(width: 12),
 
             // ── Left side: info ──
-            UniCardInfo(
-              selectedFilterUniEntity: selectedFilterUniEntity,
-              onDelete: onDelete,
-            ),
+            UniCardInfo(selectedFilterUniEntity: selectedFilterUniEntity),
           ],
         ),
       ),
