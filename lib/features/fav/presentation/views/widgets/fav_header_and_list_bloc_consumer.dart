@@ -6,8 +6,8 @@ import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_list_widget.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 
-class FavHeaderAndListBlocBuilder extends StatelessWidget {
-  const FavHeaderAndListBlocBuilder({
+class FavHeaderAndListBlocConsumer extends StatelessWidget {
+  const FavHeaderAndListBlocConsumer({
     super.key,
     required this.getFilteredEntitiesList,
   });
@@ -16,7 +16,15 @@ class FavHeaderAndListBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FavCubit, FavState>(
+    return BlocConsumer<FavCubit, FavState>(
+      listenWhen: (previous, current) => current is FavActionFailure,
+      listener: (context, state) {
+        if (state is FavActionFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errMessage)));
+        }
+      },
       buildWhen: (previous, current) =>
           current is FavSuccess ||
           current is FavPaginationLoading ||

@@ -7,7 +7,7 @@ import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
-import 'package:uni/features/fav/presentation/views/widgets/fav_header_and_list_bloc_builder.dart';
+import 'package:uni/features/fav/presentation/views/widgets/fav_header_and_list_bloc_consumer.dart';
 
 class FavViewBody extends StatefulWidget {
   const FavViewBody({super.key});
@@ -86,7 +86,7 @@ class _FavViewBodyState extends State<FavViewBody> {
             const SizedBox(height: 24),
 
             // BlocBuilder
-            FavHeaderAndListBlocBuilder(
+            FavHeaderAndListBlocConsumer(
               getFilteredEntitiesList: getFilteredEntitiesList,
             ),
             // const SizedBox(height: 32),
