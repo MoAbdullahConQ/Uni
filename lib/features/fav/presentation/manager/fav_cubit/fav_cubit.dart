@@ -23,6 +23,9 @@ class FavCubit extends Cubit<FavState> {
 
   bool get hasMore => _nextCursor != null;
 
+  final Set<int> _favIds = {};
+  Set<int> get favIds => Set.unmodifiable(_favIds);
+
   Future<void> getFavs() async {
     _allFavs.clear();
     _nextCursor = null;
@@ -32,17 +35,14 @@ class FavCubit extends Cubit<FavState> {
 
     final result = await getFavsUseCase.call();
 
-    result.fold(
-      (failure) => emit(FavFailure(failure.message)),
-      (response) {
-        _allFavs.addAll(response.uniEntities);
-        _nextCursor = response.nextCursor;
-        emit(FavSuccess(
-          uniEntities: List.from(_allFavs),
-          nextCursor: _nextCursor,
-        ));
-      },
-    );
+    result.fold((failure) => emit(FavFailure(failure.message)), (response) {
+      _allFavs.addAll(response.uniEntities);
+      _nextCursor = response.nextCursor;
+      _favIds.addAll(_allFavs.map((u) => u.id));
+      emit(
+        FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor),
+      );
+    });
   }
 
   Future<void> loadMore() async {
@@ -56,19 +56,20 @@ class FavCubit extends Cubit<FavState> {
     result.fold(
       (failure) {
         _isLoadingMore = false;
-        emit(FavPaginationFailure(
-          errMessage: failure.message,
-          currentUnis: List.from(_allFavs),
-        ));
+        emit(
+          FavPaginationFailure(
+            errMessage: failure.message,
+            currentUnis: List.from(_allFavs),
+          ),
+        );
       },
       (response) {
         _allFavs.addAll(response.uniEntities);
         _nextCursor = response.nextCursor;
         _isLoadingMore = false;
-        emit(FavSuccess(
-          uniEntities: List.from(_allFavs),
-          nextCursor: _nextCursor,
-        ));
+        emit(
+          FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor),
+        );
       },
     );
   }
@@ -76,28 +77,23 @@ class FavCubit extends Cubit<FavState> {
   Future<void> addToFav(int universityId) async {
     emit(FavActionLoading());
     final result = await addToFavUseCase.call(universityId);
-    result.fold(
-      (failure) => emit(FavActionFailure(failure.message)),
-      (_) {
-        emit(FavActionSuccess());
-        getFavs(); // refresh the list
-      },
-    );
+    result.fold((failure) => emit(FavActionFailure(failure.message)), (_) {
+      _favIds.add(universityId);
+      emit(FavActionSuccess());
+      getFavs(); // refresh the list
+    });
   }
 
   Future<void> removeFromFav(int universityId) async {
     emit(FavActionLoading());
     final result = await removeFromFavUseCase.call(universityId);
-    result.fold(
-      (failure) => emit(FavActionFailure(failure.message)),
-      (_) {
-        // نشيله من الـ list locally من غير ما نعمل API call تاني
-        _allFavs.removeWhere((uni) => uni.id == universityId);
-        emit(FavSuccess(
-          uniEntities: List.from(_allFavs),
-          nextCursor: _nextCursor,
-        ));
-      },
-    );
+    result.fold((failure) => emit(FavActionFailure(failure.message)), (_) {
+      // نشيله من الـ list locally من غير ما نعمل API call تاني
+      _favIds.remove(universityId);
+      _allFavs.removeWhere((uni) => uni.id == universityId);
+      emit(
+        FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor),
+      );
+    });
   }
 }

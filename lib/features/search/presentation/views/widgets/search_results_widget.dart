@@ -27,7 +27,7 @@ class SearchResultsWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                  Text.rich(
+              Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
@@ -45,7 +45,7 @@ class SearchResultsWidget extends StatelessWidget {
                   ],
                 ),
               ),
-          
+
               Row(
                 children: [
                   Text(
@@ -71,9 +71,8 @@ class SearchResultsWidget extends StatelessWidget {
             shrinkWrap: true,
             itemCount: results.length,
             separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (_, i) => UniCard(
-              selectedFilterUniEntity: results[i],
-            ),
+            itemBuilder: (_, i) =>
+                UniCard(selectedFilterUniEntity: results[i], isFav: false),
           ),
 
           const SizedBox(height: 32),

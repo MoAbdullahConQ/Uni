@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/entities/uni_entity.dart';
-import 'package:uni/core/widgets/uni_card.dart';
+import 'package:uni/core/widgets/uni_card_with_fav.dart';
 import 'package:uni/features/uni_detail/presentation/views/uni_detail_view.dart';
 
 class UniListWidget extends StatelessWidget {
@@ -23,7 +23,7 @@ class UniListWidget extends StatelessWidget {
       itemCount: itemCount,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        return UniCard(
+        return UniCardWithFav(
           selectedFilterUniEntity: selectedFilterUniEntities[index],
           // onDelete: onDelete,
           onTap: () {

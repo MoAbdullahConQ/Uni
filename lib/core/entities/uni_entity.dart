@@ -6,7 +6,7 @@ class UniEntity {
   final String type; // 'خاصة' | 'حكومية' | 'معهد عالي'
   final double rating;
   final int worldRanking;
-  final bool isFav;
+  // final bool isFav;
 
   const UniEntity({
     required this.id,
@@ -16,6 +16,6 @@ class UniEntity {
     required this.type,
     required this.rating,
     required this.worldRanking,
-    this.isFav = false,
+    // this.isFav = false,
   });
 }

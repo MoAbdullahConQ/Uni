@@ -10,11 +10,15 @@ class UniCard extends StatelessWidget {
     required this.selectedFilterUniEntity,
     this.onDelete,
     this.onTap,
+    this.onFavTap,
+    required this.isFav,
   });
 
   final UniEntity selectedFilterUniEntity;
   final VoidCallback? onDelete;
   final VoidCallback? onTap;
+  final void Function()? onFavTap;
+  final bool isFav;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +47,8 @@ class UniCard extends StatelessWidget {
             // ── Right side: image + heart ──
             UniCardImage(
               imagePath: selectedFilterUniEntity.imagePath,
-              isFav: selectedFilterUniEntity.isFav,
-              onFavTap: () {},
+              isFav: isFav,
+              onFavTap: onFavTap ?? () {},
             ),
 
             const SizedBox(width: 12),
