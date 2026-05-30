@@ -9,4 +9,7 @@ class BackendEndpoints {
   static const String addToFav = '/university_fav/add';
   static const String removeFromFav = '/university_fav/remove';
   static const String getFavs = '/university_fav';
+
+  // Search
+  static const String search = '/public-search';
 }
