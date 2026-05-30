@@ -79,21 +79,47 @@ class FavCubit extends Cubit<FavState> {
     final result = await addToFavUseCase.call(universityId);
     result.fold((failure) => emit(FavActionFailure(failure.message)), (_) {
       _favIds.add(universityId);
+      _allFavs;
       emit(FavActionSuccess());
-      getFavs(); // refresh the list
     });
   }
 
+  // Future<void> removeFromFav(int universityId) async {
+  //   emit(FavActionLoading());
+  //   final result = await removeFromFavUseCase.call(universityId);
+  //   result.fold((failure) => emit(FavActionFailure(failure.message)), (_) {
+  //     // نشيله من الـ list locally من غير ما نعمل API call تاني
+  //     _favIds.remove(universityId);
+  //     _allFavs.removeWhere((uni) => uni.id == universityId);
+  //     emit(
+  //       FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor),
+  //     );
+  //   });
+  // }
+
   Future<void> removeFromFav(int universityId) async {
-    emit(FavActionLoading());
-    final result = await removeFromFavUseCase.call(universityId);
-    result.fold((failure) => emit(FavActionFailure(failure.message)), (_) {
-      // نشيله من الـ list locally من غير ما نعمل API call تاني
-      _favIds.remove(universityId);
-      _allFavs.removeWhere((uni) => uni.id == universityId);
-      emit(
-        FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor),
-      );
-    });
-  }
+  final backup = List<UniEntity>.from(_allFavs);
+  final backupIds = Set<int>.from(_favIds);
+
+  // optimistic
+  _favIds.remove(universityId);
+  _allFavs.removeWhere((uni) => uni.id == universityId);
+  emit(FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor));
+
+  final result = await removeFromFavUseCase.call(universityId);
+  result.fold(
+    (failure) {
+      // rollback
+      _favIds
+        ..clear()
+        ..addAll(backupIds);
+      _allFavs
+        ..clear()
+        ..addAll(backup);
+      emit(FavSuccess(uniEntities: List.from(_allFavs), nextCursor: _nextCursor));
+      emit(FavActionFailure(failure.message));
+    },
+    (_) => emit(FavActionSuccess()),
+  );
+}
 }

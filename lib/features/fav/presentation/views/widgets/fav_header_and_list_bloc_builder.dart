@@ -17,6 +17,12 @@ class FavHeaderAndListBlocBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FavCubit, FavState>(
+      buildWhen: (previous, current) =>
+          current is FavSuccess ||
+          current is FavPaginationLoading ||
+          current is FavPaginationFailure ||
+          current is FavFailure ||
+          current is FavLoading,
       builder: (context, state) {
         if (state is FavFailure) {
           return CustomErrorWidget(message: state.errMessage);
