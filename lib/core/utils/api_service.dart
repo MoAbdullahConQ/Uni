@@ -32,4 +32,15 @@ class ApiService {
     );
     return response.data;
   }
+
+  Future<Map<String, dynamic>> post({
+    required String endpoint,
+    Map<String, dynamic>? data,
+  }) async {
+    var response = await dio.post(
+      '${BackendEndpoints.baseUrl}$endpoint',
+      data: data,
+    );
+    return response.data;
+  }
 }
