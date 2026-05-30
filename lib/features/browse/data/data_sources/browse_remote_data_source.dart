@@ -4,7 +4,7 @@ import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/helper_functions/get_unis_list.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
-import 'package:uni/features/browse/domain/entities/unis_response.dart';
+import 'package:uni/core/entities/unis_response.dart';
 
 abstract class BrowseRemoteDataSource {
   Future<UnisResponse> getUnis({String? cursor});
