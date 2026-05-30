@@ -5,7 +5,7 @@ import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/uni_filter_tab_bar.dart';
 import 'package:uni/features/browse/presentation/manager/browse_cubit/browse_cubit.dart';
-import 'package:uni/features/browse/presentation/views/widgets/header_and_list_bloc_builder.dart';
+import 'package:uni/features/browse/presentation/views/widgets/browse_header_and_list_bloc_builder.dart';
 import 'package:uni/features/search/presentation/views/search_view.dart';
 
 class BrowseViewBody extends StatefulWidget {
@@ -84,7 +84,7 @@ class _BrowseViewBodyState extends State<BrowseViewBody> {
             ),
             const SizedBox(height: 16),
 
-            HeaderAndListBlocBuilder(
+            BrowseHeaderAndListBlocBuilder(
               getFilteredEntitiesList: getFilteredEntitiesList,
             ),
 

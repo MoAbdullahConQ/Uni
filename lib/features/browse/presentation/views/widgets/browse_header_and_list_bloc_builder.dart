@@ -6,8 +6,8 @@ import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_list_widget.dart';
 import 'package:uni/features/browse/presentation/manager/browse_cubit/browse_cubit.dart';
 
-class HeaderAndListBlocBuilder extends StatelessWidget {
-  const HeaderAndListBlocBuilder({
+class BrowseHeaderAndListBlocBuilder extends StatelessWidget {
+  const BrowseHeaderAndListBlocBuilder({
     super.key,
     required this.getFilteredEntitiesList,
   });
