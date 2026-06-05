@@ -18,13 +18,6 @@ class SearchFilterBottomSheet extends StatefulWidget {
   final SearchFilterEntity initialSearchFilterEntity;
   final ValueChanged<SearchFilterEntity> onApply;
 
-  // static const List<String> specialties = [
-  //   'هندسة',
-  //   'طب بشري',
-  //   'صيدلة',
-  //   'إدارة أعمال',
-  //   'فنون تطبيقية',
-  // ];
 
   static const List<String> types = ['حكومية', 'خاصة'];
 
