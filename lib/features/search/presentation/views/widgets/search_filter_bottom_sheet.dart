@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
+import 'package:uni/features/search/presentation/manager/specialties_cubit/specialties_cubit.dart';
 import 'package:uni/features/search/presentation/views/widgets/fees_range_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/header_search_filter_bottom_sheet.dart';
 import 'package:uni/features/search/presentation/views/widgets/results_btn_search_filter_bottom_sheet.dart';
@@ -14,16 +16,15 @@ class SearchFilterBottomSheet extends StatefulWidget {
   });
 
   final SearchFilterEntity initialSearchFilterEntity;
-
   final ValueChanged<SearchFilterEntity> onApply;
 
-  static const List<String> specialties = [
-    'هندسة',
-    'طب بشري',
-    'صيدلة',
-    'إدارة أعمال',
-    'فنون تطبيقية',
-  ];
+  // static const List<String> specialties = [
+  //   'هندسة',
+  //   'طب بشري',
+  //   'صيدلة',
+  //   'إدارة أعمال',
+  //   'فنون تطبيقية',
+  // ];
 
   static const List<String> types = ['حكومية', 'خاصة'];
 
@@ -44,6 +45,11 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
       searchFilterEntity.minFees,
       searchFilterEntity.maxFees,
     );
+
+    final cubit = context.read<SpecialtiesCubit>();
+    if (cubit.state is SpecialtiesInitial) {
+      cubit.getSpecialties();
+    }
   }
 
   void toggleSpecialty(String specialty) {
@@ -99,12 +105,33 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           const SizedBox(height: 20),
 
           // Specialties
-          SpecialtiesSearchFilterBottomSheet(
-            specialties: SearchFilterBottomSheet.specialties,
-            isSelected: (String s) =>
-                searchFilterEntity.selectedSpecialties.contains(s),
-            onTap: (String s) {
-              toggleSpecialty(s);
+          // SpecialtiesSearchFilterBottomSheet(
+          //   specialties: SearchFilterBottomSheet.specialties,
+          //   isSelected: (String s) =>
+          //       searchFilterEntity.selectedSpecialties.contains(s),
+          //   onTap: (String s) {
+          //     toggleSpecialty(s);
+          //   },
+          // ),
+          // const SizedBox(height: 20),
+
+          // Specialties من الـ API
+          BlocBuilder<SpecialtiesCubit, SpecialtiesState>(
+            builder: (context, state) {
+              if (state is SpecialtiesLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state is SpecialtiesSuccess) {
+                return SpecialtiesSearchFilterBottomSheet(
+                  specialties: state.specialties,
+                  isSelected: (String s) =>
+                      searchFilterEntity.selectedSpecialties.contains(s),
+                  onTap: toggleSpecialty,
+                );
+              }
+
+              return const SizedBox.shrink();
             },
           ),
           const SizedBox(height: 20),

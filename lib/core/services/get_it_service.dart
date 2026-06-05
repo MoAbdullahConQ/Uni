@@ -15,6 +15,7 @@ import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart'
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
+import 'package:uni/features/search/domain/use_cases/get_specialties_use_case.dart';
 import 'package:uni/features/search/domain/use_cases/search_unis_use_case.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -30,22 +31,21 @@ Future<void> setupGetIt() async {
   // TODO: remove before production
   await Prefs.setString(
     'token',
-    "303|RKeXFgcSdzMzsVF2ratXI3UTatkJSMUNispHwrsS83fdf5d8",
+    "327|mfILpHeuSeZYX3z8MWeuK7fnL2FzpPEPxu12BlUL3532e5d7",
   );
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));
 
+  // ===== BROWSE =====
   // BrowseRemoteDataSource
   getIt.registerSingleton<BrowseRemoteDataSource>(
     BrowseRemoteDataSourceImpl(getIt<ApiService>()),
   );
-
   // BrowseRepo
   getIt.registerSingleton<BrowseRepo>(
     BrowseRepoImpl(getIt<BrowseRemoteDataSource>()),
   );
-
   // GetUnisUseCase
   getIt.registerSingleton<GetUnisUseCase>(GetUnisUseCase(getIt<BrowseRepo>()));
 
@@ -66,7 +66,6 @@ Future<void> setupGetIt() async {
     RemoveFromFavUseCase(getIt<FavRepo>()),
   );
 
-
   // ===== SEARCH =====
 
   // SearchRemoteDataSource
@@ -82,5 +81,9 @@ Future<void> setupGetIt() async {
   // SearchUnisUseCase
   getIt.registerSingleton<SearchUnisUseCase>(
     SearchUnisUseCase(getIt<SearchRepo>()),
+  );
+
+  getIt.registerSingleton<GetSpecialtiesUseCase>(
+    GetSpecialtiesUseCase(getIt<SearchRepo>()),
   );
 }
