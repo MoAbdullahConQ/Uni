@@ -9,4 +9,6 @@ abstract class SearchRepo {
     required SearchFilterEntity filter,
     String? cursor,
   });
+  
+  Future<Either<Failure, List<String>>> getSpecialties();
 }

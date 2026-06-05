@@ -28,4 +28,10 @@ class SearchRepoImpl implements SearchRepo {
       return left(ServerFailure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, List<String>>> getSpecialties() {
+    // TODO: implement getSpecialties
+    throw UnimplementedError();
+  }
 }
