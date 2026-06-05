@@ -104,30 +104,20 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           ),
           const SizedBox(height: 20),
 
-          // Specialties
-          // SpecialtiesSearchFilterBottomSheet(
-          //   isSelected: (String s) =>
-          //       searchFilterEntity.selectedSpecialties.contains(s),
-          //   onTap: (String s) {
-          //     toggleSpecialty(s);
-          //   },
-          // ),
-          // const SizedBox(height: 20),
-
-          // Specialties من الـ API
+          // Specialties API
           SpecialtiesSearchFilterBottomSheet(
             isSelected: (String s) =>
                 searchFilterEntity.selectedSpecialties.contains(s),
             onTap: toggleSpecialty,
           ),
 
+          const SizedBox(height: 20),
+
           // Uni types
           UniTypesSearchFilterBottomSheet(
             isSelected: (String t) =>
                 searchFilterEntity.selectedTypes.contains(t),
-            onTap: (String t) {
-              toggleType(t);
-            },
+            onTap: toggleType,
             types: SearchFilterBottomSheet.types,
           ),
           const SizedBox(height: 20),

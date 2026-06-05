@@ -34,7 +34,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
       final queryParams = <String, dynamic>{
         'per_page': 10,
         if (query.isNotEmpty) 'name': query,
-        if (filterByType) 'type': filter.selectedTypes.first,
+        if (filterByType) 'type': _mapTypeToApi(filter.selectedTypes.first),
         for (int i = 0; i < filter.selectedSpecialties.length; i++)
           'speciality[$i]': filter.selectedSpecialties[i],
         'yearly_Expenses[0]': filter.minFees.toInt(),
@@ -76,6 +76,17 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
       return specialties;
     } on DioException catch (e) {
       throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
+    }
+  }
+
+  String _mapTypeToApi(String type) {
+    switch (type) {
+      case 'حكومية':
+        return 'Public';
+      case 'خاصة':
+        return 'Private';
+      default:
+        return type;
     }
   }
 
