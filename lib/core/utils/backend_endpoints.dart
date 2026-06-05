@@ -5,6 +5,11 @@ class BackendEndpoints {
   // Universities
   static const String getUniversities = '/universities';
 
+  // Colleges
+  // static String getColleges(int universityId) => '/colleges/$universityId';
+  // Colleges (Specialties)
+  static const String getColleges = '/colleges';
+
   // University Fav
   static const String addToFav = '/university_fav/add';
   static const String removeFromFav = '/university_fav/remove';

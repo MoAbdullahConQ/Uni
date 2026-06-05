@@ -13,6 +13,8 @@ abstract class SearchRemoteDataSource {
     required SearchFilterEntity filter,
     String? cursor,
   });
+
+  Future<List<String>> getSpecialties();
 }
 
 class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
@@ -54,5 +56,50 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     } on DioException catch (e) {
       throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
     }
+  }
+
+  @override
+  Future<List<String>> getSpecialties() async {
+    try {
+      final response = await apiService.get(
+        endpoint: BackendEndpoints.getColleges,
+      );
+
+      // الـ API بيرجع List<String> مباشرة
+      final colleges = List<String>.from(response['data'] ?? response);
+
+      // Mapping: نحول أسماء الكليات الطويلة لكلمات مفتاحية مختصرة
+      final specialties = colleges
+          .map(_mapCollegeToSpecialty)
+          .whereType<String>()
+          .toSet()
+          .toList();
+
+      return specialties;
+    } on DioException catch (e) {
+      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
+    }
+  }
+
+  String? _mapCollegeToSpecialty(String college) {
+    if (college.contains('طب الأسنان') || college.contains('طب الفم')) {
+      return 'طب أسنان';
+    }
+    if (college.contains('طب')) return 'طب';
+    if (college.contains('هندسة')) return 'هندسة';
+    if (college.contains('صيدلة')) return 'صيدلة';
+    if (college.contains('حاسبات') ||
+        college.contains('حاسب') ||
+        college.contains('ذكاء اصطناعي') ||
+        college.contains('معلومات')) {
+      return 'حاسبات';
+    }
+    if (college.contains('إدارة') || college.contains('أعمال')) {
+      return 'إدارة أعمال';
+    }
+    if (college.contains('فنون')) return 'فنون تطبيقية';
+    if (college.contains('ألسن')) return 'ألسن';
+    if (college.contains('إعلام')) return 'إعلام';
+    return null;
   }
 }
