@@ -65,10 +65,8 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         endpoint: BackendEndpoints.getColleges,
       );
 
-      // الـ API بيرجع List<String> مباشرة
       final colleges = List<String>.from(response['data'] ?? response);
 
-      // Mapping: نحول أسماء الكليات الطويلة لكلمات مفتاحية مختصرة
       final specialties = colleges
           .map(_mapCollegeToSpecialty)
           .whereType<String>()
@@ -85,7 +83,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     if (college.contains('طب الأسنان') || college.contains('طب الفم')) {
       return 'طب أسنان';
     }
-    if (college.contains('طب')) return 'طب';
+    if (college.contains('طب')) return 'طب بشري';
     if (college.contains('هندسة')) return 'هندسة';
     if (college.contains('صيدلة')) return 'صيدلة';
     if (college.contains('حاسبات') ||

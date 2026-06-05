@@ -30,8 +30,12 @@ class SearchRepoImpl implements SearchRepo {
   }
 
   @override
-  Future<Either<Failure, List<String>>> getSpecialties() {
-    // TODO: implement getSpecialties
-    throw UnimplementedError();
+  Future<Either<Failure, List<String>>> getSpecialties() async {
+    try {
+      final specialties = await remoteDataSource.getSpecialties();
+      return right(specialties);
+    } on CustomExceptions catch (e) {
+      return left(ServerFailure(e.message));
+    }
   }
 }
