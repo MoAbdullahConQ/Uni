@@ -33,6 +33,8 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         'per_page': 10,
         if (query.isNotEmpty) 'name': query,
         if (filterByType) 'type': filter.selectedTypes.first,
+        for (int i = 0; i < filter.selectedSpecialties.length; i++)
+          'speciality[$i]': filter.selectedSpecialties[i],
         'yearly_Expenses[0]': filter.minFees.toInt(),
         'yearly_Expenses[1]': filter.maxFees.toInt(),
         if (cursor != null) 'cursor': cursor,
