@@ -11,8 +11,11 @@ class SearchFilterEntity {
     this.selectedTypes = const [],
   });
 
-  int get activeFiltersCount =>
-      selectedSpecialties.length + selectedTypes.length;
+  int get activeFiltersCount {
+    int count = selectedSpecialties.length + selectedTypes.length;
+    if (minFees != 10000 || maxFees != 250000) count++;
+    return count;
+  }
 
   SearchFilterEntity copyWith({
     double? minFees,
