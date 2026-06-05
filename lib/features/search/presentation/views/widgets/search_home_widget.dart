@@ -10,11 +10,13 @@ class SearchHomeWidget extends StatelessWidget {
     required this.recentSearches,
     required this.trendingSearches,
     this.onClearAll,
+    this.onSearchTap,
   });
 
   final List<String> trendingSearches;
   final VoidCallback? onClearAll;
   final List<String> recentSearches;
+  final void Function(String query)? onSearchTap;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,10 @@ class SearchHomeWidget extends StatelessWidget {
           ...recentSearches.map(
             (search) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: RecentSearchItem(text: search),
+              child: RecentSearchItem(
+                text: search,
+                onTap: () => onSearchTap?.call(search),
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -83,7 +88,12 @@ class SearchHomeWidget extends StatelessWidget {
             spacing: 6,
             runSpacing: 6,
             children: trendingSearches
-                .map((t) => TrendingSearchChip(text: t))
+                .map(
+                  (t) => TrendingSearchChip(
+                    text: t,
+                    onTap: () => onSearchTap?.call(t),
+                  ),
+                )
                 .toList(),
           ),
 
