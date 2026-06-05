@@ -61,11 +61,11 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   @override
   Future<List<String>> getSpecialties() async {
     try {
-      final response = await apiService.get(
+      final response = await apiService.getList(
         endpoint: BackendEndpoints.getColleges,
       );
 
-      final colleges = List<String>.from(response['data'] ?? response);
+      final colleges = List<String>.from(response);
 
       final specialties = colleges
           .map(_mapCollegeToSpecialty)

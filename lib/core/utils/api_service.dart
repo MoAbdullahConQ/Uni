@@ -43,4 +43,15 @@ class ApiService {
     );
     return response.data;
   }
+
+  Future<List<dynamic>> getList({
+    required String endpoint,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    var response = await dio.get(
+      '${BackendEndpoints.baseUrl}$endpoint',
+      queryParameters: queryParameters,
+    );
+    return response.data;
+  }
 }
