@@ -27,10 +27,12 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
     String? cursor,
   }) async {
     try {
+      final bool filterByType = filter.selectedTypes.length == 1;
+
       final queryParams = <String, dynamic>{
         'per_page': 10,
         if (query.isNotEmpty) 'name': query,
-        if (filter.selectedTypes.isNotEmpty) 'type': filter.selectedTypes.first,
+        if (filterByType) 'type': filter.selectedTypes.first,
         'yearly_Expenses[0]': filter.minFees.toInt(),
         'yearly_Expenses[1]': filter.maxFees.toInt(),
         if (cursor != null) 'cursor': cursor,
