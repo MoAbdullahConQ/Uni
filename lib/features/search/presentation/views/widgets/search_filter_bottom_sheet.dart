@@ -106,7 +106,6 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
 
           // Specialties
           // SpecialtiesSearchFilterBottomSheet(
-          //   specialties: SearchFilterBottomSheet.specialties,
           //   isSelected: (String s) =>
           //       searchFilterEntity.selectedSpecialties.contains(s),
           //   onTap: (String s) {
@@ -116,25 +115,11 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           // const SizedBox(height: 20),
 
           // Specialties من الـ API
-          BlocBuilder<SpecialtiesCubit, SpecialtiesState>(
-            builder: (context, state) {
-              if (state is SpecialtiesLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (state is SpecialtiesSuccess) {
-                return SpecialtiesSearchFilterBottomSheet(
-                  specialties: state.specialties,
-                  isSelected: (String s) =>
-                      searchFilterEntity.selectedSpecialties.contains(s),
-                  onTap: toggleSpecialty,
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
+          SpecialtiesSearchFilterBottomSheet(
+            isSelected: (String s) =>
+                searchFilterEntity.selectedSpecialties.contains(s),
+            onTap: toggleSpecialty,
           ),
-          const SizedBox(height: 20),
 
           // Uni types
           UniTypesSearchFilterBottomSheet(
