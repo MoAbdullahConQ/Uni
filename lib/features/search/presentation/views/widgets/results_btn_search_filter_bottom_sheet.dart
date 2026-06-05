@@ -20,21 +20,6 @@ class ResultsBtnSearchFilterBottomSheet extends StatelessWidget {
             style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
           ),
         ),
-        const SizedBox(width: 16),
-        Column(
-          children: [
-            Text(
-              'نتائج متوقعة',
-              style: TextStyles.regular11.copyWith(
-                color: AppColors.subtitleColor,
-              ),
-            ),
-            Text(
-              '14 جامعة',
-              style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
-            ),
-          ],
-        ),
       ],
     );
   }

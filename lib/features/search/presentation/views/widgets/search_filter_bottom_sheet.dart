@@ -19,14 +19,13 @@ class SearchFilterBottomSheet extends StatefulWidget {
 
   static const List<String> specialties = [
     'هندسة',
-    'أرخص كليات هندسة؟',
     'طب بشري',
     'صيدلة',
     'إدارة أعمال',
     'فنون تطبيقية',
   ];
 
-  static const List<String> types = ['حكومية', 'خاصة', 'معاهد عليا'];
+  static const List<String> types = ['حكومية', 'خاصة'];
 
   @override
   State<SearchFilterBottomSheet> createState() =>
@@ -121,7 +120,7 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
           ),
           const SizedBox(height: 20),
 
-          // Apply button + expected results
+          // Apply button
           ResultsBtnSearchFilterBottomSheet(
             onPressed: () {
               widget.onApply(
