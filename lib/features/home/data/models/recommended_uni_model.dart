@@ -14,7 +14,7 @@ class RecommendedUniModel extends RecommendedUniEntity {
 
   factory RecommendedUniModel.fromJson(Map<String, dynamic> json) {
     return RecommendedUniModel(
-      id: json['id'] ?? 0,
+      id: int.tryParse(json['id'].toString()) ?? 0,
       name: json['name'] ?? '',
       location: json['location'] ?? '',
       imagePath: json['background_image_url'] ?? '',

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/widgets/type_badge_widget.dart';
+import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
 
 class UniImageSection extends StatelessWidget {
@@ -33,13 +36,36 @@ class UniImageSection extends StatelessWidget {
         Positioned(
           top: 14,
           left: 14,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.bookmark_border, color: Colors.grey),
+          child: BlocBuilder<FavCubit, FavState>(
+            bloc: getIt<FavCubit>(),
+            builder: (context, state) {
+              final isFav = getIt<FavCubit>().favIds.contains(
+                recommendedUniEntity.id,
+              );
+              return GestureDetector(
+                onTap: () {
+                  if (isFav) {
+                    getIt<FavCubit>().removeFromFav(recommendedUniEntity.id);
+                  } else {
+                    getIt<FavCubit>().addToFav(recommendedUniEntity.id);
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 2,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    isFav ? Icons.bookmark : Icons.bookmark_border,
+                    color: isFav ? AppColors.primaryColor : Colors.grey,
+                  ),
+                ),
+              );
+            },
           ),
         ),
 
