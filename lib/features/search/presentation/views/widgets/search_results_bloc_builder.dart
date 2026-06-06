@@ -67,10 +67,9 @@ class _SearchResultsBlocBuilderState extends State<SearchResultsBlocBuilder> {
 
         return Column(
           children: [
-            UniCountHeader(
-              count: currentUnis.length,
-              label: 'جامعة مطابقة',
-            ),
+            const SizedBox(height: 16),
+
+            UniCountHeader(count: currentUnis.length, label: 'جامعة مطابقة'),
             const SizedBox(height: 12),
 
             Expanded(

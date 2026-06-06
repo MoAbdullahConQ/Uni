@@ -44,7 +44,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         if (feesChanged) 'yearly_Expenses[1]': filter.maxFees.toInt(),
         if (page != null) 'page': page,
       };
-
+      print(queryParams);
       final response = await apiService.get(
         endpoint: BackendEndpoints.search,
         queryParameters: queryParams,
