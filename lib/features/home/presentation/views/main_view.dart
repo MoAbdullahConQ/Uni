@@ -5,6 +5,8 @@ import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/widgets/ask_faheem_button.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_view_body.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_view_body.dart';
+import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
+import 'package:uni/features/home/presentation/manager/recommended_cubit/recommended_cubit.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
 import 'package:uni/features/home/presentation/views/widgets/home_view_body.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_view_body.dart';
@@ -36,8 +38,15 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<TrendingCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: getIt<TrendingCubit>()),
+        BlocProvider(
+          create: (_) =>
+              RecommendedCubit(getIt<RecommendedRemoteDataSource>())
+                ..fetchRecommendedUnis(),
+        ),
+      ],
       child: Scaffold(
         floatingActionButton: currentIndex != 3
             ? const AskFaheemButton()
