@@ -4,6 +4,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/location_widget.dart';
 import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
 import 'package:uni/features/home/presentation/views/widgets/uni_info_chip.dart';
+import 'package:uni/features/uni_detail/presentation/views/uni_detail_view.dart';
 
 class UniInfoSection extends StatelessWidget {
   const UniInfoSection({super.key, required this.recommendedUniEntity});
@@ -58,7 +59,13 @@ class UniInfoSection extends StatelessWidget {
               SizedBox(
                 height: 28,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      UniDetailView.routeName,
+                      arguments: recommendedUniEntity.id,
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.secondaryColor,
                     shape: RoundedRectangleBorder(
