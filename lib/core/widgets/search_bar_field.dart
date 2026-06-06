@@ -73,6 +73,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
   Widget build(BuildContext context) {
     final field = Container(
       height: widget.height,
+      // constraints: BoxConstraints(minHeight: widget.height),
       decoration: ShapeDecoration(
         color: widget.fillColor,
         shape: RoundedRectangleBorder(
@@ -99,6 +100,10 @@ class _SearchBarFieldState extends State<SearchBarField> {
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
         decoration: InputDecoration(
+          suffixIconConstraints: const BoxConstraints(
+            minWidth: 36,
+            minHeight: 36,
+          ),
           prefixIcon: SizedBox(
             width: 20,
             child: Center(
@@ -130,6 +135,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
           filled: true,
           fillColor: widget.fillColor,
         ),
+        style: TextStyles.regular14.copyWith(height: 1.1),
       ),
     );
 

@@ -99,6 +99,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
         children: [
           // Search bar
           SearchBarField(
+            height: 50,
             controller: controller,
             hintText: 'ابحث عن جامعة، كلية، أو تخصص',
             showBackButton: true,
