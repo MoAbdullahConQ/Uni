@@ -18,11 +18,26 @@ class FavViewBody extends StatefulWidget {
 
 class _FavViewBodyState extends State<FavViewBody> {
   String selectedFilter = 'الكل';
+  String searchQuery = '';
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
 
   List<UniEntity> getFilteredEntitiesList(List<UniEntity> unis) {
-    if (selectedFilter == 'الكل') return unis;
-    return unis.where((e) => e.type == selectedFilter).toList();
+    var filtered = unis;
+
+    if (selectedFilter != 'الكل') {
+      filtered = filtered.where((e) => e.type == selectedFilter).toList();
+    }
+
+    if (searchQuery.isNotEmpty) {
+      filtered = filtered
+          .where(
+            (e) => e.name.toLowerCase().contains(searchQuery.toLowerCase()),
+          )
+          .toList();
+    }
+
+    return filtered;
   }
 
   @override
@@ -48,6 +63,7 @@ class _FavViewBodyState extends State<FavViewBody> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -66,11 +82,23 @@ class _FavViewBodyState extends State<FavViewBody> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: SearchBarField(
+                controller: _searchController,
                 hintText: 'دور في المفضله',
                 height: 55,
                 hintStyle: TextStyles.regular16.copyWith(
                   color: AppColors.subtitleColor.withOpacity(0.6),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
+                onClear: () {
+                  _searchController.clear();
+                  setState(() {
+                    searchQuery = '';
+                  });
+                },
               ),
             ),
             const SizedBox(height: 16),
@@ -90,7 +118,6 @@ class _FavViewBodyState extends State<FavViewBody> {
             FavHeaderAndListBlocConsumer(
               getFilteredEntitiesList: getFilteredEntitiesList,
             ),
-            // const SizedBox(height: 32),
           ],
         ),
       ),
