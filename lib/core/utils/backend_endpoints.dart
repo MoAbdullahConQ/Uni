@@ -4,6 +4,7 @@ class BackendEndpoints {
 
   // Universities
   static const String getUniversities = '/universities';
+  static const String getTrendingUnis = '/universities/trendy';
 
   // Colleges
   // static String getColleges(int universityId) => '/colleges/$universityId';
