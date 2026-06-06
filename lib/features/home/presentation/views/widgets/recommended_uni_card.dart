@@ -12,7 +12,7 @@ class RecommendedUniCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 225,
+      width: 270,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(23),
