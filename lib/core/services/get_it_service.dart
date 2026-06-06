@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uni/core/cubits/trending_cubit/trending_cubit.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
+import 'package:uni/core/data_sources/trending_remote_data_source.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/features/browse/data/data_sources/browse_remote_data_source.dart';
 import 'package:uni/features/browse/data/repos/browse_repo_impl.dart';
@@ -32,11 +34,19 @@ Future<void> setupGetIt() async {
   // TODO: remove before production
   await Prefs.setString(
     'token',
-    "349|MgqViVpYltVaTaA2xQg5YbMpfwrHdOlHCGDqLyw54d8dcefd",
+    "351|R5XtaMOOCDvOiErNlT9eyEdIUtTeIaO7JD6D8wlh0816a1fc",
   );
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));
+
+  // ===== TRENDING =====
+  getIt.registerSingleton<TrendingRemoteDataSource>(
+    TrendingRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+  getIt.registerSingleton<TrendingCubit>(
+    TrendingCubit(getIt<TrendingRemoteDataSource>()),
+  );
 
   // ===== BROWSE =====
   // BrowseRemoteDataSource
