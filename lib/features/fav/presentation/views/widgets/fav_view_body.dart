@@ -29,6 +29,7 @@ class _FavViewBodyState extends State<FavViewBody> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    context.read<FavCubit>().getFavs();
   }
 
   void _onScroll() {

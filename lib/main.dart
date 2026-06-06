@@ -6,9 +6,6 @@ import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_fonts.dart';
-import 'package:uni/features/fav/domain/use_cases/add_to_fav_use_case.dart';
-import 'package:uni/features/fav/domain/use_cases/get_favs_use_case.dart';
-import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/splash/presentation/views/splash_view.dart';
 import 'package:uni/generated/l10n.dart';
@@ -32,12 +29,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FavCubit(
-        getFavsUseCase: getIt<GetFavsUseCase>(),
-        addToFavUseCase: getIt<AddToFavUseCase>(),
-        removeFromFavUseCase: getIt<RemoveFromFavUseCase>(),
-      )..getFavs(),
+    return BlocProvider.value(
+      value: getIt<FavCubit>(),
       child: MaterialApp(
         theme: ThemeData(
           fontFamily: AppFonts.arabicFont,

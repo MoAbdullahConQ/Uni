@@ -12,6 +12,7 @@ import 'package:uni/features/fav/domain/repos/fav_repo.dart';
 import 'package:uni/features/fav/domain/use_cases/add_to_fav_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/get_favs_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart';
+import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
@@ -31,7 +32,7 @@ Future<void> setupGetIt() async {
   // TODO: remove before production
   await Prefs.setString(
     'token',
-    "327|mfILpHeuSeZYX3z8MWeuK7fnL2FzpPEPxu12BlUL3532e5d7",
+    "349|MgqViVpYltVaTaA2xQg5YbMpfwrHdOlHCGDqLyw54d8dcefd",
   );
 
   // ApiService
@@ -64,6 +65,15 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<AddToFavUseCase>(AddToFavUseCase(getIt<FavRepo>()));
   getIt.registerSingleton<RemoveFromFavUseCase>(
     RemoveFromFavUseCase(getIt<FavRepo>()),
+  );
+
+  // FavCubit
+  getIt.registerSingleton<FavCubit>(
+    FavCubit(
+      getFavsUseCase: getIt<GetFavsUseCase>(),
+      addToFavUseCase: getIt<AddToFavUseCase>(),
+      removeFromFavUseCase: getIt<RemoveFromFavUseCase>(),
+    ),
   );
 
   // ===== SEARCH =====
