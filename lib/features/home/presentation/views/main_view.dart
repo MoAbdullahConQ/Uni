@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/cubits/trending_cubit/trending_cubit.dart';
 import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/widgets/ask_faheem_button.dart';
+import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_view_body.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_view_body.dart';
 import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
@@ -34,6 +35,7 @@ class _MainViewState extends State<MainView> {
       const ProfileViewBody(),
     ];
     getIt<TrendingCubit>().fetchTrendingUnis();
+    getIt<FavCubit>().getFavs();
   }
 
   @override
