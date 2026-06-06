@@ -8,16 +8,21 @@ class UniListWidget extends StatelessWidget {
     super.key,
     required this.selectedFilterUniEntities,
     required this.itemCount,
+    this.scrollController,
   });
 
   final List<UniEntity> selectedFilterUniEntities;
   final int itemCount;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+      controller: scrollController,
+      physics: scrollController != null
+          ? const AlwaysScrollableScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
+      shrinkWrap: scrollController == null,
       itemCount: itemCount,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {

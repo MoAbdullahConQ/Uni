@@ -29,7 +29,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
     _nextCursor = null;
     _isLoadingMore = false;
 
-    if (query.isEmpty) {
+    if (query.isEmpty && (_lastFilter.activeFiltersCount == 0)) {
       emit(SearchInitial());
       return;
     }
@@ -41,21 +41,20 @@ class SearchCubit extends Cubit<SearchCubitState> {
       filter: _lastFilter,
     );
 
-    result.fold(
-      (failure) => emit(SearchFailure(failure.message)),
-      (response) {
-        _allResults.addAll(response.uniEntities);
-        _nextCursor = response.nextCursor;
-        if (_allResults.isEmpty) {
-          emit(SearchEmpty());
-        } else {
-          emit(SearchSuccess(
+    result.fold((failure) => emit(SearchFailure(failure.message)), (response) {
+      _allResults.addAll(response.uniEntities);
+      _nextCursor = response.nextCursor;
+      if (_allResults.isEmpty) {
+        emit(SearchEmpty());
+      } else {
+        emit(
+          SearchSuccess(
             uniEntities: List.from(_allResults),
             nextCursor: _nextCursor,
-          ));
-        }
-      },
-    );
+          ),
+        );
+      }
+    });
   }
 
   Future<void> loadMore() async {
@@ -73,19 +72,23 @@ class SearchCubit extends Cubit<SearchCubitState> {
     result.fold(
       (failure) {
         _isLoadingMore = false;
-        emit(SearchPaginationFailure(
-          errMessage: failure.message,
-          currentUnis: List.from(_allResults),
-        ));
+        emit(
+          SearchPaginationFailure(
+            errMessage: failure.message,
+            currentUnis: List.from(_allResults),
+          ),
+        );
       },
       (response) {
         _allResults.addAll(response.uniEntities);
         _nextCursor = response.nextCursor;
         _isLoadingMore = false;
-        emit(SearchSuccess(
-          uniEntities: List.from(_allResults),
-          nextCursor: _nextCursor,
-        ));
+        emit(
+          SearchSuccess(
+            uniEntities: List.from(_allResults),
+            nextCursor: _nextCursor,
+          ),
+        );
       },
     );
   }
