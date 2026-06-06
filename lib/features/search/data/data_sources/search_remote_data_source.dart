@@ -31,6 +31,8 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   }) async {
     try {
       final bool filterByType = filter.selectedTypes.length == 1;
+      final bool feesChanged =
+          filter.minFees != 10000 || filter.maxFees != 250000;
 
       final queryParams = <String, dynamic>{
         'per_page': 10,
@@ -38,8 +40,8 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         if (filterByType) 'type': _mapTypeToApi(filter.selectedTypes.first),
         for (int i = 0; i < filter.selectedSpecialties.length; i++)
           'speciality[$i]': filter.selectedSpecialties[i],
-        'yearly_Expenses[0]': filter.minFees.toInt(),
-        'yearly_Expenses[1]': filter.maxFees.toInt(),
+        if (feesChanged) 'yearly_Expenses[0]': filter.minFees.toInt(),
+        if (feesChanged) 'yearly_Expenses[1]': filter.maxFees.toInt(),
         if (page != null) 'page': page,
       };
 
