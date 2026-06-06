@@ -12,12 +12,8 @@ class SearchUnisUseCase {
   Future<Either<Failure, UnisResponse>> call({
     required String query,
     required SearchFilterEntity filter,
-    String? cursor,
+    int? page,
   }) {
-    return searchRepo.search(
-      query: query,
-      filter: filter,
-      cursor: cursor,
-    );
+    return searchRepo.search(query: query, filter: filter, page: page);
   }
 }

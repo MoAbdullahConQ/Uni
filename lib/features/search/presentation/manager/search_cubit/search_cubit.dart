@@ -11,13 +11,10 @@ class SearchCubit extends Cubit<SearchCubitState> {
   SearchCubit(this.searchUnisUseCase) : super(SearchInitial());
 
   final List<UniEntity> _allResults = [];
-  String? _nextCursor;
+  int? _nextPage;
   bool _isLoadingMore = false;
   String _lastQuery = '';
   SearchFilterEntity _lastFilter = const SearchFilterEntity();
-
-  // Debounce timer
-  // DateTime? _lastSearchTime;
 
   Future<void> search({
     required String query,
@@ -26,7 +23,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
     _lastQuery = query;
     _lastFilter = filter ?? const SearchFilterEntity();
     _allResults.clear();
-    _nextCursor = null;
+    _nextPage = null;
     _isLoadingMore = false;
 
     if (query.isEmpty && (_lastFilter.activeFiltersCount == 0)) {
@@ -41,24 +38,25 @@ class SearchCubit extends Cubit<SearchCubitState> {
       filter: _lastFilter,
     );
 
-    result.fold((failure) => emit(SearchFailure(failure.message)), (response) {
-      _allResults.addAll(response.uniEntities);
-      _nextCursor = response.nextCursor;
-      if (_allResults.isEmpty) {
-        emit(SearchEmpty());
-      } else {
-        emit(
-          SearchSuccess(
+    result.fold(
+      (failure) => emit(SearchFailure(failure.message)),
+      (response) {
+        _allResults.addAll(response.uniEntities);
+        _nextPage = response.nextPage;
+        if (_allResults.isEmpty) {
+          emit(SearchEmpty());
+        } else {
+          emit(SearchSuccess(
             uniEntities: List.from(_allResults),
-            nextCursor: _nextCursor,
-          ),
-        );
-      }
-    });
+            hasMore: _nextPage != null,
+          ));
+        }
+      },
+    );
   }
 
   Future<void> loadMore() async {
-    if (_isLoadingMore || _nextCursor == null) return;
+    if (_isLoadingMore || _nextPage == null) return;
 
     _isLoadingMore = true;
     emit(SearchPaginationLoading(List.from(_allResults)));
@@ -66,29 +64,25 @@ class SearchCubit extends Cubit<SearchCubitState> {
     final result = await searchUnisUseCase.call(
       query: _lastQuery,
       filter: _lastFilter,
-      cursor: _nextCursor,
+      page: _nextPage,
     );
 
     result.fold(
       (failure) {
         _isLoadingMore = false;
-        emit(
-          SearchPaginationFailure(
-            errMessage: failure.message,
-            currentUnis: List.from(_allResults),
-          ),
-        );
+        emit(SearchPaginationFailure(
+          errMessage: failure.message,
+          currentUnis: List.from(_allResults),
+        ));
       },
       (response) {
         _allResults.addAll(response.uniEntities);
-        _nextCursor = response.nextCursor;
+        _nextPage = response.nextPage;
         _isLoadingMore = false;
-        emit(
-          SearchSuccess(
-            uniEntities: List.from(_allResults),
-            nextCursor: _nextCursor,
-          ),
-        );
+        emit(SearchSuccess(
+          uniEntities: List.from(_allResults),
+          hasMore: _nextPage != null,
+        ));
       },
     );
   }

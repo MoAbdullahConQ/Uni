@@ -7,8 +7,8 @@ abstract class SearchRepo {
   Future<Either<Failure, UnisResponse>> search({
     required String query,
     required SearchFilterEntity filter,
-    String? cursor,
+    int? page,
   });
-  
+
   Future<Either<Failure, List<String>>> getSpecialties();
 }

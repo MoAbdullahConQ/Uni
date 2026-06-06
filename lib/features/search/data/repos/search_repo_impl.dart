@@ -15,13 +15,13 @@ class SearchRepoImpl implements SearchRepo {
   Future<Either<Failure, UnisResponse>> search({
     required String query,
     required SearchFilterEntity filter,
-    String? cursor,
+    int? page,
   }) async {
     try {
       final response = await remoteDataSource.search(
         query: query,
         filter: filter,
-        cursor: cursor,
+        page: page,
       );
       return right(response);
     } on CustomExceptions catch (e) {

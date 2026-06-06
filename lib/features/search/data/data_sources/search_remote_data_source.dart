@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/entities/unis_response.dart';
 import 'package:uni/core/errors/custom_exceptions.dart';
 import 'package:uni/core/errors/failures.dart';
-import 'package:uni/core/helper_functions/get_unis_list.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
+import 'package:uni/features/search/data/models/search_uni_model.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
 
 abstract class SearchRemoteDataSource {
   Future<UnisResponse> search({
     required String query,
     required SearchFilterEntity filter,
-    String? cursor,
+    int? page,
   });
 
   Future<List<String>> getSpecialties();
@@ -26,7 +27,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   Future<UnisResponse> search({
     required String query,
     required SearchFilterEntity filter,
-    String? cursor,
+    int? page,
   }) async {
     try {
       final bool filterByType = filter.selectedTypes.length == 1;
@@ -39,7 +40,7 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
           'speciality[$i]': filter.selectedSpecialties[i],
         'yearly_Expenses[0]': filter.minFees.toInt(),
         'yearly_Expenses[1]': filter.maxFees.toInt(),
-        if (cursor != null) 'cursor': cursor,
+        if (page != null) 'page': page,
       };
 
       final response = await apiService.get(
@@ -47,12 +48,21 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
         queryParameters: queryParams,
       );
 
-      final nextCursor = response['meta']?['next_cursor'] as String?;
+      // next_page_url بيكون null لو دي آخر صفحة
+      final nextPageUrl = response['next_page_url'] as String?;
+      int? nextPage;
+      if (nextPageUrl != null) {
+        final uri = Uri.parse(nextPageUrl);
+        final pageStr = uri.queryParameters['page'];
+        nextPage = int.tryParse(pageStr ?? '');
+      }
 
-      return UnisResponse(
-        uniEntities: getUnisList(response),
-        nextCursor: nextCursor,
-      );
+      final data = response['data'] as List<dynamic>? ?? [];
+      final List<UniEntity> unis = data
+          .map((e) => SearchUniModel.fromJson(e))
+          .toList();
+
+      return UnisResponse(uniEntities: unis, nextPage: nextPage);
     } on DioException catch (e) {
       throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
     }
