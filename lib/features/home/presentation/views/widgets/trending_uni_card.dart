@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/features/home/domain/entities/trending_uni_entity.dart';
+import 'package:uni/core/entities/trending_uni_entity.dart';
 
 class TrendingUniCard extends StatelessWidget {
   final TrendingUniEntity trendingUniEntity;
@@ -39,7 +39,7 @@ class TrendingUniCard extends StatelessWidget {
             ),
             child: Center(
               child: trendingUniEntity.logoPath != null
-                  ? Image.asset(
+                  ? Image.network(
                       trendingUniEntity.logoPath!,
                       fit: BoxFit.contain,
                     )
@@ -68,7 +68,7 @@ class TrendingUniCard extends StatelessWidget {
                   border: Border.all(color: Colors.white.withOpacity(0.2)),
                 ),
                 child: Text(
-                  '+${trendingUniEntity.interestPercent}% اهتمام',
+                  '#${trendingUniEntity.worldRanking} عالمياً',
                   style: TextStyles.bold11.copyWith(
                     color: AppColors.secondaryColor,
                   ),
