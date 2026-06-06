@@ -16,5 +16,5 @@ class BackendEndpoints {
   static const String getFavs = '/university_fav';
 
   // Search
-  static const String search = '/public-search';
+  static const String search = '/search-univ';
 }

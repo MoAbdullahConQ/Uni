@@ -14,12 +14,12 @@ class SearchUniModel extends UniEntity {
   factory SearchUniModel.fromJson(Map<String, dynamic> json) {
     return SearchUniModel(
       id: json['id'] as int,
-      name: json['university_name'] ?? '',
+      name: json['name'] ?? '',
       location: json['location'] ?? '',
-      imagePath: json['university_image'] ?? '',
-      type: _mapType(json['university_type'] ?? ''),
-      rating: double.tryParse(json['university_rate'].toString()) ?? 0.0,
-      worldRanking: 0,
+      imagePath: json['background_image_url'] ?? '',
+      type: _mapType(json['type'] ?? ''),
+      rating: double.tryParse(json['rate'].toString()) ?? 0.0,
+      worldRanking: int.tryParse(json['world_ranking'].toString()) ?? 0,
     );
   }
 
