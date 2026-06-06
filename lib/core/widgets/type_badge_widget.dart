@@ -11,7 +11,7 @@ class TypeBadgeWidget extends StatelessWidget {
     switch (type) {
       case 'حكومية':
         return AppColors.secondaryColor;
-      case 'خاصة':
+      case 'خاص':
         return AppColors.primaryColor;
       default:
         return Colors.white;
@@ -20,7 +20,7 @@ class TypeBadgeWidget extends StatelessWidget {
 
   Color _getTextColor() {
     switch (type) {
-      case 'خاصة':
+      case 'خاص':
         return AppColors.secondaryColor;
       default:
         return AppColors.primaryColor;
