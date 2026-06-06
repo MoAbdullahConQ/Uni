@@ -2,6 +2,7 @@ import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
 
 class RecommendedUniModel extends RecommendedUniEntity {
   RecommendedUniModel({
+    required super.id,
     required super.name,
     required super.location,
     required super.imagePath,
@@ -13,6 +14,7 @@ class RecommendedUniModel extends RecommendedUniEntity {
 
   factory RecommendedUniModel.fromJson(Map<String, dynamic> json) {
     return RecommendedUniModel(
+      id: json['id'] ?? 0,
       name: json['name'] ?? '',
       location: json['location'] ?? '',
       imagePath: json['background_image_url'] ?? '',
