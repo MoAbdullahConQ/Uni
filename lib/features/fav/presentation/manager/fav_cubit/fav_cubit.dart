@@ -22,6 +22,7 @@ class FavCubit extends Cubit<FavState> {
   bool _isLoadingMore = false;
 
   bool get hasMore => _nextCursor != null;
+  bool get isLoadingMore => _isLoadingMore;
 
   final Set<int> _favIds = {};
   Set<int> get favIds => Set.unmodifiable(_favIds);

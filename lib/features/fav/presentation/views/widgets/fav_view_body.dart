@@ -52,9 +52,9 @@ class _FavViewBodyState extends State<FavViewBody> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (currentScroll >= maxScroll * 0.8) {
-      final state = context.read<FavCubit>().state;
-      if (state is! FavPaginationLoading) {
-        context.read<FavCubit>().loadMore();
+      final cubit = context.read<FavCubit>();
+      if (!cubit.isLoadingMore && cubit.hasMore) {
+        cubit.loadMore();
       }
     }
   }
