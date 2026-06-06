@@ -3,7 +3,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/location_widget.dart';
 import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
-import 'package:uni/features/home/presentation/views/widgets/tag_chip.dart';
+import 'package:uni/features/home/presentation/views/widgets/uni_info_chip.dart';
 
 class UniInfoSection extends StatelessWidget {
   const UniInfoSection({super.key, required this.recommendedUniEntity});
@@ -24,6 +24,8 @@ class UniInfoSection extends StatelessWidget {
               color: AppColors.primaryColor,
               height: 1.56,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
 
           const SizedBox(height: 6),
@@ -33,27 +35,25 @@ class UniInfoSection extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // Tags and CTA Button
+          // Rate + Students + CTA
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Tags
-              Expanded(
-                child: ClipRect(
-                  child: SizedBox(
-                    height: 26, // ارتفاع سطر واحد بس
-                    child: Wrap(
-                      alignment: WrapAlignment.start,
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: recommendedUniEntity.tags
-                          .map((tag) => TagChip(label: tag))
-                          .toList(),
-                    ),
-                  ),
-                ),
+              // Rate chip
+              UniInfoChip(
+                icon: Icons.star_rounded,
+                iconColor: const Color(0xFFFFC107),
+                label: recommendedUniEntity.rate,
               ),
               const SizedBox(width: 6),
+              // Students chip
+              UniInfoChip(
+                icon: Icons.people_alt_rounded,
+                iconColor: AppColors.primaryColor,
+                label:
+                    '${_formatCount(recommendedUniEntity.studentsCount)} طالب',
+              ),
+              const Spacer(),
               // CTA Button
               SizedBox(
                 height: 28,
@@ -83,5 +83,12 @@ class UniInfoSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatCount(int count) {
+    if (count >= 1000) {
+      return '${(count / 1000).toStringAsFixed(1)}k';
+    }
+    return count.toString();
   }
 }
