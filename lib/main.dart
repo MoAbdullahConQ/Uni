@@ -15,10 +15,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Prefs().init();
+  
+  Bloc.observer = CustomBlocObserver();
 
   await setupGetIt();
-
-  Bloc.observer = CustomBlocObserver();
 
   runApp(const MyApp());
 }
