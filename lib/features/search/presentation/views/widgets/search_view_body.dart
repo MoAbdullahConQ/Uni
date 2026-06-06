@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/helper_functions/recent_searches_helper.dart';
 import 'package:uni/core/widgets/filter_button_badge.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
@@ -21,12 +22,38 @@ class SearchViewBody extends StatefulWidget {
 class _SearchViewBodyState extends State<SearchViewBody> {
   final TextEditingController controller = TextEditingController();
   SearchFilterEntity searchFilterEntity = const SearchFilterEntity();
+  List<String> recentSearches = [];
+
+  @override
+  void initState() {
+    super.initState();
+    //get recent searches when page opens
+    recentSearches = RecentSearchesHelper.getAll();
+  }
 
   void _onSearchChanged(String query) {
     context.read<SearchCubit>().search(
       query: query,
       filter: searchFilterEntity,
     );
+  }
+
+  /// called when user submits search (from keyboard or recent item tap)
+  Future<void> _onSearchSubmitted(String query) async {
+    if (query.trim().isEmpty) return;
+    await RecentSearchesHelper.add(query);
+    setState(() => recentSearches = RecentSearchesHelper.getAll());
+    _onSearchChanged(query);
+  }
+
+  Future<void> _onDeleteRecent(String query) async {
+    await RecentSearchesHelper.remove(query);
+    setState(() => recentSearches = RecentSearchesHelper.getAll());
+  }
+
+  Future<void> _onClearAllRecent() async {
+    await RecentSearchesHelper.clearAll();
+    setState(() => recentSearches = []);
   }
 
   void _showFilterSheet() {
@@ -76,6 +103,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
             hintText: 'ابحث عن جامعة، كلية، أو تخصص',
             showBackButton: true,
             onChanged: _onSearchChanged,
+            onSubmitted: _onSearchSubmitted, // save when submit
             onClear: () {
               controller.clear();
               context.read<SearchCubit>().search(
@@ -96,14 +124,15 @@ class _SearchViewBodyState extends State<SearchViewBody> {
           Expanded(
             child: SearchContentBlocBuilder(
               query: controller.text,
+              recentSearches: recentSearches,
               onSearchTap: (query) {
                 controller.text = query;
-                _onSearchChanged(query);
+                _onSearchSubmitted(query);
               },
+              onDeleteRecent: _onDeleteRecent,
+              onClearAllRecent: _onClearAllRecent,
               onClearFilters: () {
-                setState(
-                  () => searchFilterEntity = const SearchFilterEntity(),
-                );
+                setState(() => searchFilterEntity = const SearchFilterEntity());
                 controller.clear();
                 context.read<SearchCubit>().search(
                   query: '',

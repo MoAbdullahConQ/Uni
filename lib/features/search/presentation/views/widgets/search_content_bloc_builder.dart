@@ -11,12 +11,18 @@ class SearchContentBlocBuilder extends StatelessWidget {
   const SearchContentBlocBuilder({
     super.key,
     required this.query,
+    required this.recentSearches,
     required this.onSearchTap,
+    required this.onDeleteRecent,
+    required this.onClearAllRecent,
     required this.onClearFilters,
   });
 
   final String query;
+  final List<String> recentSearches;
   final ValueChanged<String> onSearchTap;
+  final ValueChanged<String> onDeleteRecent;
+  final VoidCallback onClearAllRecent;
   final VoidCallback onClearFilters;
 
   @override
@@ -32,9 +38,10 @@ class SearchContentBlocBuilder extends StatelessWidget {
                   : getDummyTrendingSearches();
 
               return SearchHomeWidget(
-                recentSearches: getDummyRecentSearches(),
+                recentSearches: recentSearches, // real recent searches from shared prefs
                 trendingSearches: trendingSearches,
-                onClearAll: () {},
+                onClearAll: onClearAllRecent, // remove all recent searches
+                onDeleteRecent: onDeleteRecent, // remove one recent search
                 onSearchTap: onSearchTap,
               );
             },

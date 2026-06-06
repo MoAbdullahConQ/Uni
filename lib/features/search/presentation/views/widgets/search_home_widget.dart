@@ -11,12 +11,14 @@ class SearchHomeWidget extends StatelessWidget {
     required this.trendingSearches,
     this.onClearAll,
     this.onSearchTap,
+    this.onDeleteRecent,
   });
 
   final List<String> trendingSearches;
   final VoidCallback? onClearAll;
   final List<String> recentSearches;
   final void Function(String query)? onSearchTap;
+  final void Function(String query)? onDeleteRecent;
 
   @override
   Widget build(BuildContext context) {
@@ -28,39 +30,43 @@ class SearchHomeWidget extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Recent searches header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'عمليات البحث الأخيرة',
-                style: TextStyles.bold18.copyWith(
-                  color: AppColors.primaryColor,
-                ),
-              ),
-              GestureDetector(
-                onTap: onClearAll,
-                child: Text(
-                  'مسح الكل',
-                  style: TextStyles.semiBold13.copyWith(
-                    color: AppColors.subtitleColor,
+          // display recent searches section only if there are recent searches
+          if (recentSearches.isNotEmpty) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'عمليات البحث الأخيرة',
+                  style: TextStyles.bold18.copyWith(
+                    color: AppColors.primaryColor,
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: onClearAll,
+                  child: Text(
+                    'مسح الكل',
+                    style: TextStyles.semiBold13.copyWith(
+                      color: AppColors.subtitleColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
 
-          // Recent searches list
-          ...recentSearches.map(
-            (search) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: RecentSearchItem(
-                text: search,
-                onTap: () => onSearchTap?.call(search),
+            // Recent searches list
+            ...recentSearches.map(
+              (search) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: RecentSearchItem(
+                  text: search,
+                  onTap: () => onSearchTap?.call(search),
+                  onDelete: () => onDeleteRecent?.call(search),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
+          ],
 
           // Trending header
           Row(

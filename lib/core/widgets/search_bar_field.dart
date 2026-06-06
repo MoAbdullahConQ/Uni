@@ -25,11 +25,13 @@ class SearchBarField extends StatefulWidget {
     this.shadow,
     this.onTap,
     this.onClear,
+    this.onSubmitted,
   });
 
   final String hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final void Function(String)? onSubmitted;
   final Color? iconColor;
   final Widget? suffixIcon;
   final Widget? leading;
@@ -95,6 +97,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
         onTap: widget.onTap,
         controller: widget.controller,
         onChanged: widget.onChanged,
+        onSubmitted: widget.onSubmitted,
         decoration: InputDecoration(
           prefixIcon: SizedBox(
             width: 20,
