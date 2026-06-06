@@ -15,6 +15,7 @@ import 'package:uni/features/fav/domain/use_cases/add_to_fav_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/get_favs_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
+import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
@@ -34,7 +35,7 @@ Future<void> setupGetIt() async {
   // TODO: remove before production
   await Prefs.setString(
     'token',
-    "351|R5XtaMOOCDvOiErNlT9eyEdIUtTeIaO7JD6D8wlh0816a1fc",
+    "367|sTDbXadqbrqvcZi2waYD0ST1uVaWSa7SxMsNfptX4f9a7c81",
   );
 
   // ApiService
@@ -46,6 +47,11 @@ Future<void> setupGetIt() async {
   );
   getIt.registerSingleton<TrendingCubit>(
     TrendingCubit(getIt<TrendingRemoteDataSource>()),
+  );
+
+  // ===== RECOMMENDED =====
+  getIt.registerSingleton<RecommendedRemoteDataSource>(
+    RecommendedRemoteDataSourceImpl(getIt<ApiService>()),
   );
 
   // ===== BROWSE =====
