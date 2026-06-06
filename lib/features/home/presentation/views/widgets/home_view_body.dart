@@ -8,6 +8,7 @@ import 'package:uni/features/home/presentation/views/widgets/faheem_banner_widge
 import 'package:uni/features/home/presentation/views/widgets/recommended_unis_section.dart';
 import 'package:uni/features/home/presentation/views/widgets/trending_unis_section.dart';
 import 'package:uni/features/home/presentation/views/widgets/browse_tile.dart';
+import 'package:uni/features/search/presentation/views/search_view.dart';
 
 import '../../../../../core/widgets/search_bar_field.dart';
 
@@ -64,6 +65,9 @@ class HomeViewBody extends StatelessWidget {
               height: 58,
               borderWidth: 1.6,
               borderColor: AppColors.primaryColor.withOpacity(0.2),
+              onTap: () {
+                Navigator.pushNamed(context, SearchView.routeName);
+              },
             ),
             const SizedBox(height: 16),
             const FaheemBannerWidget(),
