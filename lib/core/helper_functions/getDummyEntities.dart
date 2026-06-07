@@ -145,60 +145,60 @@ List<UniEntity> getDummyUniEntities() {
   ];
 }
 
-List<NotificationEntity> getDummyTodayNotifications() {
-  return const [
-    NotificationEntity(
-      title: 'تحديث مصاريف الجامعات',
-      body:
-          'تم تحديث قائمة المصاريف للجامعة الألمانية (GUC) للعام الدراسي الجديد. تصفح التحديثات الآن.',
-      timeLabel: 'منذ 10 د',
-      type: NotificationType.update,
-      isRead: false,
-    ),
-    NotificationEntity(
-      title: 'فهيم أفندي 🤖',
-      body:
-          'رديت على استفسارك بخصوص كليات الهندسة المتاحة بمجموع 85%. افتح المحادثة للتفاصيل.',
-      timeLabel: 'منذ ساعتين',
-      type: NotificationType.faheem,
-      isRead: false,
-    ),
-  ];
-}
+// List<NotificationEntity> getDummyTodayNotifications() {
+//   return const [
+//     NotificationEntity(
+//       title: 'تحديث مصاريف الجامعات',
+//       body:
+//           'تم تحديث قائمة المصاريف للجامعة الألمانية (GUC) للعام الدراسي الجديد. تصفح التحديثات الآن.',
+//       timeLabel: 'منذ 10 د',
+//       type: NotificationType.update,
+//       isRead: false,
+//     ),
+//     NotificationEntity(
+//       title: 'فهيم أفندي 🤖',
+//       body:
+//           'رديت على استفسارك بخصوص كليات الهندسة المتاحة بمجموع 85%. افتح المحادثة للتفاصيل.',
+//       timeLabel: 'منذ ساعتين',
+//       type: NotificationType.faheem,
+//       isRead: false,
+//     ),
+//   ];
+// }
 
-List<NotificationEntity> getDummyYesterdayNotifications() {
-  return const [
-    NotificationEntity(
-      title: 'منحة دراسية جديدة',
-      body:
-          'أعلنت جامعة النيل عن منح دراسية تصل إلى 50% لطلاب شعبة علمي رياضة. قدم الآن!',
-      timeLabel: '10:30 ص',
-      type: NotificationType.scholarship,
-      isRead: true,
-    ),
-  ];
-}
+// List<NotificationEntity> getDummyYesterdayNotifications() {
+//   return const [
+//     NotificationEntity(
+//       title: 'منحة دراسية جديدة',
+//       body:
+//           'أعلنت جامعة النيل عن منح دراسية تصل إلى 50% لطلاب شعبة علمي رياضة. قدم الآن!',
+//       timeLabel: '10:30 ص',
+//       type: NotificationType.scholarship,
+//       isRead: true,
+//     ),
+//   ];
+// }
 
-List<NotificationEntity> getDummyThisWeekNotifications() {
-  return const [
-    NotificationEntity(
-      title: 'أهلاً بك في جامعتي 🎓',
-      body:
-          'سعداء بانضمامك لنا! ابدأ بتحديد اهتماماتك لنرشح لك أفضل الجامعات المناسبة لك.',
-      timeLabel: 'الثلاثاء',
-      type: NotificationType.welcome,
-      isRead: true,
-    ),
-    NotificationEntity(
-      title: 'استكمل بياناتك',
-      body:
-          'ملفك الشخصي مكتمل بنسبة 50%. أضف المحافظة الخاصة بك للحصول على نتائج أدق.',
-      timeLabel: 'الإثنين',
-      type: NotificationType.profile,
-      isRead: true,
-    ),
-  ];
-}
+// List<NotificationEntity> getDummyThisWeekNotifications() {
+//   return const [
+//     NotificationEntity(
+//       title: 'أهلاً بك في جامعتي 🎓',
+//       body:
+//           'سعداء بانضمامك لنا! ابدأ بتحديد اهتماماتك لنرشح لك أفضل الجامعات المناسبة لك.',
+//       timeLabel: 'الثلاثاء',
+//       type: NotificationType.welcome,
+//       isRead: true,
+//     ),
+//     NotificationEntity(
+//       title: 'استكمل بياناتك',
+//       body:
+//           'ملفك الشخصي مكتمل بنسبة 50%. أضف المحافظة الخاصة بك للحصول على نتائج أدق.',
+//       timeLabel: 'الإثنين',
+//       type: NotificationType.profile,
+//       isRead: true,
+//     ),
+//   ];
+// }
 
 List<SuggestionItemEntity> getDummySuggestionItems() {
   return const [

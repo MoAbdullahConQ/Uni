@@ -1,23 +1,17 @@
-enum NotificationType {
-  update,   // تحديث مصاريف - icon refresh
-  faheem,   // رد فهيم - robot image
-  scholarship, // منحة دراسية - icon badge
-  welcome,  // أهلاً بك - icon sparkle
-  profile,  // استكمل بياناتك - icon person
-}
-
 class NotificationEntity {
+  final int id;
   final String title;
   final String body;
-  final String timeLabel;   // 'منذ 10 د' | '10:30 ص' | 'الثلاثاء'
-  final NotificationType type;
+  final String timeLabel;
   final bool isRead;
+  final DateTime createdAt;
 
   const NotificationEntity({
+    required this.id,
     required this.title,
     required this.body,
     required this.timeLabel,
-    required this.type,
+    required this.createdAt,
     this.isRead = false,
   });
 }

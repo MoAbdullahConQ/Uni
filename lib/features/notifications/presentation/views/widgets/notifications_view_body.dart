@@ -9,9 +9,9 @@ class NotificationsViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: kHorizontalPadding,
           vertical: kTopPadding,
         ),
@@ -19,30 +19,33 @@ class NotificationsViewBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // App bar
-            const NotificationsAppBar(),
-            const SizedBox(height: 24),
+            NotificationsAppBar(),
+            SizedBox(height: 24),
 
             // Today
             NotificationGroupSection(
               label: 'اليوم',
-              notifications: getDummyTodayNotifications(),
+              // notifications: getDummyTodayNotifications(),
+              notifications: [],
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
-             // Yesterday
+            // Yesterday
             NotificationGroupSection(
               label: 'الأمس',
-              notifications: getDummyYesterdayNotifications(),
+              // notifications: getDummyYesterdayNotifications(),
+              notifications: [],
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // This week
             NotificationGroupSection(
               label: 'هذا الأسبوع',
-              notifications: getDummyThisWeekNotifications(),
+              notifications: [],
+              // notifications: getDummyThisWeekNotifications(),
             ),
 
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
           ],
         ),
       ),

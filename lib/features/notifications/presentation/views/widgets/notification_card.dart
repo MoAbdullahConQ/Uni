@@ -28,7 +28,7 @@ class NotificationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Icon
-          NotificationIconWidget(type: notificationEntity.type),
+          // NotificationIconWidget(type: notificationEntity.type),
           const SizedBox(width: 12),
 
           // Content
