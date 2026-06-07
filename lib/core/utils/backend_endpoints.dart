@@ -16,6 +16,12 @@ class BackendEndpoints {
   static const String removeFromFav = '/university_fav/remove';
   static const String getFavs = '/university_fav';
 
+  // Notifications
+  static const String getNotifications = '/notifications';
+  static String markNotificationAsRead(int id) =>
+      '/notifications/mark-as-read/$id';
+  static const String markAllNotificationsAsRead = '/notifications/markall';
+
   // Search
   static const String search = '/search-univ';
 }

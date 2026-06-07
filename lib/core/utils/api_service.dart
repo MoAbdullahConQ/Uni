@@ -56,4 +56,15 @@ class ApiService {
     );
     return response.data;
   }
+
+  Future<Map<String, dynamic>> patch({
+    required String endpoint,
+    Map<String, dynamic>? data,
+  }) async {
+    var response = await dio.patch(
+      '${BackendEndpoints.baseUrl}$endpoint',
+      data: data,
+    );
+    return response.data;
+  }
 }
