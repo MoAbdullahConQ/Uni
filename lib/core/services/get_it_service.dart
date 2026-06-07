@@ -17,6 +17,12 @@ import 'package:uni/features/fav/domain/use_cases/get_favs_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
+import 'package:uni/features/notifications/data/data_sources/notifications_remote_data_source.dart';
+import 'package:uni/features/notifications/data/repos/notifications_repo_impl.dart';
+import 'package:uni/features/notifications/domain/repos/notifications_repo.dart';
+import 'package:uni/features/notifications/domain/use_cases/get_notifications_use_case.dart';
+import 'package:uni/features/notifications/domain/use_cases/mark_all_notifications_as_read_use_case.dart';
+import 'package:uni/features/notifications/domain/use_cases/mark_notification_as_read_use_case.dart';
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
@@ -110,5 +116,22 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<GetSpecialtiesUseCase>(
     GetSpecialtiesUseCase(getIt<SearchRepo>()),
+  );
+
+  // ===== NOTIFICATIONS =====
+  getIt.registerSingleton<NotificationsRemoteDataSource>(
+    NotificationsRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+  getIt.registerSingleton<NotificationsRepo>(
+    NotificationsRepoImpl(getIt<NotificationsRemoteDataSource>()),
+  );
+  getIt.registerSingleton<GetNotificationsUseCase>(
+    GetNotificationsUseCase(getIt<NotificationsRepo>()),
+  );
+  getIt.registerSingleton<MarkNotificationAsReadUseCase>(
+    MarkNotificationAsReadUseCase(getIt<NotificationsRepo>()),
+  );
+  getIt.registerSingleton<MarkAllNotificationsAsReadUseCase>(
+    MarkAllNotificationsAsReadUseCase(getIt<NotificationsRepo>()),
   );
 }
