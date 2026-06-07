@@ -36,6 +36,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_dotenv: ^6.0.1
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^2.2.0
@@ -64,6 +65,7 @@ flutter:
     - assets/images/
     - assets/images/bold/
     - assets/images/outline/
+    - .env
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

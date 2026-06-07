@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uni/core/cubits/trending_cubit/trending_cubit.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
@@ -33,10 +34,8 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<Dio>(Dio());
 
   // TODO: remove before production
-  await Prefs.setString(
-    'token',
-    "367|sTDbXadqbrqvcZi2waYD0ST1uVaWSa7SxMsNfptX4f9a7c81",
-  );
+  // put it auth feature after login
+  await Prefs.setString('token', dotenv.env['TOKEN'] ?? '');
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));

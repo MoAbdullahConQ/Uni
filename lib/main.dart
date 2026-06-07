@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uni/core/helper_functions/on_generate_routes.dart';
 import 'package:uni/core/services/custom_bloc_observer.dart';
 import 'package:uni/core/services/get_it_service.dart';
@@ -14,8 +15,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load(fileName: '.env');
+
   await Prefs().init();
-  
+
   Bloc.observer = CustomBlocObserver();
 
   await setupGetIt();

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
 
@@ -10,6 +11,7 @@ class ApiService {
       InterceptorsWrapper(
         onRequest: (options, handler) {
           options.headers['Accept'] = 'application/json';
+          options.headers['Api-Key'] = dotenv.env['API_KEY'] ?? '';
 
           final token = Prefs.getString('token');
           if (token.isNotEmpty) {
