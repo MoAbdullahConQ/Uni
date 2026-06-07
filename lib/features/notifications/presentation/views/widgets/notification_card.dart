@@ -23,18 +23,32 @@ class NotificationCard extends StatelessWidget {
               ? AppColors.secondaryColor.withOpacity(0.4)
               : AppColors.borderColor,
         ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x19000000),
+            blurRadius: 2,
+            offset: Offset(0, 1),
+            spreadRadius: -1,
+          ),
+          BoxShadow(
+            color: Color(0x19000000),
+            blurRadius: 3,
+            offset: Offset(0, 1),
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Icon
-          // NotificationIconWidget(type: notificationEntity.type),
+          const NotificationIconWidget(),
           const SizedBox(width: 12),
 
           // Content
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title + time
                 Row(
