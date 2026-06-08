@@ -25,13 +25,11 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   bool _isFetchingMore = false;
   int _unreadCount = 0;
 
-  int get unreadCount => _unreadCount;
-
-  Future<void> getUnreadCount() async {
+  Future<void> _fetchUnreadCount() async {
     final result = await getUnreadCountUseCase.call();
     result.fold((_) {}, (count) {
       _unreadCount = count;
-      //if the current state is success — update it with the new count
+      // if the current state is success — update it with the new count
       if (state is NotificationsSuccess) {
         final s = state as NotificationsSuccess;
         emit(
@@ -40,8 +38,6 @@ class NotificationsCubit extends Cubit<NotificationsState> {
             yesterday: s.yesterday,
             thisWeek: s.thisWeek,
             older: s.older,
-            hasMore: s.hasMore,
-            isLoadingMore: s.isLoadingMore,
             unreadCount: _unreadCount,
           ),
         );
@@ -65,29 +61,51 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     ) {
       _allNotifications = data.notifications;
       _nextCursor = data.nextCursor;
-      _emitGrouped();
+      _emitSuccess();
     });
+
+    await _fetchUnreadCount();
   }
 
   Future<void> loadMore() async {
     // if no cursor or already fetching more data — return
     if (_nextCursor == null || _isFetchingMore) return;
+    if (state is! NotificationsSuccess) return;
 
     _isFetchingMore = true;
-    _emitGrouped(isLoadingMore: true);
+
+    final s = state as NotificationsSuccess;
+    emit(
+      NotificationsPaginationLoading(
+        today: s.today,
+        yesterday: s.yesterday,
+        thisWeek: s.thisWeek,
+        older: s.older,
+        unreadCount: _unreadCount,
+      ),
+    );
 
     final result = await getNotificationsUseCase.call(cursor: _nextCursor);
 
     result.fold(
       (failure) {
         _isFetchingMore = false;
-        _emitGrouped();
+        emit(
+          NotificationsPaginationFailure(
+            errMessage: failure.message,
+            today: s.today,
+            yesterday: s.yesterday,
+            thisWeek: s.thisWeek,
+            older: s.older,
+            unreadCount: _unreadCount,
+          ),
+        );
       },
       (data) {
         _allNotifications = [..._allNotifications, ...data.notifications];
         _nextCursor = data.nextCursor;
         _isFetchingMore = false;
-        _emitGrouped();
+        _emitSuccess();
       },
     );
   }
@@ -111,7 +129,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           return n;
         }).toList();
         if (_unreadCount > 0) _unreadCount--;
-        _emitGrouped();
+        _emitSuccess();
       },
     );
   }
@@ -132,12 +150,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           );
         }).toList();
         _unreadCount = 0;
-        _emitGrouped();
+        _emitSuccess();
       },
     );
   }
 
-  void _emitGrouped({bool isLoadingMore = false}) {
+  void _emitSuccess() {
     final now = DateTime.now();
     final today = <NotificationEntity>[];
     final yesterday = <NotificationEntity>[];
@@ -169,8 +187,6 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         yesterday: yesterday,
         thisWeek: thisWeek,
         older: older,
-        hasMore: _nextCursor != null,
-        isLoadingMore: isLoadingMore,
         unreadCount: _unreadCount,
       ),
     );

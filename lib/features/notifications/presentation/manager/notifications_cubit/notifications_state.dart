@@ -11,8 +11,6 @@ class NotificationsSuccess extends NotificationsState {
   final List<NotificationEntity> yesterday;
   final List<NotificationEntity> thisWeek;
   final List<NotificationEntity> older;
-  final bool hasMore;
-  final bool isLoadingMore;
   final int unreadCount;
 
   NotificationsSuccess({
@@ -20,9 +18,41 @@ class NotificationsSuccess extends NotificationsState {
     required this.yesterday,
     required this.thisWeek,
     required this.older,
-    this.hasMore = false,
-    this.isLoadingMore = false,
     this.unreadCount = 0,
+  });
+}
+
+class NotificationsPaginationLoading extends NotificationsState {
+  final List<NotificationEntity> today;
+  final List<NotificationEntity> yesterday;
+  final List<NotificationEntity> thisWeek;
+  final List<NotificationEntity> older;
+  final int unreadCount;
+
+  NotificationsPaginationLoading({
+    required this.today,
+    required this.yesterday,
+    required this.thisWeek,
+    required this.older,
+    required this.unreadCount,
+  });
+}
+
+class NotificationsPaginationFailure extends NotificationsState {
+  final String errMessage;
+  final List<NotificationEntity> today;
+  final List<NotificationEntity> yesterday;
+  final List<NotificationEntity> thisWeek;
+  final List<NotificationEntity> older;
+  final int unreadCount;
+
+  NotificationsPaginationFailure({
+    required this.errMessage,
+    required this.today,
+    required this.yesterday,
+    required this.thisWeek,
+    required this.older,
+    required this.unreadCount,
   });
 }
 
