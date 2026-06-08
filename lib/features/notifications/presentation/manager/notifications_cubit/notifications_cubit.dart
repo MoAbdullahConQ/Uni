@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
 import 'package:uni/features/notifications/domain/use_cases/get_notifications_use_case.dart';
+import 'package:uni/features/notifications/domain/use_cases/get_unread_notifications_count_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_all_notifications_as_read_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_notification_as_read_use_case.dart';
 
@@ -8,11 +9,13 @@ part 'notifications_state.dart';
 
 class NotificationsCubit extends Cubit<NotificationsState> {
   final GetNotificationsUseCase getNotificationsUseCase;
+  final GetUnreadNotificationsCountUseCase getUnreadCountUseCase;
   final MarkNotificationAsReadUseCase markAsReadUseCase;
   final MarkAllNotificationsAsReadUseCase markAllAsReadUseCase;
 
   NotificationsCubit({
     required this.getNotificationsUseCase,
+    required this.getUnreadCountUseCase,
     required this.markAsReadUseCase,
     required this.markAllAsReadUseCase,
   }) : super(NotificationsInitial());
@@ -20,6 +23,31 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   List<NotificationEntity> _allNotifications = [];
   String? _nextCursor;
   bool _isFetchingMore = false;
+  int _unreadCount = 0;
+
+  int get unreadCount => _unreadCount;
+
+  Future<void> getUnreadCount() async {
+    final result = await getUnreadCountUseCase.call();
+    result.fold((_) {}, (count) {
+      _unreadCount = count;
+      //if the current state is success — update it with the new count
+      if (state is NotificationsSuccess) {
+        final s = state as NotificationsSuccess;
+        emit(
+          NotificationsSuccess(
+            today: s.today,
+            yesterday: s.yesterday,
+            thisWeek: s.thisWeek,
+            older: s.older,
+            hasMore: s.hasMore,
+            isLoadingMore: s.isLoadingMore,
+            unreadCount: _unreadCount,
+          ),
+        );
+      }
+    });
+  }
 
   Future<void> getNotifications() async {
     // reset the whole state
@@ -82,6 +110,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           }
           return n;
         }).toList();
+        if (_unreadCount > 0) _unreadCount--;
         _emitGrouped();
       },
     );
@@ -102,6 +131,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
             isRead: true,
           );
         }).toList();
+        _unreadCount = 0;
         _emitGrouped();
       },
     );
@@ -141,6 +171,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         older: older,
         hasMore: _nextCursor != null,
         isLoadingMore: isLoadingMore,
+        unreadCount: _unreadCount,
       ),
     );
   }

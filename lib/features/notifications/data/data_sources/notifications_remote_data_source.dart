@@ -8,6 +8,7 @@ import 'package:uni/features/notifications/domain/entities/notifications_respons
 
 abstract class NotificationsRemoteDataSource {
   Future<NotificationsResponse> getNotifications({String? cursor});
+  Future<int> getUnreadCount();
   Future<void> markAsRead(int notificationId);
   Future<void> markAllAsRead();
 }
@@ -36,6 +37,18 @@ class NotificationsRemoteDataSourceImpl
         notifications: notifications,
         nextCursor: nextCursor,
       );
+    } on DioException catch (e) {
+      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
+    }
+  }
+
+  @override
+  Future<int> getUnreadCount() async {
+    try {
+      final response = await apiService.get(
+        endpoint: BackendEndpoints.getUnreadNotificationsCount,
+      );
+      return response['data']['total'] as int;
     } on DioException catch (e) {
       throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
     }

@@ -39,7 +39,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: getIt<FavCubit>()),
         BlocProvider.value(
-          value: getIt<NotificationsCubit>()..getNotifications(),
+          value: getIt<NotificationsCubit>()
+            ..getNotifications()
+            ..getUnreadCount(),
         ),
       ],
       child: MaterialApp(

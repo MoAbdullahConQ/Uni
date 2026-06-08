@@ -7,8 +7,6 @@ class BackendEndpoints {
   static const String getTrendingUnis = '/universities/trendy';
 
   // Colleges
-  // static String getColleges(int universityId) => '/colleges/$universityId';
-  // Colleges (Specialties)
   static const String getColleges = '/colleges';
 
   // University Fav
@@ -18,6 +16,8 @@ class BackendEndpoints {
 
   // Notifications
   static const String getNotifications = '/notifications';
+  static const String getUnreadNotificationsCount =
+      '/notifications/count-unread';
   static String markNotificationAsRead(int id) =>
       '/notifications/mark-as-read/$id';
   static const String markAllNotificationsAsRead = '/notifications/markall';

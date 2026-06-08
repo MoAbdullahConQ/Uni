@@ -13,6 +13,7 @@ class NotificationsSuccess extends NotificationsState {
   final List<NotificationEntity> older;
   final bool hasMore;
   final bool isLoadingMore;
+  final int unreadCount;
 
   NotificationsSuccess({
     required this.today,
@@ -21,6 +22,7 @@ class NotificationsSuccess extends NotificationsState {
     required this.older,
     this.hasMore = false,
     this.isLoadingMore = false,
+    this.unreadCount = 0,
   });
 }
 

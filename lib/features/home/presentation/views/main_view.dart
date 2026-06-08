@@ -54,7 +54,9 @@ class _MainViewState extends State<MainView> with RouteAware {
 
   @override
   void didPopNext() {
-    getIt<NotificationsCubit>().getNotifications();
+    getIt<NotificationsCubit>()
+      ..getNotifications()
+      ..getUnreadCount();
   }
 
   @override
@@ -76,7 +78,9 @@ class _MainViewState extends State<MainView> with RouteAware {
           currentIndex: currentIndex,
           onIndexChanged: (int index) {
             if (index == 0 && currentIndex != 0) {
-              getIt<NotificationsCubit>().getNotifications();
+              getIt<NotificationsCubit>()
+                ..getNotifications()
+                ..getUnreadCount();
             }
             setState(() => currentIndex = index);
           },

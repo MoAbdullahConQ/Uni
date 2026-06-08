@@ -23,6 +23,16 @@ class NotificationsRepoImpl implements NotificationsRepo {
   }
 
   @override
+  Future<Either<Failure, int>> getUnreadCount() async {
+    try {
+      final count = await remoteDataSource.getUnreadCount();
+      return right(count);
+    } on CustomExceptions catch (e) {
+      return left(ServerFailure(e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> markAsRead(int notificationId) async {
     try {
       await remoteDataSource.markAsRead(notificationId);

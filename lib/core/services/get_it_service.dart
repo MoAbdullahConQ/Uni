@@ -21,6 +21,7 @@ import 'package:uni/features/notifications/data/data_sources/notifications_remot
 import 'package:uni/features/notifications/data/repos/notifications_repo_impl.dart';
 import 'package:uni/features/notifications/domain/repos/notifications_repo.dart';
 import 'package:uni/features/notifications/domain/use_cases/get_notifications_use_case.dart';
+import 'package:uni/features/notifications/domain/use_cases/get_unread_notifications_count_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_all_notifications_as_read_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_notification_as_read_use_case.dart';
 import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
@@ -33,15 +34,10 @@ import 'package:uni/features/search/domain/use_cases/search_unis_use_case.dart';
 final GetIt getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // Register your services here
-  // Example:
-  // getIt.registerLazySingleton<YourService>(() => YourServiceImplementation());
-
   // Dio
   getIt.registerSingleton<Dio>(Dio());
 
   // TODO: remove before production
-  // put it auth feature after login
   await Prefs.setString('token', dotenv.env['TOKEN'] ?? '');
 
   // ApiService
@@ -61,35 +57,24 @@ Future<void> setupGetIt() async {
   );
 
   // ===== BROWSE =====
-  // BrowseRemoteDataSource
   getIt.registerSingleton<BrowseRemoteDataSource>(
     BrowseRemoteDataSourceImpl(getIt<ApiService>()),
   );
-  // BrowseRepo
   getIt.registerSingleton<BrowseRepo>(
     BrowseRepoImpl(getIt<BrowseRemoteDataSource>()),
   );
-  // GetUnisUseCase
   getIt.registerSingleton<GetUnisUseCase>(GetUnisUseCase(getIt<BrowseRepo>()));
 
   // ===== FAV =====
-
-  // FavRemoteDataSource
   getIt.registerSingleton<FavRemoteDataSource>(
     FavRemoteDataSourceImpl(getIt<ApiService>()),
   );
-
-  // FavRepo
   getIt.registerSingleton<FavRepo>(FavRepoImpl(getIt<FavRemoteDataSource>()));
-
-  // Use Cases
   getIt.registerSingleton<GetFavsUseCase>(GetFavsUseCase(getIt<FavRepo>()));
   getIt.registerSingleton<AddToFavUseCase>(AddToFavUseCase(getIt<FavRepo>()));
   getIt.registerSingleton<RemoveFromFavUseCase>(
     RemoveFromFavUseCase(getIt<FavRepo>()),
   );
-
-  // FavCubit
   getIt.registerSingleton<FavCubit>(
     FavCubit(
       getFavsUseCase: getIt<GetFavsUseCase>(),
@@ -99,22 +84,15 @@ Future<void> setupGetIt() async {
   );
 
   // ===== SEARCH =====
-
-  // SearchRemoteDataSource
   getIt.registerSingleton<SearchRemoteDataSource>(
     SearchRemoteDataSourceImpl(getIt<ApiService>()),
   );
-
-  // SearchRepo
   getIt.registerSingleton<SearchRepo>(
     SearchRepoImpl(getIt<SearchRemoteDataSource>()),
   );
-
-  // SearchUnisUseCase
   getIt.registerSingleton<SearchUnisUseCase>(
     SearchUnisUseCase(getIt<SearchRepo>()),
   );
-
   getIt.registerSingleton<GetSpecialtiesUseCase>(
     GetSpecialtiesUseCase(getIt<SearchRepo>()),
   );
@@ -129,6 +107,9 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<GetNotificationsUseCase>(
     GetNotificationsUseCase(getIt<NotificationsRepo>()),
   );
+  getIt.registerSingleton<GetUnreadNotificationsCountUseCase>(
+    GetUnreadNotificationsCountUseCase(getIt<NotificationsRepo>()),
+  );
   getIt.registerSingleton<MarkNotificationAsReadUseCase>(
     MarkNotificationAsReadUseCase(getIt<NotificationsRepo>()),
   );
@@ -138,6 +119,7 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<NotificationsCubit>(
     NotificationsCubit(
       getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
+      getUnreadCountUseCase: getIt<GetUnreadNotificationsCountUseCase>(),
       markAsReadUseCase: getIt<MarkNotificationAsReadUseCase>(),
       markAllAsReadUseCase: getIt<MarkAllNotificationsAsReadUseCase>(),
     ),

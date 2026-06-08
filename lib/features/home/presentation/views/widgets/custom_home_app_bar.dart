@@ -10,16 +10,6 @@ import 'package:uni/features/notifications/presentation/views/notifications_view
 class CustomHomeAppBar extends StatelessWidget {
   const CustomHomeAppBar({super.key});
 
-  int _getUnreadCount(NotificationsState state) {
-    if (state is! NotificationsSuccess) return 0;
-    return [
-      ...state.today,
-      ...state.yesterday,
-      ...state.thisWeek,
-      ...state.older,
-    ].where((n) => !n.isRead).length;
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -29,7 +19,7 @@ class CustomHomeAppBar extends StatelessWidget {
         height: 50,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1.6, color: AppColors.borderColor),
+            side: const BorderSide(width: 1.6, color: AppColors.borderColor),
             borderRadius: BorderRadius.circular(100),
           ),
         ),
@@ -47,7 +37,9 @@ class CustomHomeAppBar extends StatelessWidget {
       ),
       trailing: BlocBuilder<NotificationsCubit, NotificationsState>(
         builder: (context, state) {
-          final unreadCount = _getUnreadCount(state);
+          final unreadCount = state is NotificationsSuccess
+              ? state.unreadCount
+              : 0;
           return InkWell(
             customBorder: const CircleBorder(),
             onTap: () {
@@ -79,7 +71,7 @@ class CustomHomeAppBar extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          unreadCount > 9 ? '9+' : '$unreadCount',
+                          unreadCount > 99 ? '99+' : '$unreadCount',
                           style: TextStyles.bold11.copyWith(
                             color: Colors.white,
                             fontSize: 9,
