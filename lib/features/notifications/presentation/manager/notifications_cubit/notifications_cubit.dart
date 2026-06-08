@@ -28,6 +28,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   Future<void> _fetchUnreadCount() async {
     final result = await getUnreadCountUseCase.call();
     result.fold((_) {}, (count) {
+      // if count changed but we're still in the same state (e.g. success) — emit a new state with the updated count
+      if (count == _unreadCount) return;
       _unreadCount = count;
       // if the current state is success — update it with the new count
       if (state is NotificationsSuccess) {
