@@ -4,10 +4,10 @@ import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
 import 'package:uni/features/notifications/data/models/notification_model.dart';
-import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
+import 'package:uni/features/notifications/domain/entities/notifications_response.dart';
 
 abstract class NotificationsRemoteDataSource {
-  Future<List<NotificationEntity>> getNotifications({String? cursor});
+  Future<NotificationsResponse> getNotifications({String? cursor});
   Future<void> markAsRead(int notificationId);
   Future<void> markAllAsRead();
 }
@@ -19,16 +19,23 @@ class NotificationsRemoteDataSourceImpl
   NotificationsRemoteDataSourceImpl(this.apiService);
 
   @override
-  Future<List<NotificationEntity>> getNotifications({String? cursor}) async {
+  Future<NotificationsResponse> getNotifications({String? cursor}) async {
     try {
       final response = await apiService.get(
         endpoint: BackendEndpoints.getNotifications,
         queryParameters: {'per_page': 10, if (cursor != null) 'cursor': cursor},
       );
 
-      return (response['data'] as List)
+      final notifications = (response['data'] as List)
           .map((json) => NotificationModel.fromJson(json))
           .toList();
+
+      final nextCursor = response['meta']['next_cursor'] as String?;
+
+      return NotificationsResponse(
+        notifications: notifications,
+        nextCursor: nextCursor,
+      );
     } on DioException catch (e) {
       throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
     }

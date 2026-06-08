@@ -11,12 +11,16 @@ class NotificationsSuccess extends NotificationsState {
   final List<NotificationEntity> yesterday;
   final List<NotificationEntity> thisWeek;
   final List<NotificationEntity> older;
+  final bool hasMore;
+  final bool isLoadingMore;
 
   NotificationsSuccess({
     required this.today,
     required this.yesterday,
     required this.thisWeek,
     required this.older,
+    this.hasMore = false,
+    this.isLoadingMore = false,
   });
 }
 

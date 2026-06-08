@@ -6,8 +6,35 @@ import 'package:uni/features/notifications/presentation/manager/notifications_cu
 import 'package:uni/features/notifications/presentation/views/widgets/notification_group_section.dart';
 import 'package:uni/features/notifications/presentation/views/widgets/notifications_app_bar.dart';
 
-class NotificationsViewBody extends StatelessWidget {
+class NotificationsViewBody extends StatefulWidget {
   const NotificationsViewBody({super.key});
+
+  @override
+  State<NotificationsViewBody> createState() => _NotificationsViewBodyState();
+}
+
+class _NotificationsViewBodyState extends State<NotificationsViewBody> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // when it reaches the last 200px — load more
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      context.read<NotificationsCubit>().loadMore();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +61,7 @@ class NotificationsViewBody extends StatelessWidget {
 
                 if (state is NotificationsSuccess) {
                   return SingleChildScrollView(
+                    controller: _scrollController,
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +94,13 @@ class NotificationsViewBody extends StatelessWidget {
                           ),
                           const SizedBox(height: 24),
                         ],
+
+                        // loading indicator at the bottom
+                        if (state.isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
                       ],
                     ),
                   );

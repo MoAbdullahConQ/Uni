@@ -18,8 +18,14 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   }) : super(NotificationsInitial());
 
   List<NotificationEntity> _allNotifications = [];
+  String? _nextCursor;
+  bool _isFetchingMore = false;
 
   Future<void> getNotifications() async {
+    // reset the whole state
+    _allNotifications = [];
+    _nextCursor = null;
+
     if (state is! NotificationsSuccess) {
       emit(NotificationsLoading());
     }
@@ -27,11 +33,35 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     final result = await getNotificationsUseCase.call();
 
     result.fold((failure) => emit(NotificationsFailure(failure.message)), (
-      notifications,
+      data,
     ) {
-      _allNotifications = notifications;
+      _allNotifications = data.notifications;
+      _nextCursor = data.nextCursor;
       _emitGrouped();
     });
+  }
+
+  Future<void> loadMore() async {
+    // if no cursor or already fetching more data — return
+    if (_nextCursor == null || _isFetchingMore) return;
+
+    _isFetchingMore = true;
+    _emitGrouped(isLoadingMore: true);
+
+    final result = await getNotificationsUseCase.call(cursor: _nextCursor);
+
+    result.fold(
+      (failure) {
+        _isFetchingMore = false;
+        _emitGrouped();
+      },
+      (data) {
+        _allNotifications = [..._allNotifications, ...data.notifications];
+        _nextCursor = data.nextCursor;
+        _isFetchingMore = false;
+        _emitGrouped();
+      },
+    );
   }
 
   Future<void> markAsRead(int notificationId) async {
@@ -77,7 +107,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     );
   }
 
-  void _emitGrouped() {
+  void _emitGrouped({bool isLoadingMore = false}) {
     final now = DateTime.now();
     final today = <NotificationEntity>[];
     final yesterday = <NotificationEntity>[];
@@ -109,6 +139,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         yesterday: yesterday,
         thisWeek: thisWeek,
         older: older,
+        hasMore: _nextCursor != null,
+        isLoadingMore: isLoadingMore,
       ),
     );
   }
