@@ -11,73 +11,72 @@ class NotificationsViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NotificationsCubit, NotificationsState>(
-      builder: (context, state) {
-        if (state is NotificationsFailure) {
-          return CustomErrorWidget(message: state.errMessage);
-        }
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: kHorizontalPadding,
+        vertical: kTopPadding,
+      ),
+      child: Column(
+        children: [
+          const NotificationsAppBar(),
+          const SizedBox(height: 24),
+          Expanded(
+            child: BlocBuilder<NotificationsCubit, NotificationsState>(
+              builder: (context, state) {
+                if (state is NotificationsFailure) {
+                  return CustomErrorWidget(message: state.errMessage);
+                }
 
-        if (state is NotificationsLoading || state is NotificationsInitial) {
-          return const Center(child: CircularProgressIndicator());
-        }
+                if (state is NotificationsLoading ||
+                    state is NotificationsInitial) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-        if (state is NotificationsSuccess) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kHorizontalPadding,
-                vertical: kTopPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // App bar
-                  const NotificationsAppBar(),
-                  const SizedBox(height: 24),
-
-                  // Today
-                  if (state.today.isNotEmpty) ...[
-                    NotificationGroupSection(
-                      label: 'اليوم',
-                      notifications: state.today,
+                if (state is NotificationsSuccess) {
+                  return SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (state.today.isNotEmpty) ...[
+                          NotificationGroupSection(
+                            label: 'اليوم',
+                            notifications: state.today,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                        if (state.yesterday.isNotEmpty) ...[
+                          NotificationGroupSection(
+                            label: 'الأمس',
+                            notifications: state.yesterday,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                        if (state.thisWeek.isNotEmpty) ...[
+                          NotificationGroupSection(
+                            label: 'هذا الأسبوع',
+                            notifications: state.thisWeek,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                        if (state.older.isNotEmpty) ...[
+                          NotificationGroupSection(
+                            label: 'أقدم',
+                            notifications: state.older,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                  ],
+                  );
+                }
 
-                  // Yesterday
-                  if (state.yesterday.isNotEmpty) ...[
-                    NotificationGroupSection(
-                      label: 'الأمس',
-                      notifications: state.yesterday,
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-
-                  if (state.thisWeek.isNotEmpty) ...[
-                    NotificationGroupSection(
-                      label: 'هذا الأسبوع',
-                      notifications: state.thisWeek,
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-
-                  if (state.older.isNotEmpty) ...[
-                    NotificationGroupSection(
-                      label: 'أقدم',
-                      notifications: state.older,
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-
-                  const SizedBox(height: 32),
-                ],
-              ),
+                return const SizedBox();
+              },
             ),
-          );
-        }
-
-        return const SizedBox();
-      },
+          ),
+        ],
+      ),
     );
   }
 }
