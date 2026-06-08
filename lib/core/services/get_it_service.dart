@@ -23,6 +23,7 @@ import 'package:uni/features/notifications/domain/repos/notifications_repo.dart'
 import 'package:uni/features/notifications/domain/use_cases/get_notifications_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_all_notifications_as_read_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_notification_as_read_use_case.dart';
+import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
@@ -133,5 +134,12 @@ Future<void> setupGetIt() async {
   );
   getIt.registerSingleton<MarkAllNotificationsAsReadUseCase>(
     MarkAllNotificationsAsReadUseCase(getIt<NotificationsRepo>()),
+  );
+  getIt.registerSingleton<NotificationsCubit>(
+    NotificationsCubit(
+      getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
+      markAsReadUseCase: getIt<MarkNotificationAsReadUseCase>(),
+      markAllAsReadUseCase: getIt<MarkAllNotificationsAsReadUseCase>(),
+    ),
   );
 }
