@@ -95,6 +95,12 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       }
     }
 
+    // sort each group by createdAt descending
+    today.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    yesterday.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    thisWeek.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    older.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
     emit(
       NotificationsSuccess(
         today: today,
