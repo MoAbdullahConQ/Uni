@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
 import 'package:uni/features/notifications/presentation/views/notifications_view.dart';
 
 class CustomHomeAppBar extends StatelessWidget {
   const CustomHomeAppBar({super.key});
+
+  int _getUnreadCount(NotificationsState state) {
+    if (state is! NotificationsSuccess) return 0;
+    return [
+      ...state.today,
+      ...state.yesterday,
+      ...state.thisWeek,
+      ...state.older,
+    ].where((n) => !n.isRead).length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +45,53 @@ class CustomHomeAppBar extends StatelessWidget {
         textAlign: TextAlign.right,
         style: TextStyles.bold18.copyWith(color: AppColors.primaryColor),
       ),
-      trailing: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: () {
-          Navigator.pushNamed(context, NotificationsView.routeName);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1.6, color: Colors.grey.shade200),
-              borderRadius: BorderRadius.circular(30),
+      trailing: BlocBuilder<NotificationsCubit, NotificationsState>(
+        builder: (context, state) {
+          final unreadCount = _getUnreadCount(state);
+          return InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () {
+              Navigator.pushNamed(context, NotificationsView.routeName);
+            },
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1.6, color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: SvgPicture.asset(Assets.imagesNotification),
+                ),
+                if (unreadCount > 0)
+                  Positioned(
+                    top: -4,
+                    left: -4,
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      decoration: const BoxDecoration(
+                        color: AppColors.lightPrimaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          unreadCount > 9 ? '9+' : '$unreadCount',
+                          style: TextStyles.bold11.copyWith(
+                            color: Colors.white,
+                            fontSize: 9,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-          ),
-          child: SvgPicture.asset(Assets.imagesNotification),
-        ),
+          );
+        },
       ),
     );
   }
