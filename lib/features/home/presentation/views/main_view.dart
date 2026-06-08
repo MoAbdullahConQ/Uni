@@ -10,7 +10,9 @@ import 'package:uni/features/home/data/data_sources/recommended_remote_data_sour
 import 'package:uni/features/home/presentation/manager/recommended_cubit/recommended_cubit.dart';
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
 import 'package:uni/features/home/presentation/views/widgets/home_view_body.dart';
+import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_view_body.dart';
+import 'package:uni/main.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -21,7 +23,7 @@ class MainView extends StatefulWidget {
   State<MainView> createState() => _MainViewState();
 }
 
-class _MainViewState extends State<MainView> {
+class _MainViewState extends State<MainView> with RouteAware {
   int currentIndex = 0;
   late final List<Widget> views;
 
@@ -36,6 +38,23 @@ class _MainViewState extends State<MainView> {
     ];
     getIt<TrendingCubit>().fetchTrendingUnis();
     getIt<FavCubit>().getFavs();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    getIt<NotificationsCubit>().getNotifications();
   }
 
   @override
@@ -56,6 +75,9 @@ class _MainViewState extends State<MainView> {
         bottomNavigationBar: CustomBottomNavigationBar(
           currentIndex: currentIndex,
           onIndexChanged: (int index) {
+            if (index == 0 && currentIndex != 0) {
+              getIt<NotificationsCubit>().getNotifications();
+            }
             setState(() => currentIndex = index);
           },
         ),

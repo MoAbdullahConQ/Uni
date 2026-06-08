@@ -13,6 +13,8 @@ import 'package:uni/features/splash/presentation/views/splash_view.dart';
 import 'package:uni/generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -60,6 +62,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         onGenerateRoute: onGenerateRoute,
         initialRoute: SplashView.routeName,
+        navigatorObservers: [routeObserver],
       ),
     );
   }
