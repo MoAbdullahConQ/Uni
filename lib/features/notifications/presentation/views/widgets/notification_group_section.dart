@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
+import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
 import 'package:uni/features/notifications/presentation/views/widgets/notification_card.dart';
 
 class NotificationGroupSection extends StatelessWidget {
-  final String label; 
+  final String label;
   final List<NotificationEntity> notifications;
 
   const NotificationGroupSection({
@@ -34,7 +36,12 @@ class NotificationGroupSection extends StatelessWidget {
           shrinkWrap: true,
           itemCount: notifications.length,
           separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (_, i) => NotificationCard(notificationEntity: notifications[i]),
+          itemBuilder: (_, i) => GestureDetector(
+            onTap: () => context.read<NotificationsCubit>().markAsRead(
+              notifications[i].id,
+            ),
+            child: NotificationCard(notificationEntity: notifications[i]),
+          ),
         ),
       ],
     );
