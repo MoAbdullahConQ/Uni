@@ -99,7 +99,7 @@ class _NotificationsViewBodyState extends State<NotificationsViewBody> {
       child: Column(
         children: [
           const NotificationsAppBar(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Expanded(
             child: BlocBuilder<NotificationsCubit, NotificationsState>(
               builder: (context, state) {

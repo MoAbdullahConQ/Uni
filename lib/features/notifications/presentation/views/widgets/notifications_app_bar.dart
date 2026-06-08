@@ -10,12 +10,7 @@ class NotificationsAppBar extends StatelessWidget {
 
   bool _hasUnread(NotificationsState state) {
     if (state is! NotificationsSuccess) return false;
-    return [
-      ...state.today,
-      ...state.yesterday,
-      ...state.thisWeek,
-      ...state.older,
-    ].any((n) => !n.isRead);
+    return state.unreadCount > 0;
   }
 
   @override
@@ -37,12 +32,12 @@ class NotificationsAppBar extends StatelessWidget {
 
             const Spacer(),
 
-            // Mark all as read - بيظهر بس لو في unread
+            // mark all as read appears only if there are unread
             if (_hasUnread(state))
               GestureDetector(
                 onTap: () => context.read<NotificationsCubit>().markAllAsRead(),
                 child: Text(
-                  'قراءة الكل',
+                  'قراءة الكل (${(state as NotificationsSuccess).unreadCount})',
                   style: TextStyles.semiBold13.copyWith(
                     color: AppColors.lightPrimaryColor,
                   ),
