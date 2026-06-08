@@ -14,7 +14,6 @@ class NotificationCard extends StatelessWidget {
     final isUnread = !notificationEntity.isRead;
 
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: isUnread ? AppColors.lightSecondaryColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -38,62 +37,92 @@ class NotificationCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Icon
-          const NotificationIconWidget(),
-          const SizedBox(width: 12),
+          if (isUnread)
+            Positioned(
+              right: 0,
+              top: 9,
+              bottom: 9,
+              child: Container(
+                width: 3,
+                decoration: const BoxDecoration(
+                  color: AppColors.secondaryColor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(50),
+                    bottomRight: Radius.circular(50),
+                  ),
+                ),
+              ),
+            ),
 
           // Content
-          Expanded(
-            child: Column(
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title + time
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Title
-                    Text(
-                      notificationEntity.title,
-                      textAlign: TextAlign.right,
-                      style: TextStyles.bold14.copyWith(
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                    // Time
-                    Row(
-                      children: [
-                        if (isUnread)
-                          Container(
-                            width: 7,
-                            height: 7,
-                            margin: const EdgeInsets.only(left: 5, top: 2),
-                            decoration: const BoxDecoration(
-                              color: AppColors.lightPrimaryColor,
-                              shape: BoxShape.circle,
+                // Icon
+                const NotificationIconWidget(),
+                const SizedBox(width: 12),
+
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title + time
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Title
+                          Text(
+                            notificationEntity.title,
+                            textAlign: TextAlign.right,
+                            style: TextStyles.bold14.copyWith(
+                              color: AppColors.primaryColor,
                             ),
                           ),
-                        Text(
-                          notificationEntity.timeLabel,
-                          style: TextStyles.regular11.copyWith(
-                            color: AppColors.subtitleColor.withOpacity(0.8),
+                          // Time
+                          Row(
+                            children: [
+                              if (isUnread)
+                                Container(
+                                  width: 7,
+                                  height: 7,
+                                  margin: const EdgeInsets.only(
+                                    left: 5,
+                                    top: 2,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.lightPrimaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              Text(
+                                notificationEntity.timeLabel,
+                                style: TextStyles.regular11.copyWith(
+                                  color: AppColors.subtitleColor.withOpacity(
+                                    0.8,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      // Body
+                      Text(
+                        notificationEntity.body,
+                        style: TextStyles.regular13.copyWith(
+                          color: AppColors.subtitleColor,
+                          height: 1.5,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 6),
-
-                // Body
-                Text(
-                  notificationEntity.body,
-                  style: TextStyles.regular13.copyWith(
-                    color: AppColors.subtitleColor,
-                    height: 1.5,
+                      ),
+                    ],
                   ),
                 ),
               ],
