@@ -20,7 +20,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   List<NotificationEntity> _allNotifications = [];
 
   Future<void> getNotifications() async {
-    emit(NotificationsLoading());
+    if (state is! NotificationsSuccess) {
+      emit(NotificationsLoading());
+    }
 
     final result = await getNotificationsUseCase.call();
 
