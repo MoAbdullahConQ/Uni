@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/back_button.dart';
@@ -68,9 +67,6 @@ class GuideArticleDetailViewBody extends StatelessWidget {
                         width: 40,
                         height: 40,
                         fit: BoxFit.cover,
-                        headers: {
-                          'Authorization': 'Bearer ${Prefs.getString('token')}',
-                        },
                         errorBuilder: (context, error, stackTrace) => Text(
                           article.authorName.isNotEmpty
                               ? article.authorName[0]

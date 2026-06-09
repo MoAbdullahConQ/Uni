@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
@@ -73,9 +72,6 @@ class GuideArticleCard extends StatelessWidget {
                       width: 28,
                       height: 28,
                       fit: BoxFit.cover,
-                      headers: {
-                        'Authorization': 'Bearer ${Prefs.getString('token')}',
-                      },
                       errorBuilder: (context, error, stackTrace) => Text(
                         guideArticleEntity.authorName.isNotEmpty
                             ? guideArticleEntity.authorName[0]
