@@ -3,6 +3,8 @@ import 'package:uni/features/browse/presentation/views/browse_view.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_chat_view.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_history_view.dart';
 import 'package:uni/features/fav/presentation/views/fav_view.dart';
+import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
+import 'package:uni/features/guide/presentation/views/guide_article_detail_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_podcasts_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
@@ -47,6 +49,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const GuidePodcastsView());
     case GuideArticlesView.routeName:
       return MaterialPageRoute(builder: (context) => const GuideArticlesView());
+    case GuideArticleDetailView.routeName:
+      final article = settings.arguments as GuideArticleEntity;
+      return MaterialPageRoute(
+        builder: (context) => GuideArticleDetailView(article: article),
+      );
     case BrowseView.routeName:
       return MaterialPageRoute(builder: (context) => const BrowseView());
     case NotificationsView.routeName:
