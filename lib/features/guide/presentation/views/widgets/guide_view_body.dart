@@ -8,6 +8,7 @@ import 'package:uni/core/widgets/featured_guide_video_section.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/features/guide/presentation/manager/guide_cubit/guide_cubit.dart';
+import 'package:uni/features/guide/presentation/views/guide_article_detail_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
 import 'package:uni/features/guide/presentation/views/widgets/featured_guide_podcasts_section.dart';
@@ -98,6 +99,11 @@ class GuideViewBody extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 12),
                             child: GuideArticleCard(
                               guideArticleEntity: article,
+                              onTap: () => Navigator.pushNamed(
+                                context,
+                                GuideArticleDetailView.routeName,
+                                arguments: article,
+                              ),
                             ),
                           );
                         }).toList(),
