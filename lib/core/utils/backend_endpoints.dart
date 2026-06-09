@@ -22,6 +22,9 @@ class BackendEndpoints {
       '/notifications/mark-as-read/$id';
   static const String markAllNotificationsAsRead = '/notifications/markall';
 
+  // Articles
+  static const String getArticles = '/articles';
+
   // Search
   static const String search = '/search-univ';
 }
