@@ -12,7 +12,7 @@ class GuideArticlesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: getIt<GuideCubit>(),
+      value: getIt<GuideCubit>()..getArticles(),
       child: const Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(child: GuideArticlesViewBody()),
