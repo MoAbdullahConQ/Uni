@@ -7,6 +7,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/presentation/manager/guide_cubit/guide_cubit.dart';
+import 'package:uni/features/guide/presentation/views/guide_article_detail_view.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_article_card.dart';
 
 class GuideArticlesViewBody extends StatefulWidget {
@@ -99,6 +100,11 @@ class _GuideArticlesViewBodyState extends State<GuideArticlesViewBody> {
                         separatorBuilder: (_, __) => const SizedBox(height: 12),
                         itemBuilder: (_, i) => GuideArticleCard(
                           guideArticleEntity: currentArticles[i],
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            GuideArticleDetailView.routeName,
+                            arguments: currentArticles[i],
+                          ),
                         ),
                       ),
                     ),
