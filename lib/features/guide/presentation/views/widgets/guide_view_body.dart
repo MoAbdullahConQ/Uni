@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/core/helper_functions/getDummyEntities.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/custom_error_widget.dart';
 import 'package:uni/core/widgets/featured_guide_video_section.dart';
-import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
+import 'package:uni/core/widgets/section_header_item.dart';
+import 'package:uni/features/guide/presentation/manager/guide_cubit/guide_cubit.dart';
 import 'package:uni/features/guide/presentation/views/guide_articles_view.dart';
 import 'package:uni/features/guide/presentation/views/guide_videos_view.dart';
 import 'package:uni/features/guide/presentation/views/widgets/featured_guide_podcasts_section.dart';
@@ -22,15 +24,11 @@ class GuideViewBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: kTopPadding),
-
-          // Title
           Text(
             'دليلك الجامعي 📚',
             style: TextStyles.bold24.copyWith(color: AppColors.primaryColor),
           ),
           const SizedBox(height: 16),
-
-          // Search bar
           const SearchBarField(
             hintText: 'ابحث عن مقالات، فيديوهات، بودكاست...',
             height: 60,
@@ -44,7 +42,7 @@ class GuideViewBody extends StatelessWidget {
                 children: [
                   const SizedBox(height: 28),
 
-                  // ── Videos section ──
+                  // Videos section
                   FeaturedGuideVideoSection(
                     title: 'شاهد وتعلّم',
                     titleStyle: TextStyles.regular18.copyWith(
@@ -60,11 +58,11 @@ class GuideViewBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
 
-                  // ── Podcasts section ──
+                  // Podcasts section
                   const FeaturedGuidePodcastsSection(),
                   const SizedBox(height: 28),
 
-                  // ── Articles section ──
+                  // Articles section header
                   SectionHeaderItem(
                     title: 'أحدث المقالات 📝',
                     titleStyle: TextStyles.regular18.copyWith(
@@ -79,19 +77,33 @@ class GuideViewBody extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  ...getDummyGuideArticleEntities().map((article) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: GuideArticleCard(
-                        guideArticleEntity: article,
-                        onTap: () {
-                          // TODO: navigate to article detail
-                        },
-                      ),
-                    );
-                  }),
 
-                  const SizedBox(height: 32),
+                  // Articles from cubit
+                  BlocBuilder<GuideCubit, GuideState>(
+                    builder: (context, state) {
+                      if (state is GuideLoading || state is GuideInitial) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is GuideFailure) {
+                        return CustomErrorWidget(message: state.errMessage);
+                      }
+
+                      final articles = state is GuideSuccess
+                          ? state.articles.take(2).toList()
+                          : [];
+
+                      return Column(
+                        children: articles.map((article) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: GuideArticleCard(
+                              guideArticleEntity: article,
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

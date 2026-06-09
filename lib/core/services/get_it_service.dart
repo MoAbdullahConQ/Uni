@@ -16,6 +16,11 @@ import 'package:uni/features/fav/domain/use_cases/add_to_fav_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/get_favs_use_case.dart';
 import 'package:uni/features/fav/domain/use_cases/remove_from_fav_use_case.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
+import 'package:uni/features/guide/data/data_sources/guide_remote_data_source.dart';
+import 'package:uni/features/guide/data/repos/guide_repo_impl.dart';
+import 'package:uni/features/guide/domain/repos/guide_repo.dart';
+import 'package:uni/features/guide/domain/use_cases/get_articles_use_case.dart';
+import 'package:uni/features/guide/presentation/manager/guide_cubit/guide_cubit.dart';
 import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
 import 'package:uni/features/notifications/data/data_sources/notifications_remote_data_source.dart';
 import 'package:uni/features/notifications/data/repos/notifications_repo_impl.dart';
@@ -124,4 +129,16 @@ Future<void> setupGetIt() async {
       markAllAsReadUseCase: getIt<MarkAllNotificationsAsReadUseCase>(),
     ),
   );
+
+  // ===== GUIDE =====
+  getIt.registerSingleton<GuideRemoteDataSource>(
+    GuideRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+  getIt.registerSingleton<GuideRepo>(
+    GuideRepoImpl(getIt<GuideRemoteDataSource>()),
+  );
+  getIt.registerSingleton<GetArticlesUseCase>(
+    GetArticlesUseCase(getIt<GuideRepo>()),
+  );
+  getIt.registerSingleton<GuideCubit>(GuideCubit(getIt<GetArticlesUseCase>()));
 }

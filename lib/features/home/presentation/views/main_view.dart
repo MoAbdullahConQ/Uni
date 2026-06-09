@@ -5,6 +5,7 @@ import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/widgets/ask_faheem_button.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/fav/presentation/views/widgets/fav_view_body.dart';
+import 'package:uni/features/guide/presentation/manager/guide_cubit/guide_cubit.dart';
 import 'package:uni/features/guide/presentation/views/widgets/guide_view_body.dart';
 import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
 import 'package:uni/features/home/presentation/manager/recommended_cubit/recommended_cubit.dart';
@@ -38,6 +39,7 @@ class _MainViewState extends State<MainView> with RouteAware {
     ];
     getIt<TrendingCubit>().fetchTrendingUnis();
     getIt<FavCubit>().getFavs();
+    getIt<GuideCubit>().getArticles();
   }
 
   @override
@@ -62,6 +64,7 @@ class _MainViewState extends State<MainView> with RouteAware {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: getIt<TrendingCubit>()),
+        BlocProvider.value(value: getIt<GuideCubit>()),
         BlocProvider(
           create: (_) =>
               RecommendedCubit(getIt<RecommendedRemoteDataSource>())
