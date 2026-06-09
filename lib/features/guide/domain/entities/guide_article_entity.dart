@@ -1,27 +1,19 @@
 class GuideArticleEntity {
+  final int id;
   final String title;
-  final String category;
-  final String readTime;
-  final String? imagePath;
-
-  // Detail fields
-  final String? authorName;
-  final String? authorRole;
-  final String? authorImagePath;
-  final String? publishDate;
-  final String? content;
-  final List<String>? tags;
+  final String authorName;
+  final String authorAvatarUrl;
+  final String authorBio;
+  final String publishDate;
+  final String content;
 
   const GuideArticleEntity({
+    required this.id,
     required this.title,
-    required this.category,
-    required this.readTime,
-    this.imagePath,
-    this.authorName,
-    this.authorRole,
-    this.authorImagePath,
-    this.publishDate,
-    this.content,
-    this.tags,
+    required this.authorName,
+    required this.authorAvatarUrl,
+    required this.authorBio,
+    required this.publishDate,
+    required this.content,
   });
 }

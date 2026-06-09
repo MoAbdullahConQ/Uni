@@ -5,9 +5,9 @@ import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/features/faheem/domain/entities/chat_history_entity.dart';
 import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
 import 'package:uni/features/faheem/domain/entities/suggestion_item_entity.dart';
-import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
+// import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
 import 'package:uni/features/guide/domain/entities/guide_podcast_entity.dart';
-import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
+// import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_alumni_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_faculty_entity.dart';
@@ -70,25 +70,25 @@ List<GuidePodcastEntity> getDummyGuidePodcastEntities() {
   ];
 }
 
-List<GuideArticleEntity> getDummyGuideArticleEntities() {
-  return const [
-    GuideArticleEntity(
-      title: 'نصائح ذهبية لاجتياز اختبارات القبول بالجامعات الأهلية',
-      category: 'نصائح دراسية',
-      readTime: 'قراءة 4 دقائق',
-      authorName: 'د. حسام الدين',
-      authorRole: 'خبير التوجيه الجامعي',
-      publishDate: '12 أكتوبر 2024',
-      tags: ['#الجامعات_الأهلية', '#اختبارات_القبول', '#تنسيق_2024'],
-    ),
-    GuideArticleEntity(
-      title: 'الإعلان عن مصروفات الجامعات الخاصة للعام الدراسي الجديد',
-      category: 'أخبار الجامعات',
-      readTime: 'قراءة 2 دقيقة',
-      imagePath: Assets.imagesUniPic,
-    ),
-  ];
-}
+// List<GuideArticleEntity> getDummyGuideArticleEntities() {
+//   return const [
+//     GuideArticleEntity(
+//       title: 'نصائح ذهبية لاجتياز اختبارات القبول بالجامعات الأهلية',
+//       category: 'نصائح دراسية',
+//       readTime: 'قراءة 4 دقائق',
+//       authorName: 'د. حسام الدين',
+//       authorRole: 'خبير التوجيه الجامعي',
+//       publishDate: '12 أكتوبر 2024',
+//       tags: ['#الجامعات_الأهلية', '#اختبارات_القبول', '#تنسيق_2024'],
+//     ),
+//     GuideArticleEntity(
+//       title: 'الإعلان عن مصروفات الجامعات الخاصة للعام الدراسي الجديد',
+//       category: 'أخبار الجامعات',
+//       readTime: 'قراءة 2 دقيقة',
+//       imagePath: Assets.imagesUniPic,
+//     ),
+//   ];
+// }
 
 List<UniEntity> getDummyUniEntities() {
   return const [
