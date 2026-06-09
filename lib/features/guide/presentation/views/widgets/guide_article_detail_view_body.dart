@@ -79,23 +79,27 @@ class GuideArticleDetailViewBody extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        article.authorName,
-                        style: TextStyles.bold14.copyWith(
-                          color: AppColors.primaryColor,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          article.authorName,
+                          style: TextStyles.bold14.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        article.authorBio,
-                        style: TextStyles.regular13.copyWith(
-                          color: AppColors.subtitleColor.withOpacity(0.7),
+                        const SizedBox(height: 2),
+                        Text(
+                          article.authorBio,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyles.regular13.copyWith(
+                            color: AppColors.subtitleColor.withOpacity(0.7),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const Spacer(),
                   Text(
