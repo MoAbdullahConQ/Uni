@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
@@ -18,7 +19,7 @@ class GuideArticleCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -31,65 +32,76 @@ class GuideArticleCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Right: image (optional)
-            if (guideArticleEntity.imagePath != null) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  guideArticleEntity.imagePath!,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
+            // Title
+            Text(
+              guideArticleEntity.title,
+              style: TextStyles.bold16.copyWith(
+                color: AppColors.primaryColor,
+                height: 1.4,
               ),
-              const SizedBox(width: 12),
-            ],
-            // Left: text content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Category badge
-                  Text(
-                    guideArticleEntity.category,
-                    style: TextStyles.semiBold11.copyWith(
-                      color: AppColors.subtitleColor.withOpacity(0.8),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
+            ),
+            const SizedBox(height: 8),
 
-                  // Title
-                  Text(
-                    guideArticleEntity.title,
-                    style: TextStyles.regular14.copyWith(
-                      color: AppColors.primaryColor,
-                      height: 1.38,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Read time
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.access_time_rounded,
-                        size: 13,
-                        color: AppColors.subtitleColor.withOpacity(0.7),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        guideArticleEntity.readTime,
-                        style: TextStyles.regular11.copyWith(
-                          color: AppColors.subtitleColor.withOpacity(0.7),
+            // Content preview
+            Text(
+              guideArticleEntity.content,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyles.regular13.copyWith(
+                color: AppColors.subtitleColor.withOpacity(0.8),
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Divider
+            const Divider(height: 1, color: AppColors.borderColor),
+            const SizedBox(height: 12),
+
+            // Author row — secondary info
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 14,
+                  backgroundColor: AppColors.borderColor,
+                  child: ClipOval(
+                    child: Image.network(
+                      guideArticleEntity.authorAvatarUrl,
+                      width: 28,
+                      height: 28,
+                      fit: BoxFit.cover,
+                      headers: {
+                        'Authorization': 'Bearer ${Prefs.getString('token')}',
+                      },
+                      errorBuilder: (context, error, stackTrace) => Text(
+                        guideArticleEntity.authorName.isNotEmpty
+                            ? guideArticleEntity.authorName[0]
+                            : '؟',
+                        style: TextStyles.regular13.copyWith(
+                          color: AppColors.primaryColor,
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  guideArticleEntity.authorName,
+                  style: TextStyles.regular13.copyWith(
+                    color: AppColors.subtitleColor,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  guideArticleEntity.publishDate,
+                  style: TextStyles.regular11.copyWith(
+                    color: AppColors.subtitleColor.withOpacity(0.6),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
