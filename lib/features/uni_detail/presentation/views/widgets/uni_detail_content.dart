@@ -72,7 +72,7 @@ class UniDetailContent extends StatelessWidget {
         ),
 
         // Bottom action bar
-        const UniDetailBottomBar(),
+        UniDetailBottomBar(uniId: uniDetailEntity.id),
       ],
     );
   }
