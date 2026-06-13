@@ -47,7 +47,7 @@ class CampusPhotosGrid extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.asset(photoPaths[i], fit: BoxFit.cover),
+                  Image.network(photoPaths[i], fit: BoxFit.cover),
                   if (isLast)
                     Container(
                       color: Colors.black.withOpacity(0.5),

@@ -18,14 +18,14 @@ class UniAlumniCard extends StatelessWidget {
         border: Border.all(color: AppColors.borderColor),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Avatar
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipOval(
-                child: Image.asset(
+                child: Image.network(
                   uniAlumniEntity.imagePath,
                   width: 60,
                   height: 60,
@@ -57,26 +57,11 @@ class UniAlumniCard extends StatelessWidget {
 
           const SizedBox(width: 10),
 
-          // Info
+          // Name
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  uniAlumniEntity.name,
-                  style: TextStyles.bold16.copyWith(
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                // Text(
-                //   uniAlumniEntity.description,
-                //   style: TextStyles.regular13.copyWith(
-                //     color: AppColors.subtitleColor,
-                //     height: 1.33,
-                //   ),
-                // ),
-              ],
+            child: Text(
+              uniAlumniEntity.name,
+              style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
             ),
           ),
         ],
