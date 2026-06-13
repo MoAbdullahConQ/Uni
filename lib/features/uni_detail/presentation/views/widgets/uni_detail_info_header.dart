@@ -25,15 +25,17 @@ class UniDetailInfoHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              name,
-              textAlign: TextAlign.right,
-              style: TextStyles.bold24.copyWith(color: AppColors.primaryColor),
+            Expanded(
+              child: Text(
+                name,
+                textAlign: TextAlign.right,
+                style: TextStyles.bold24.copyWith(
+                  color: AppColors.primaryColor,
+                ),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24),
-              child: TypeBadgeWidget(type: type),
-            ),
+            const SizedBox(width: 8),
+            TypeBadgeWidget(type: type),
           ],
         ),
         const SizedBox(height: 8),
