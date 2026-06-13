@@ -1,9 +1,10 @@
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
+import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
 import 'package:uni/features/uni_detail/data/models/uni_detail_model.dart';
 
 abstract class UniDetailRemoteDataSource {
-  Future<UniDetailModel> getUniDetail(int id);
+  Future<UniDetailEntity> getUniDetail(int id);
 }
 
 class UniDetailRemoteDataSourceImpl implements UniDetailRemoteDataSource {
@@ -12,7 +13,7 @@ class UniDetailRemoteDataSourceImpl implements UniDetailRemoteDataSource {
   UniDetailRemoteDataSourceImpl(this.apiService);
 
   @override
-  Future<UniDetailModel> getUniDetail(int id) async {
+  Future<UniDetailEntity> getUniDetail(int id) async {
     final results = await Future.wait([
       apiService.get(endpoint: BackendEndpoints.getUniDetail(id)),
       apiService.get(endpoint: BackendEndpoints.getCollegesByUni(id)),
