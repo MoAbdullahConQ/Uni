@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/empty_state_widget.dart';
 import 'package:uni/core/widgets/section_header_item.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photo_viewer.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photos_sheet.dart';
@@ -24,7 +25,6 @@ class CampusPhotosGrid extends StatelessWidget {
     );
   }
 
-
   void _openViewer(BuildContext context, int index) {
     Navigator.push(
       context,
@@ -47,53 +47,61 @@ class CampusPhotosGrid extends StatelessWidget {
           subTitleStyle: TextStyles.semiBold13.copyWith(
             color: AppColors.lightPrimaryColor,
           ),
-          onTap: () => _showAllPhotos(context),
+          onTap: photoPaths.isEmpty ? null : () => _showAllPhotos(context),
         ),
         // Header
         const SizedBox(height: 12),
 
         // Grid
-        GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 1.2,
-          ),
-          itemCount: photoPaths.length > 4 ? 4 : photoPaths.length,
-          itemBuilder: (_, i) {
-            final isLast = i == 3 && totalCount > 4;
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  GestureDetector(
-                    onTap: () => _openViewer(context, i),
-                    child: Image.network(photoPaths[i], fit: BoxFit.cover),
-                  ),
-                  if (isLast)
+        if (photoPaths.isEmpty)
+          const Center(
+            child: EmptyStateWidget(
+              message: 'لا توجد صور متاحة حالياً',
+              icon: Icons.photo_library_outlined,
+            ),
+          )
+        else
+          GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 1.2,
+            ),
+            itemCount: photoPaths.length > 4 ? 4 : photoPaths.length,
+            itemBuilder: (_, i) {
+              final isLast = i == 3 && totalCount > 4;
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
                     GestureDetector(
-                      onTap: () => _showAllPhotos(context),
-                      child: Container(
-                        color: Colors.black.withOpacity(0.5),
-                        child: Center(
-                          child: Text(
-                            '+${totalCount - 3}',
-                            style: TextStyles.bold24.copyWith(
-                              color: Colors.white,
+                      onTap: () => _openViewer(context, i),
+                      child: Image.network(photoPaths[i], fit: BoxFit.cover),
+                    ),
+                    if (isLast)
+                      GestureDetector(
+                        onTap: () => _showAllPhotos(context),
+                        child: Container(
+                          color: Colors.black.withOpacity(0.5),
+                          child: Center(
+                            child: Text(
+                              '+${totalCount - 3}',
+                              style: TextStyles.bold24.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-            );
-          },
-        ),
+                  ],
+                ),
+              );
+            },
+          ),
       ],
     );
   }
