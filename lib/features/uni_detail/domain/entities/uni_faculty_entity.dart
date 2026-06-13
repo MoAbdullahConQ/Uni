@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class UniFacultyEntity {
   final int id;
   final String name;
@@ -5,6 +7,7 @@ class UniFacultyEntity {
   final String minFees;
   final double minGrade;
   final List<String> requirements;
+  final IconData icon;
 
   const UniFacultyEntity({
     required this.id,
@@ -13,5 +16,6 @@ class UniFacultyEntity {
     required this.minFees,
     required this.minGrade,
     required this.requirements,
+    required this.icon,
   });
 }
