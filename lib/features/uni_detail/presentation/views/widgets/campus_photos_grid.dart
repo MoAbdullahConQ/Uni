@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/section_header_item.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photos_sheet.dart';
 
 class CampusPhotosGrid extends StatelessWidget {
   const CampusPhotosGrid({
@@ -12,6 +13,15 @@ class CampusPhotosGrid extends StatelessWidget {
 
   final List<String> photoPaths;
   final int totalCount;
+
+  void _showAllPhotos(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => CampusPhotosSheet(photoPaths: photoPaths),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +35,7 @@ class CampusPhotosGrid extends StatelessWidget {
           subTitleStyle: TextStyles.semiBold13.copyWith(
             color: AppColors.lightPrimaryColor,
           ),
+          onTap: () => _showAllPhotos(context),
         ),
         // Header
         const SizedBox(height: 12),
@@ -49,13 +60,16 @@ class CampusPhotosGrid extends StatelessWidget {
                 children: [
                   Image.network(photoPaths[i], fit: BoxFit.cover),
                   if (isLast)
-                    Container(
-                      color: Colors.black.withOpacity(0.5),
-                      child: Center(
-                        child: Text(
-                          '+${totalCount - 3}',
-                          style: TextStyles.bold24.copyWith(
-                            color: Colors.white,
+                    GestureDetector(
+                      onTap: () => _showAllPhotos(context),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.5),
+                        child: Center(
+                          child: Text(
+                            '+${totalCount - 3}',
+                            style: TextStyles.bold24.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
