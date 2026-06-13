@@ -82,19 +82,24 @@ class FacultyItemExpandedContent extends StatelessWidget {
             (req) => Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
-                    Icons.check_circle_rounded,
-                    size: 16,
-                    color: Color(0xFF6BBF26),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.check_circle_rounded,
+                      size: 16,
+                      color: Color(0xFF6BBF26),
+                    ),
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    req,
-                    textAlign: TextAlign.right,
-                    style: TextStyles.regular13.copyWith(
-                      color: AppColors.subtitleColor,
+                  Expanded(
+                    child: Text(
+                      req,
+                      textAlign: TextAlign.right,
+                      style: TextStyles.regular13.copyWith(
+                        color: AppColors.subtitleColor,
+                      ),
                     ),
                   ),
                 ],

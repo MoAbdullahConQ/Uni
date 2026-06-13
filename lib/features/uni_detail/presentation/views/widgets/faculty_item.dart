@@ -14,19 +14,9 @@ class FacultyItem extends StatefulWidget {
 }
 
 class _FacultyItemState extends State<FacultyItem> {
-  late bool isExpanded;
+  bool isExpanded = false;
 
-  @override
-  void initState() {
-    super.initState();
-    isExpanded = false;
-  }
-
-  void toggleExpanded() {
-    setState(() {
-      isExpanded = !isExpanded;
-    });
-  }
+  void _toggleExpanded() => setState(() => isExpanded = !isExpanded);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +45,7 @@ class _FacultyItemState extends State<FacultyItem> {
           FacultyItemHeader(
             uniFacultyEntity: widget.uniFacultyEntity,
             isExpanded: isExpanded,
-            onTap: toggleExpanded,
+            onTap: _toggleExpanded,
           ),
 
           if (isExpanded) ...[

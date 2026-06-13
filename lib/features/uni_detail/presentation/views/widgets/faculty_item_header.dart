@@ -34,51 +34,52 @@ class FacultyItemHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Name + icon + fees
-            Row(
-              //  crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Icon
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  curve: Curves.easeInOut,
-                  margin: EdgeInsets.symmetric(vertical: isExpanded ? 0 : 6),
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: isExpanded
-                        ? AppColors.lightSecondaryColor
-                        : AppColors.borderColor.withOpacity(0.4),
-                    shape: BoxShape.circle,
-                  ),
-                  // child: Icon(
-                  //   uniFacultyEntity.icon,
-                  //   size: 20,
-                  //   color: AppColors.primaryColor,
-                  // ),
-                ),
-                const SizedBox(width: 12),
-                // Name + fees
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      uniFacultyEntity.name,
-                      style: TextStyles.bold18.copyWith(
-                        color: AppColors.primaryColor,
-                      ),
+            // Icon + name + fees
+            Expanded(
+              child: Row(
+                children: [
+                  // Icon
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeInOut,
+                    margin: EdgeInsets.symmetric(vertical: isExpanded ? 0 : 6),
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: isExpanded
+                          ? AppColors.lightSecondaryColor
+                          : AppColors.borderColor.withOpacity(0.4),
+                      shape: BoxShape.circle,
                     ),
-
-                    // Collapsed: show fees preview
-                    if (!isExpanded)
-                      Text(
-                        'مصاريف تبدأ من ${uniFacultyEntity.minFees}',
-                        style: TextStyles.regular12.copyWith(
-                          color: AppColors.subtitleColor,
+                    child: Icon(
+                      uniFacultyEntity.icon,
+                      size: 20,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Name + fees
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          uniFacultyEntity.name,
+                          style: TextStyles.bold18.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
                         ),
-                      ),
-                  ],
-                ),
-              ],
+                        if (!isExpanded)
+                          Text(
+                            'مصاريف تبدأ من ${uniFacultyEntity.minFees}',
+                            style: TextStyles.regular12.copyWith(
+                              color: AppColors.subtitleColor,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             AnimatedRotation(
               turns: isExpanded ? .5 : 0,
