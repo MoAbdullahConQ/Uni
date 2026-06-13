@@ -29,7 +29,11 @@ class UniListWidget extends StatelessWidget {
         return UniCardWithFav(
           selectedFilterUniEntity: selectedFilterUniEntities[index],
           onTap: () {
-            Navigator.pushNamed(context, UniDetailView.routeName);
+            Navigator.pushNamed(
+              context,
+              UniDetailView.routeName,
+              arguments: selectedFilterUniEntities[index].id,
+            );
           },
         );
       },
