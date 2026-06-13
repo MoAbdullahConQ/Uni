@@ -63,7 +63,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case FaheemHistoryView.routeName:
       return MaterialPageRoute(builder: (context) => const FaheemHistoryView());
     case UniDetailView.routeName:
-      return MaterialPageRoute(builder: (context) => const UniDetailView());
+      final id = settings.arguments as int;
+      return MaterialPageRoute(builder: (context) => UniDetailView(id: id));
     case SearchView.routeName:
       return MaterialPageRoute(builder: (context) => const SearchView());
     default:

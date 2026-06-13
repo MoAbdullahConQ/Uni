@@ -35,6 +35,10 @@ import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
 import 'package:uni/features/search/domain/use_cases/get_specialties_use_case.dart';
 import 'package:uni/features/search/domain/use_cases/search_unis_use_case.dart';
+import 'package:uni/features/uni_detail/data/data_sources/uni_detail_remote_data_source.dart';
+import 'package:uni/features/uni_detail/data/repos/uni_detail_repo_impl.dart';
+import 'package:uni/features/uni_detail/domain/repos/uni_detail_repo.dart';
+import 'package:uni/features/uni_detail/domain/use_cases/get_uni_detail_use_case.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -141,4 +145,15 @@ Future<void> setupGetIt() async {
     GetArticlesUseCase(getIt<GuideRepo>()),
   );
   getIt.registerSingleton<GuideCubit>(GuideCubit(getIt<GetArticlesUseCase>()));
+
+  // ===== UNI DETAIL =====
+  getIt.registerSingleton<UniDetailRemoteDataSource>(
+    UniDetailRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+  getIt.registerSingleton<UniDetailRepo>(
+    UniDetailRepoImpl(getIt<UniDetailRemoteDataSource>()),
+  );
+  getIt.registerSingleton<GetUniDetailUseCase>(
+    GetUniDetailUseCase(getIt<UniDetailRepo>()),
+  );
 }

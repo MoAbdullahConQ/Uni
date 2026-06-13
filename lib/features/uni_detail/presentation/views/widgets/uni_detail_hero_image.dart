@@ -21,7 +21,7 @@ class UniDetailHeroImage extends StatelessWidget {
         SizedBox(
           height: 260,
           width: double.infinity,
-          child: Image.asset(imagePath, fit: BoxFit.cover),
+          child: Image.network(imagePath, fit: BoxFit.cover),
         ),
 
         // Back button
@@ -50,7 +50,7 @@ class UniDetailHeroImage extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.asset(logoPath, fit: BoxFit.contain),
+              child: Image.network(logoPath, fit: BoxFit.contain),
             ),
           ),
         ),

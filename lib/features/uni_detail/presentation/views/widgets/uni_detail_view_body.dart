@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:uni/core/helper_functions/getDummyEntities.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uni/core/widgets/custom_error_widget.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
+import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/uni_detail_cubit.dart';
+import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/uni_detail_state.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_alumni_tab.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_bottom_bar.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_hero_image.dart';
@@ -18,8 +21,7 @@ class UniDetailViewBody extends StatefulWidget {
 
 class _UniDetailViewBodyState extends State<UniDetailViewBody>
     with SingleTickerProviderStateMixin {
-  UniDetailEntity uniDetailEntity = getDummyUniDetailEntity();
-
+      
   late TabController tabController;
 
   @override
@@ -33,6 +35,37 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
     tabController.dispose();
     super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UniDetailCubit, UniDetailState>(
+      builder: (context, state) {
+        if (state is UniDetailLoading || state is UniDetailInitial) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is UniDetailFailure) {
+          return CustomErrorWidget(message: state.errMessage);
+        }
+        if (state is UniDetailSuccess) {
+          return _UniDetailContent(
+            uniDetailEntity: state.uniDetailEntity,
+            tabController: tabController,
+          );
+        }
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+class _UniDetailContent extends StatelessWidget {
+  const _UniDetailContent({
+    required this.uniDetailEntity,
+    required this.tabController,
+  });
+
+  final UniDetailEntity uniDetailEntity;
+  final TabController tabController;
 
   @override
   Widget build(BuildContext context) {
