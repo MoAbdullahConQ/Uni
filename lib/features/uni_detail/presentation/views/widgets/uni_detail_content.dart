@@ -42,6 +42,7 @@ class UniDetailContent extends StatelessWidget {
                         name: uniDetailEntity.name,
                         type: uniDetailEntity.type,
                         address: uniDetailEntity.address,
+                        rate: uniDetailEntity.rate,
                       ),
                     ),
                     const SizedBox(height: 16),
