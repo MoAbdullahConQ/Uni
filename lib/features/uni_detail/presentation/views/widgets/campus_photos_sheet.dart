@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photo_viewer.dart';
 
 class CampusPhotosSheet extends StatelessWidget {
   const CampusPhotosSheet({super.key, required this.photoPaths});
 
   final List<String> photoPaths;
+
+  void _openViewer(BuildContext context, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            CampusPhotoViewer(photoPaths: photoPaths, initialIndex: index),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +35,7 @@ class CampusPhotosSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Drag handle
               Center(
                 child: Container(
                   width: 40,
@@ -44,6 +56,7 @@ class CampusPhotosSheet extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
+              // grid of photos
               Expanded(
                 child: GridView.builder(
                   controller: scrollController,
@@ -57,7 +70,10 @@ class CampusPhotosSheet extends StatelessWidget {
                   itemBuilder: (_, i) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(photoPaths[i], fit: BoxFit.cover),
+                      child: GestureDetector(
+                        onTap: () => _openViewer(context, i),
+                        child: Image.network(photoPaths[i], fit: BoxFit.cover),
+                      ),
                     );
                   },
                 ),

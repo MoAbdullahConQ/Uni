@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/section_header_item.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photo_viewer.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/campus_photos_sheet.dart';
 
 class CampusPhotosGrid extends StatelessWidget {
@@ -20,6 +21,17 @@ class CampusPhotosGrid extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => CampusPhotosSheet(photoPaths: photoPaths),
+    );
+  }
+
+
+  void _openViewer(BuildContext context, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            CampusPhotoViewer(photoPaths: photoPaths, initialIndex: index),
+      ),
     );
   }
 
@@ -58,7 +70,10 @@ class CampusPhotosGrid extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(photoPaths[i], fit: BoxFit.cover),
+                  GestureDetector(
+                    onTap: () => _openViewer(context, i),
+                    child: Image.network(photoPaths[i], fit: BoxFit.cover),
+                  ),
                   if (isLast)
                     GestureDetector(
                       onTap: () => _showAllPhotos(context),
