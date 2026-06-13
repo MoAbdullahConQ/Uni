@@ -69,13 +69,13 @@ class UniAlumniCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  uniAlumniEntity.description,
-                  style: TextStyles.regular13.copyWith(
-                    color: AppColors.subtitleColor,
-                    height: 1.33,
-                  ),
-                ),
+                // Text(
+                //   uniAlumniEntity.description,
+                //   style: TextStyles.regular13.copyWith(
+                //     color: AppColors.subtitleColor,
+                //     height: 1.33,
+                //   ),
+                // ),
               ],
             ),
           ),

@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
-
 class UniFacultyEntity {
+  final int id;
   final String name;
-  final IconData icon;
+  final String location;
   final String minFees;
   final double minGrade;
   final List<String> requirements;
-  final bool isExpanded;
 
   const UniFacultyEntity({
+    required this.id,
     required this.name,
-    required this.icon,
+    required this.location,
     required this.minFees,
     required this.minGrade,
     required this.requirements,
-    this.isExpanded = false,
   });
 }

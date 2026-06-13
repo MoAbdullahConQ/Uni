@@ -312,55 +312,56 @@ UniDetailEntity getDummyUniDetailEntity() {
     foundedYear: 1976,
     worldRanking: '1201 - 1400',
     uniFacultyEntities: [
-      UniFacultyEntity(
-        name: 'كلية الهندسة',
-        icon: Icons.settings_outlined,
-        minFees: '180,000 EGP',
-        minGrade: 70,
-        requirements: [
-          'شهادة الثانوية العامة (شعبة علمي رياضة)',
-          'اجتياز اختبار اللغة الإنجليزية (IELTS/TOEFL)',
-          'كيلو كباب مشوي (معرفتش اكتب اي هنا)',
-        ],
-        isExpanded: true,
-      ),
-      UniFacultyEntity(
-        name: 'كلية إدارة الأعمال',
-        icon: Icons.work_outline_rounded,
-        minFees: '140,000 EGP',
-        minGrade: 70,
-        requirements: ['شهادة الثانوية العامة', 'اجتياز اختبار القدرات'],
-      ),
-      UniFacultyEntity(
-        name: 'كلية الصيدلة',
-        icon: Icons.science_outlined,
-        minFees: '165,000 EGP',
-        minGrade: 70,
-        requirements: ['شهادة الثانوية العامة (شعبة علمي علوم)'],
-      ),
-      UniFacultyEntity(
-        name: 'كلية الحاسبات والمعلومات',
-        icon: Icons.computer_outlined,
-        minFees: '120,000 EGP',
-        minGrade: 65,
-        requirements: ['شهادة الثانوية العامة'],
-      ),
+      // UniFacultyEntity(
+      //   name: 'كلية الهندسة',
+      //   icon: Icons.settings_outlined,
+      //   minFees: '180,000 EGP',
+      //   minGrade: 70,
+      //   requirements: [
+      //     'شهادة الثانوية العامة (شعبة علمي رياضة)',
+      //     'اجتياز اختبار اللغة الإنجليزية (IELTS/TOEFL)',
+      //     'كيلو كباب مشوي (معرفتش اكتب اي هنا)',
+      //   ],
+      //   isExpanded: true,
+      // ),
+      // UniFacultyEntity(
+      //   name: 'كلية إدارة الأعمال',
+      //   icon: Icons.work_outline_rounded,
+      //   minFees: '140,000 EGP',
+      //   minGrade: 70,
+      //   requirements: ['شهادة الثانوية العامة', 'اجتياز اختبار القدرات'],
+      // ),
+      // UniFacultyEntity(
+      //   name: 'كلية الصيدلة',
+      //   icon: Icons.science_outlined,
+      //   minFees: '165,000 EGP',
+      //   minGrade: 70,
+      //   requirements: ['شهادة الثانوية العامة (شعبة علمي علوم)'],
+      // ),
+      // UniFacultyEntity(
+      //   name: 'كلية الحاسبات والمعلومات',
+      //   icon: Icons.computer_outlined,
+      //   minFees: '120,000 EGP',
+      //   minGrade: 65,
+      //   requirements: ['شهادة الثانوية العامة'],
+      // ),
     ],
     uniAlumniEntities: [
-      UniAlumniEntity(
-        name: 'د. عادل مبارك',
-        description:
-            'رئيس جامعة المنوفية الأسبق، وأستاذ علم النفس التربوي، وصاحب إسهامات بارزة في تطوير البنية التحتية والتعليمية للجامعة',
-        imagePath: Assets.imagesUniPic,
-        graduationYear: 'دفعة 1981',
-      ),
-      UniAlumniEntity(
-        name: 'د. أحمد القاصد',
-        description:
-            'رئيس جامعة المنوفية الحالي، وأستاذ جراحة الأورام البارز، وقامة طبية وأكاديمية قدمت الكثير للقطاع الطبي بالدلتا',
-        imagePath: Assets.imagesUniPic,
-        graduationYear: 'دفعة 1987',
-      ),
+      // UniAlumniEntity(
+      //   name: 'د. عادل مبارك',
+      //   description:
+      //       'رئيس جامعة المنوفية الأسبق، وأستاذ علم النفس التربوي، وصاحب إسهامات بارزة في تطوير البنية التحتية والتعليمية للجامعة',
+      //   imagePath: Assets.imagesUniPic,
+      //   graduationYear: 'دفعة 1981',
+      // ),
+      // UniAlumniEntity(
+      //   name: 'د. أحمد القاصد',
+      //   description:
+      //       'رئيس جامعة المنوفية الحالي، وأستاذ جراحة الأورام البارز، وقامة طبية وأكاديمية قدمت الكثير للقطاع الطبي بالدلتا',
+      //   imagePath: Assets.imagesUniPic,
+      //   graduationYear: 'دفعة 1987',
+      // ),
+   
     ],
     campusPhotoPaths: [
       Assets.imagesUniPic,
@@ -369,6 +370,9 @@ UniDetailEntity getDummyUniDetailEntity() {
       Assets.imagesUniPic,
       Assets.imagesUniPic,
     ],
+    id: 1,
+    website: '',
+    rate: 5,
   );
 }
 

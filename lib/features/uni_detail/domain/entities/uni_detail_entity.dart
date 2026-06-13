@@ -2,6 +2,7 @@ import 'package:uni/features/uni_detail/domain/entities/uni_alumni_entity.dart';
 import 'package:uni/features/uni_detail/domain/entities/uni_faculty_entity.dart';
 
 class UniDetailEntity {
+  final int id;
   final String name;
   final String type;
   final String address;
@@ -11,11 +12,14 @@ class UniDetailEntity {
   final int studentsCount;
   final int foundedYear;
   final String worldRanking;
+  final String website;
+  final double rate;
   final List<UniFacultyEntity> uniFacultyEntities;
   final List<UniAlumniEntity> uniAlumniEntities;
   final List<String> campusPhotoPaths;
 
   const UniDetailEntity({
+    required this.id,
     required this.name,
     required this.type,
     required this.address,
@@ -25,6 +29,8 @@ class UniDetailEntity {
     required this.studentsCount,
     required this.foundedYear,
     required this.worldRanking,
+    required this.website,
+    required this.rate,
     required this.uniFacultyEntities,
     required this.uniAlumniEntities,
     required this.campusPhotoPaths,

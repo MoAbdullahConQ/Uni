@@ -50,11 +50,11 @@ class FacultyItemHeader extends StatelessWidget {
                         : AppColors.borderColor.withOpacity(0.4),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    uniFacultyEntity.icon,
-                    size: 20,
-                    color: AppColors.primaryColor,
-                  ),
+                  // child: Icon(
+                  //   uniFacultyEntity.icon,
+                  //   size: 20,
+                  //   color: AppColors.primaryColor,
+                  // ),
                 ),
                 const SizedBox(width: 12),
                 // Name + fees
