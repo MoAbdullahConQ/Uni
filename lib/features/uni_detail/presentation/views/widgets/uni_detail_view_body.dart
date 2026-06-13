@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/widgets/custom_error_widget.dart';
-import 'package:uni/features/uni_detail/domain/entities/uni_detail_entity.dart';
 import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/uni_detail_cubit.dart';
 import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/uni_detail_state.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_alumni_tab.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_bottom_bar.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_hero_image.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_info_header.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_tab_bar.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_faculties_tab.dart';
-import 'package:uni/features/uni_detail/presentation/views/widgets/uni_overview_tab.dart';
+import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_content.dart';
 
 class UniDetailViewBody extends StatefulWidget {
   const UniDetailViewBody({super.key});
@@ -21,7 +14,6 @@ class UniDetailViewBody extends StatefulWidget {
 
 class _UniDetailViewBodyState extends State<UniDetailViewBody>
     with SingleTickerProviderStateMixin {
-      
   late TabController tabController;
 
   @override
@@ -47,7 +39,7 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
           return CustomErrorWidget(message: state.errMessage);
         }
         if (state is UniDetailSuccess) {
-          return _UniDetailContent(
+          return UniDetailContent(
             uniDetailEntity: state.uniDetailEntity,
             tabController: tabController,
           );
@@ -56,106 +48,4 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
       },
     );
   }
-}
-
-class _UniDetailContent extends StatelessWidget {
-  const _UniDetailContent({
-    required this.uniDetailEntity,
-    required this.tabController,
-  });
-
-  final UniDetailEntity uniDetailEntity;
-  final TabController tabController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: NestedScrollView(
-            headerSliverBuilder: (_, __) => [
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    // Hero image + logo + back
-                    UniDetailHeroImage(
-                      imagePath: uniDetailEntity.heroImagePath,
-                      logoPath: uniDetailEntity.logoImagePath,
-                    ),
-                    const SizedBox(height: 52),
-
-                    // Name + type + address
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: UniDetailInfoHeader(
-                        name: uniDetailEntity.name,
-                        type: uniDetailEntity.type,
-                        address: uniDetailEntity.address,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-
-              // Tab bar
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _StickyTabBarDelegate(tabController: tabController),
-              ),
-            ],
-            body: TabBarView(
-              controller: tabController,
-              children: [
-                UniOverviewTab(uniDetailEntity: uniDetailEntity),
-                UniFacultiesTab(
-                  uniFacultyEntities: uniDetailEntity.uniFacultyEntities,
-                ),
-                UniAlumniTab(
-                  uniAlumniEntities: uniDetailEntity.uniAlumniEntities,
-                  campusPhotoPaths: uniDetailEntity.campusPhotoPaths,
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // Bottom action bar
-        const UniDetailBottomBar(),
-      ],
-    );
-  }
-}
-
-class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabController tabController;
-  const _StickyTabBarDelegate({required this.tabController});
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          UniDetailTabBar(tabController: tabController),
-          const Divider(height: 1),
-        ],
-      ),
-    );
-  }
-
-  @override
-  double get maxExtent => 49;
-
-  @override
-  double get minExtent => 49;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      false;
 }
