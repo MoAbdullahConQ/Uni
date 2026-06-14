@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:uni/core/entities/unis_response.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
 import 'package:uni/core/errors/failures.dart';
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/domain/entities/search_filter_entity.dart';
@@ -24,8 +24,8 @@ class SearchRepoImpl implements SearchRepo {
         page: page,
       );
       return right(response);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 
@@ -34,8 +34,8 @@ class SearchRepoImpl implements SearchRepo {
     try {
       final specialties = await remoteDataSource.getSpecialties();
       return right(specialties);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 }
