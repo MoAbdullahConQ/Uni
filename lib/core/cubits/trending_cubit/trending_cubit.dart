@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/entities/trending_uni_entity.dart';
+import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/data_sources/trending_remote_data_source.dart';
 
 part 'trending_state.dart';
@@ -19,8 +21,8 @@ class TrendingCubit extends Cubit<TrendingState> {
       } else {
         emit(TrendingSuccess(unis));
       }
-    } catch (e) {
-      emit(TrendingFailure(e.toString()));
+    } on DioException catch (e) {
+      emit(TrendingFailure(ServerFailure.fromDioError(e).message));
     }
   }
 }
