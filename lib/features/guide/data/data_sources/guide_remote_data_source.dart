@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
-import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
 import 'package:uni/features/guide/data/models/guide_article_model.dart';
@@ -17,24 +14,17 @@ class GuideRemoteDataSourceImpl implements GuideRemoteDataSource {
 
   @override
   Future<ArticlesResponse> getArticles({String? cursor}) async {
-    try {
-      final response = await apiService.get(
-        endpoint: BackendEndpoints.getArticles,
-        queryParameters: {
-          'per_page': 10,
-          if (cursor != null) 'cursor': cursor,
-        },
-      );
+    final response = await apiService.get(
+      endpoint: BackendEndpoints.getArticles,
+      queryParameters: {'per_page': 10, if (cursor != null) 'cursor': cursor},
+    );
 
-      final articles = (response['data'] as List)
-          .map((json) => GuideArticleModel.fromJson(json))
-          .toList();
+    final articles = (response['data'] as List)
+        .map((json) => GuideArticleModel.fromJson(json))
+        .toList();
 
-      final nextCursor = response['meta']?['next_cursor'] as String?;
+    final nextCursor = response['meta']?['next_cursor'] as String?;
 
-      return ArticlesResponse(articles: articles, nextCursor: nextCursor);
-    } on DioException catch (e) {
-      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
-    }
+    return ArticlesResponse(articles: articles, nextCursor: nextCursor);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
+import 'package:dio/dio.dart';
 import 'package:uni/core/errors/failures.dart';
 import 'package:uni/features/guide/data/data_sources/guide_remote_data_source.dart';
 import 'package:uni/features/guide/domain/entities/articles_response.dart';
@@ -17,8 +17,8 @@ class GuideRepoImpl implements GuideRepo {
     try {
       final response = await remoteDataSource.getArticles(cursor: cursor);
       return right(response);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 }
