@@ -37,9 +37,13 @@ class NotificationGroupSection extends StatelessWidget {
           itemCount: notifications.length,
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (_, i) => GestureDetector(
-            onTap: () => context.read<NotificationsCubit>().markAsRead(
-              notifications[i].id,
-            ),
+            onTap: () {
+              if (!notifications[i].isRead) {
+                context.read<NotificationsCubit>().markAsRead(
+                  notifications[i].id,
+                );
+              }
+            },
             child: NotificationCard(notificationEntity: notifications[i]),
           ),
         ),
