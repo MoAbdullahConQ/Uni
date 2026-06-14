@@ -27,6 +27,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> with RouteAware {
   int currentIndex = 0;
   late final List<Widget> views;
+  late final RecommendedCubit _recommendedCubit;
 
   @override
   void initState() {
@@ -37,6 +38,11 @@ class _MainViewState extends State<MainView> with RouteAware {
       const FavViewBody(),
       const ProfileViewBody(),
     ];
+
+    // تهيئة الـ cubits وتحميل البيانات
+    _recommendedCubit = RecommendedCubit(getIt<RecommendedRemoteDataSource>())
+      ..fetchRecommendedUnis();
+
     getIt<TrendingCubit>().fetchTrendingUnis();
     getIt<FavCubit>().getFavs();
     getIt<GuideCubit>().getArticles();
@@ -51,12 +57,43 @@ class _MainViewState extends State<MainView> with RouteAware {
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    _recommendedCubit.close();
     super.dispose();
   }
 
   @override
   void didPopNext() {
     getIt<NotificationsCubit>().getNotifications();
+
+    // reload only if they were in failure state
+    if (getIt<TrendingCubit>().state is TrendingFailure) {
+      getIt<TrendingCubit>().fetchTrendingUnis();
+    }
+    if (getIt<FavCubit>().state is FavFailure) {
+      getIt<FavCubit>().getFavs();
+    }
+    if (getIt<GuideCubit>().state is GuideFailure) {
+      getIt<GuideCubit>().getArticles();
+    }
+    if (_recommendedCubit.state is RecommendedFailure) {
+      _recommendedCubit.fetchRecommendedUnis();
+    }
+  }
+
+  void _onTabChanged(int index) {
+    if (index == 0 && currentIndex != 0) {
+      // always refresh notifications when returning to home
+      getIt<NotificationsCubit>().getNotifications();
+
+      // reload only if they were in failure state
+      if (getIt<TrendingCubit>().state is TrendingFailure) {
+        getIt<TrendingCubit>().fetchTrendingUnis();
+      }
+      if (_recommendedCubit.state is RecommendedFailure) {
+        _recommendedCubit.fetchRecommendedUnis();
+      }
+    }
+    setState(() => currentIndex = index);
   }
 
   @override
@@ -65,11 +102,7 @@ class _MainViewState extends State<MainView> with RouteAware {
       providers: [
         BlocProvider.value(value: getIt<TrendingCubit>()),
         BlocProvider.value(value: getIt<GuideCubit>()),
-        BlocProvider(
-          create: (_) =>
-              RecommendedCubit(getIt<RecommendedRemoteDataSource>())
-                ..fetchRecommendedUnis(),
-        ),
+        BlocProvider.value(value: _recommendedCubit),
       ],
       child: Scaffold(
         floatingActionButton: currentIndex != 3
@@ -77,12 +110,7 @@ class _MainViewState extends State<MainView> with RouteAware {
             : null,
         bottomNavigationBar: CustomBottomNavigationBar(
           currentIndex: currentIndex,
-          onIndexChanged: (int index) {
-            if (index == 0 && currentIndex != 0) {
-              getIt<NotificationsCubit>().getNotifications();
-            }
-            setState(() => currentIndex = index);
-          },
+          onIndexChanged: _onTabChanged,
         ),
         body: SafeArea(child: views[currentIndex]),
       ),
