@@ -7,7 +7,7 @@
 
 - **Name:** Mu Abdullah
 - **Level:** Intermediate-to-advanced Flutter developer
-- **Language preference for Claude responses:** English
+- **Language preference for Claude responses:** Arabic
 - **Environment:** Windows, Android MIUI — project path: `C:/Users/Mu/Downloads/Uni_Guide-main/uni/`
 - **Backend:** sayed — `https://back.laraveladvancedsayed101.cloud/api`
 
@@ -32,9 +32,9 @@ Flutter app helping Egyptian high school students choose universities.
 | **browse** | ✅ | ✅ | ✅ | Cursor pagination + FavCubit + per_page=10 + NoInternetWidget + retry |
 | **fav** | ✅ | ✅ | ✅ | add/remove + optimistic update + rollback + deduplication + NoInternetWidget + retry |
 | **search** | ✅ | ✅ | ✅ | Cubit + page-based pagination + recent searches |
-| **home** | ✅ | ✅ | ✅ | Trending + Recommended |
+| **home** | ✅ | ✅ | ✅ | Trending + Recommended + retry on tab switch + retry on didPopNext |
 | **notifications** | ✅ | ✅ | ✅ | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar |
-| **guide** | ✅ | ✅ | ✅ | Articles + pagination + UI search filter + retry on failure |
+| **guide** | ✅ | ✅ | ✅ | Articles + pagination + UI search filter + retry on failure + NoInternetWidget in GuideArticlesView |
 | **uni_detail** | ✅ | ✅ | ✅ | API integration done — 4 parallel calls via Future.wait + NoInternetWidget + retry + rate + website |
 | **profile** | ❌ | ❌ | ✅ | 4 screens UI done — needs Auth first |
 | **faheem** | ✅ | ❌ | ✅ | Chat UI + entities — waiting on backend |

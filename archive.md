@@ -17,7 +17,7 @@ lib/
 │   │   └── guide_video_entity.dart
 │   ├── errors/
 │   │   ├── failures.dart              (ServerFailure.fromDioError + fromResponse)
-│   │   └── custom_exceptions.dart     (DELETED — no longer used)
+│   │   └── custom_exceptions.dart     (موجودة لكن مش بتُستخدم — يمكن حذفها لاحقاً)
 │   ├── helper_functions/
 │   │   ├── get_unis_list.dart
 │   │   ├── getDummyEntities.dart
@@ -151,8 +151,8 @@ lib/
     │           ├── guide_videos_view.dart
     │           ├── guide_podcasts_view.dart
     │           └── widgets/
-    │               ├── guide_view_body.dart      ← CustomErrorWidget + onRetry on GuideFailure
-    │               ├── guide_articles_view_body.dart
+    │               ├── guide_view_body.dart           ← CustomErrorWidget + onRetry on GuideFailure
+    │               ├── guide_articles_view_body.dart  ← NoInternetWidget + onBack on GuideFailure
     │               ├── guide_article_detail_view_body.dart
     │               ├── guide_article_card.dart
     │               ├── guide_podcast_card.dart
@@ -186,7 +186,7 @@ lib/
     │   └── presentation/
     │       ├── manager/recommended_cubit/ → RecommendedCubit (catches DioException directly)
     │       └── views/
-    │           ├── main_view.dart
+    │           ├── main_view.dart    ← RecommendedCubit late final + retry logic في didPopNext و _onTabChanged
     │           └── widgets/ → home_view_body.dart, custom_home_app_bar.dart, ...
     ├── splash/ → presentation/views/splash_view.dart + widgets/
     ├── on_boarding/ → presentation/views/on_boarding_view.dart + widgets/
@@ -436,7 +436,7 @@ DioException (from Dio)
   → UI: NoInternetWidget (full-screen) or CustomErrorWidget (inline)
 ```
 
-**`custom_exceptions.dart` is DELETED — not used anywhere.**
+**`custom_exceptions.dart` موجودة لكن مش بتُستخدم في أي حاجة.**
 
 **Repos that catch DioException:**
 - `browse_repo_impl`, `fav_repo_impl`, `search_repo_impl`, `guide_repo_impl`, `notifications_repo_impl`, `uni_detail_repo_impl`
@@ -455,9 +455,9 @@ NoInternetWidget({
   VoidCallback? onBack,   // shows "العودة للصفحة السابقة" if provided
 })
 ```
-Used in: `BrowseFailure`, `FavFailure`, `NotificationsFailure`, `UniDetailFailure`
+Used in: `BrowseFailure`, `FavFailure`, `NotificationsFailure`, `UniDetailFailure`, `GuideArticlesFailure`
 - Browse/Fav: no `onBack` (tabs)
-- Notifications/UniDetail: `onBack: () => Navigator.pop(context)`
+- Notifications/UniDetail/GuideArticles: `onBack: () => Navigator.pop(context)`
 
 ### `CustomErrorWidget` (core/widgets) — inline
 ```dart
@@ -466,7 +466,7 @@ CustomErrorWidget({
   VoidCallback? onRetry,  // shows retry button if provided
 })
 ```
-Used in: Guide failure, pagination errors
+Used in: `GuideViewBody` failure (inline في الهوم), pagination errors
 
 ### `EmptyStateWidget` (core/widgets) — empty list
 ```dart
@@ -517,7 +517,7 @@ TOKEN=your_token_here   ← temporary for development
 - `UniDetailRemoteDataSource`, `UniDetailRepo`, `GetUniDetailUseCase`
 
 > ⚠️ `UniDetailCubit` NOT a singleton — created per-screen via `BlocProvider` in `UniDetailView`
-> ⚠️ `RecommendedCubit` NOT a singleton — created in `MainView.build` via `BlocProvider(create:...)`
+> ⚠️ `RecommendedCubit` NOT a singleton — created as `late final` in `MainView._MainViewState.initState` و بيتـclose في `dispose`
 
 ---
 
@@ -586,18 +586,17 @@ FavActionFailure { errMessage }
 - `GET /graduates/{id}` → alumni
 - `GET /university_life/{id}` → campus photos
 
-**UI additions in this session:**
-- `UniDetailInfoHeader`: added `rate` field → `Rating` widget below `TypeBadgeWidget`
-- `UniOverviewTab`: added website row with `url_launcher` (opens externally)
+**UI:**
+- `UniDetailInfoHeader`: name + type + `Rating(rate)` + location
+- `UniOverviewTab`: about + stats + website (url_launcher)
 - `UniFacultiesTab`: `EmptyStateWidget` if `uniFacultyEntities.isEmpty`
 - `UniAlumniTab`: `EmptyStateWidget` if `uniAlumniEntities.isEmpty`
-- `CampusPhotosGrid`: header always shows; grid replaced by `EmptyStateWidget` if `photoPaths.isEmpty`
-- `CampusPhotosGrid`: tap on image → `CampusPhotoViewer` (fullscreen PageView)
-- `CampusPhotosSheet`: tap on image → `CampusPhotoViewer`
+- `CampusPhotosGrid`: header always shows; grid replaced by `EmptyStateWidget` if `photoPaths.isEmpty` + tap opens viewer
+- `CampusPhotosSheet`: DraggableScrollableSheet full grid + tap opens viewer
 - `CampusPhotoViewer`: fullscreen `PageView` + `InteractiveViewer` + close button + page counter
 - `UniDetailBottomBar`: `isFav` from `FavCubit.favIds` — "قدم الآن" is placeholder
-- `UniAlumniCard`: image + name + graduation year badge (تاج تحت الاسم)
-- `UniDetailViewBody`: receives `id` as param, `NoInternetWidget` on failure
+- `UniAlumniCard`: image + name + graduation year badge
+- `UniDetailViewBody`: receives `id` as param, `NoInternetWidget` on failure + onBack
 
 **`url_launcher` package added** — requires `<queries>` in AndroidManifest for Android 11+:
 ```xml
@@ -630,7 +629,6 @@ ListView.separated(
 // onTap: Navigator.pushNamed(context, UniDetailView.routeName, arguments: selectedFilterUniEntities[index].id)
 ```
 
-
 ---
 
 ## 13. Search Feature
@@ -657,15 +655,52 @@ GuidePaginationFailure { errMessage, currentArticles }
 ```
 
 **GuideViewBody:**
-- Normal view: shows `state.articles.take(2).toList()` in the "Latest Articles" section
+- Normal view: shows `state.articles.take(2).toList()` في "أحدث المقالات"
 - Search mode: filters on title and content
+- `GuideFailure` → `CustomErrorWidget` مع `onRetry`
 
 **GuideArticlesView:** separate route — calls `getArticles()` fresh when opened
-**`GuideFailure`:** `CustomErrorWidget` with `onRetry: () => getIt<GuideCubit>().getArticles()`
+**`GuideArticlesViewBody`:**
+- `GuideFailure` → `NoInternetWidget` مع `onRetry` و `onBack: () => Navigator.pop(context)`
+- `GuidePaginationFailure` → `CustomErrorWidget` inline أسفل اللست مع `onRetry: loadMore`
 
 ---
 
-## 15. on_generate_routes.dart — Current Routes
+## 15. MainView Details
+
+**`_MainViewState`:**
+- `late final List<Widget> views` — created once in `initState`
+- `late final RecommendedCubit _recommendedCubit` — created in `initState`، بيتـclose في `dispose`
+- `BlocProvider.value` للـ 3 cubits في `build`
+
+**`initState` يشتغل:**
+```dart
+_recommendedCubit = RecommendedCubit(...)..fetchRecommendedUnis();
+getIt<TrendingCubit>().fetchTrendingUnis();
+getIt<FavCubit>().getFavs();
+getIt<GuideCubit>().getArticles();
+```
+
+**`didPopNext` — retry لو فاشل:**
+```dart
+getIt<NotificationsCubit>().getNotifications(); // دايماً
+if TrendingFailure → fetchTrendingUnis()
+if FavFailure → getFavs()
+if GuideFailure → getArticles()
+if RecommendedFailure → fetchRecommendedUnis()
+```
+
+**`_onTabChanged` — لما يرجع لـ tab 0:**
+```dart
+getIt<NotificationsCubit>().getNotifications(); // دايماً
+if TrendingFailure → fetchTrendingUnis()
+if RecommendedFailure → fetchRecommendedUnis()
+// FavCubit و GuideCubit مش محتاجينهم هنا — عندهم initState خاص بيهم
+```
+
+---
+
+## 16. on_generate_routes.dart — Current Routes
 
 ```dart
 SplashView, OnBoardingView, MainView, HomeView (dead), FavView,
@@ -678,7 +713,7 @@ UniDetailView (arguments: int id), SearchView
 
 ---
 
-## 16. Known Bugs & Pending Issues
+## 17. Known Bugs & Pending Issues
 
 - **Backend Bug — Fav Pagination:** same items returned regardless of cursor → deduplication in `FavCubit.loadMore()`
 - **`HomeView` dead code:** exists but never navigated to
@@ -689,10 +724,11 @@ UniDetailView (arguments: int id), SearchView
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
 - **"قدم الآن" button:** placeholder — no action until auth + profile API done
 - **`robot_internet.png`:** custom illustration for `NoInternetWidget` — must be added to `assets/images/` and `pubspec.yaml`
+- **`custom_exceptions.dart`:** موجودة لكن مش بتُستخدم — يمكن حذفها
 
 ---
 
-## 17. All Decisions Made
+## 18. All Decisions Made
 
 | Decision | Reason |
 |---|---|
@@ -722,3 +758,8 @@ UniDetailView (arguments: int id), SearchView
 | `rate` shown in `UniDetailInfoHeader` | Consistent with card-level rating display |
 | `website` shown in `UniOverviewTab` | Natural place for university info |
 | Comments in code must be Arabic | Project convention |
+| `RecommendedCubit` → `late final` في `initState` | منع إعادة إنشاء الـ cubit في كل `build` |
+| `_recommendedCubit.close()` في `dispose` | منع memory leak |
+| retry في `didPopNext` و `_onTabChanged` | تحديث البيانات الفاشلة لما المستخدم يرجع للهوم |
+| `NoInternetWidget` في `GuideArticlesViewBody` | consistent مع باقي الـ pushed screens |
+| `GuideViewBody` يفضل `CustomErrorWidget` | inline error مش full-screen لأنه tab مش pushed screen |

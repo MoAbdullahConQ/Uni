@@ -6,7 +6,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 ---
 
 ## 2. How to Interact
-- **Always respond in English** — mix technical terms naturally
+- **Always respond in Arabic** — mix technical terms naturally
 - **Short and direct** — no preambles or filler
 - "continue" / "go" → keep going without intro
 - "what do you think" → honest opinion, not a list of options
@@ -65,7 +65,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Base URL:** `https://back.laraveladvancedsayed101.cloud/api`
 - **Auth:** Bearer token (Prefs) + `Api-Key` header (from `.env`)
 - **Pagination:** cursor-based (Browse/Fav/Guide/Notifications) / page-based (Search)
-- **Error handling:** `ServerFailure.fromDioError(e)` → `CustomExceptions` → `left(ServerFailure(...))`
+- **Error handling:** `DioException` caught in repo → `ServerFailure.fromDioError(e)` → `left(ServerFailure(...))`
 - **Cubit pattern:** Initial → Loading → Success/Failure + PaginationLoading/PaginationFailure
 - **Search in Guide and Fav:** UI filter on existing data — not a Cubit method
 - **API calls:** `apiService.get()` + `response['data']` manually — not `getList()` directly
@@ -103,7 +103,31 @@ NestedScrollView (ClampingScrollPhysics)
 
 ---
 
-## 7. Current Focus
+## 7. Error UI Rules
 
-**Features done:** browse, fav, search, home, notifications, guide, uni_detail (UI), profile (UI), faheem (UI)
-**Next up (in order):** uni_detail API → auth → splash → onboarding → profile API → faheem API (waiting on backend)
+| Situation | Widget |
+|---|---|
+| Full-screen failure في pushed screen | `NoInternetWidget` مع `onRetry` و `onBack: () => Navigator.pop(context)` |
+| Full-screen failure في tab (browse/fav/notifications) | `NoInternetWidget` مع `onRetry` بس (بدون onBack) |
+| Inline failure في وسط صفحة (زي GuideViewBody) | `CustomErrorWidget` مع `onRetry` |
+| Pagination failure | `CustomErrorWidget` inline أسفل اللست مع `onRetry: loadMore` |
+| Empty list | `EmptyStateWidget` |
+
+---
+
+## 8. Current Focus
+
+**Features done:** browse, fav, search, home, notifications, guide, uni_detail
+**Next up (in order):** auth → splash → onboarding → profile API → faheem API (waiting on backend)
+
+---
+
+## 9. Session Summary — آخر شات
+
+**اللي عملناه:**
+1. **`GuideArticlesViewBody`** — غيّرنا `GuideFailure` من `CustomErrorWidget` لـ `NoInternetWidget` مع `onRetry` و `onBack`
+2. **`MainView`** — إصلاح مشكلة إن البيانات مش بتتحدث لو النت اتقطع:
+   - `RecommendedCubit` اتنقل من `build` لـ `late final` في `initState` + `close()` في `dispose`
+   - `BlocProvider.value` بدل `BlocProvider(create:...)` للـ recommended
+   - `didPopNext` بيعمل retry للـ cubits الفاشلة + دايماً بيحدث notifications
+   - `_onTabChanged` method منفصلة بتعمل retry للـ TrendingCubit و RecommendedCubit لو فاشلين لما يرجع لـ tab 0
