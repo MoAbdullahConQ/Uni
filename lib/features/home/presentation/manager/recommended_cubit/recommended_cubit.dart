@@ -1,5 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
+import 'package:uni/core/errors/failures.dart';
 import 'package:uni/features/home/data/data_sources/recommended_remote_data_source.dart';
 import 'package:uni/features/home/domain/entities/recommended_uni_entity.dart';
 
@@ -19,8 +20,8 @@ class RecommendedCubit extends Cubit<RecommendedState> {
       } else {
         emit(RecommendedSuccess(unis));
       }
-    } on CustomExceptions catch (e) {
-      emit(RecommendedFailure(e.message));
+    } on DioException catch (e) {
+      emit(RecommendedFailure(ServerFailure.fromDioError(e).message));
     }
   }
 }
