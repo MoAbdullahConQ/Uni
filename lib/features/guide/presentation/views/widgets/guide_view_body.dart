@@ -4,6 +4,7 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_error_widget.dart';
+import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/widgets/featured_guide_video_section.dart';
 import 'package:uni/core/widgets/search_bar_field.dart';
 import 'package:uni/core/widgets/section_header_item.dart';
@@ -25,7 +26,6 @@ class GuideViewBody extends StatefulWidget {
 class _GuideViewBodyState extends State<GuideViewBody> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-
 
   List<GuideArticleEntity> _getFilteredArticles(
     List<GuideArticleEntity> articles,
@@ -122,7 +122,10 @@ class _GuideViewBodyState extends State<GuideViewBody> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (state is GuideFailure) {
-                return CustomErrorWidget(message: state.errMessage);
+                return CustomErrorWidget(
+                  message: state.errMessage,
+                  onRetry: () => getIt<GuideCubit>().getArticles(),
+                );
               }
 
               final articles = state is GuideSuccess
@@ -160,7 +163,10 @@ class _GuideViewBodyState extends State<GuideViewBody> {
           return const Center(child: CircularProgressIndicator());
         }
         if (state is GuideFailure) {
-          return CustomErrorWidget(message: state.errMessage);
+          return CustomErrorWidget(
+            message: state.errMessage,
+            onRetry: () => getIt<GuideCubit>().getArticles(),
+          );
         }
 
         final allArticles = state is GuideSuccess

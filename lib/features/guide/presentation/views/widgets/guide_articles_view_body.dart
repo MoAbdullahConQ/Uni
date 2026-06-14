@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/widgets/back_button.dart';
 import 'package:uni/core/widgets/custom_error_widget.dart';
+import 'package:uni/core/widgets/no_internet_widget.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/guide/domain/entities/guide_article_entity.dart';
@@ -71,7 +72,10 @@ class _GuideArticlesViewBodyState extends State<GuideArticlesViewBody> {
             child: BlocBuilder<GuideCubit, GuideState>(
               builder: (context, state) {
                 if (state is GuideFailure) {
-                  return CustomErrorWidget(message: state.errMessage);
+                  return NoInternetWidget(
+                    onRetry: () => context.read<GuideCubit>().getArticles(),
+                    onBack: () => Navigator.pop(context),
+                  );
                 }
 
                 List<GuideArticleEntity> currentArticles = [];
