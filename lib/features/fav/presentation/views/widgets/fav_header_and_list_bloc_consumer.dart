@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/widgets/custom_error_widget.dart';
+import 'package:uni/core/widgets/no_internet_widget.dart';
 import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_list_widget.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
@@ -35,11 +36,8 @@ class FavHeaderAndListBlocConsumer extends StatelessWidget {
         if (state is FavFailure) {
           return SizedBox(
             height: MediaQuery.of(context).size.height - 300,
-            child: Center(
-              child: CustomErrorWidget(
-                message: state.errMessage,
-                onRetry: () => context.read<FavCubit>().getFavs(),
-              ),
+            child: NoInternetWidget(
+              onRetry: () => context.read<FavCubit>().getFavs(),
             ),
           );
         }

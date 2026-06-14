@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/core/widgets/custom_error_widget.dart';
+import 'package:uni/core/widgets/no_internet_widget.dart';
 import 'package:uni/features/notifications/domain/entities/notification_entity.dart';
 import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
 import 'package:uni/features/notifications/presentation/views/widgets/notification_group_section.dart';
@@ -113,10 +113,10 @@ class _NotificationsViewBodyState extends State<NotificationsViewBody> {
               buildWhen: (_, current) => current is! NotificationsActionFailure,
               builder: (context, state) {
                 if (state is NotificationsFailure) {
-                  return CustomErrorWidget(
-                    message: state.errMessage,
+                  return NoInternetWidget(
                     onRetry: () =>
                         context.read<NotificationsCubit>().getNotifications(),
+                    onBack: () => Navigator.pop(context),
                   );
                 }
 

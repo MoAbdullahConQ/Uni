@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/entities/uni_entity.dart';
 import 'package:uni/core/widgets/custom_error_widget.dart';
+import 'package:uni/core/widgets/no_internet_widget.dart';
 import 'package:uni/core/widgets/uni_count_header.dart';
 import 'package:uni/core/widgets/uni_list_widget.dart';
 import 'package:uni/features/browse/presentation/manager/browse_cubit/browse_cubit.dart';
@@ -33,11 +34,8 @@ class BrowseHeaderAndListBlocBuilder extends StatelessWidget {
                   MediaQuery.of(context).size.height -
                   MediaQuery.of(context).padding.top -
                   300,
-              child: Center(
-                child: CustomErrorWidget(
-                  message: state.errMessage,
-                  onRetry: () => context.read<BrowseCubit>().getUnis(),
-                ),
+              child: NoInternetWidget(
+                onRetry: () => context.read<BrowseCubit>().getUnis(),
               ),
             );
           }

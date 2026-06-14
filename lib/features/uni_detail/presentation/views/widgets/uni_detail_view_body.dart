@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uni/core/widgets/custom_error_widget.dart';
+import 'package:uni/core/widgets/no_internet_widget.dart';
 import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/uni_detail_cubit.dart';
 import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/uni_detail_state.dart';
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_content.dart';
@@ -38,10 +38,10 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
           return const Center(child: CircularProgressIndicator());
         }
         if (state is UniDetailFailure) {
-          return CustomErrorWidget(
-            message: state.errMessage,
+          return NoInternetWidget(
             onRetry: () =>
                 context.read<UniDetailCubit>().getUniDetail(widget.id),
+            onBack: () => Navigator.pop(context),
           );
         }
         if (state is UniDetailSuccess) {
