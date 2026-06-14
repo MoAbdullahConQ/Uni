@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
+import 'package:dio/dio.dart';
 import 'package:uni/core/errors/failures.dart';
 import 'package:uni/features/notifications/data/data_sources/notifications_remote_data_source.dart';
 import 'package:uni/features/notifications/domain/entities/notifications_response.dart';
@@ -17,8 +17,8 @@ class NotificationsRepoImpl implements NotificationsRepo {
     try {
       final result = await remoteDataSource.getNotifications(cursor: cursor);
       return right(result);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 
@@ -27,8 +27,8 @@ class NotificationsRepoImpl implements NotificationsRepo {
     try {
       final count = await remoteDataSource.getUnreadCount();
       return right(count);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 
@@ -37,8 +37,8 @@ class NotificationsRepoImpl implements NotificationsRepo {
     try {
       await remoteDataSource.markAsRead(notificationId);
       return right(null);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 
@@ -47,8 +47,8 @@ class NotificationsRepoImpl implements NotificationsRepo {
     try {
       await remoteDataSource.markAllAsRead();
       return right(null);
-    } on CustomExceptions catch (e) {
-      return left(ServerFailure(e.message));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     }
   }
 }

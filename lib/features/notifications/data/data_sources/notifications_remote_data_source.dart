@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
-import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
 import 'package:uni/features/notifications/data/models/notification_model.dart';
@@ -21,58 +18,42 @@ class NotificationsRemoteDataSourceImpl
 
   @override
   Future<NotificationsResponse> getNotifications({String? cursor}) async {
-    try {
-      final response = await apiService.get(
-        endpoint: BackendEndpoints.getNotifications,
-        queryParameters: {'per_page': 10, if (cursor != null) 'cursor': cursor},
-      );
+    final response = await apiService.get(
+      endpoint: BackendEndpoints.getNotifications,
+      queryParameters: {'per_page': 10, if (cursor != null) 'cursor': cursor},
+    );
 
-      final notifications = (response['data'] as List)
-          .map((json) => NotificationModel.fromJson(json))
-          .toList();
+    final notifications = (response['data'] as List)
+        .map((json) => NotificationModel.fromJson(json))
+        .toList();
 
-      final nextCursor = response['meta']['next_cursor'] as String?;
+    final nextCursor = response['meta']['next_cursor'] as String?;
 
-      return NotificationsResponse(
-        notifications: notifications,
-        nextCursor: nextCursor,
-      );
-    } on DioException catch (e) {
-      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
-    }
+    return NotificationsResponse(
+      notifications: notifications,
+      nextCursor: nextCursor,
+    );
   }
 
   @override
   Future<int> getUnreadCount() async {
-    try {
-      final response = await apiService.get(
-        endpoint: BackendEndpoints.getUnreadNotificationsCount,
-      );
-      return response['data']['total'] as int;
-    } on DioException catch (e) {
-      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
-    }
+    final response = await apiService.get(
+      endpoint: BackendEndpoints.getUnreadNotificationsCount,
+    );
+    return response['data']['total'] as int;
   }
 
   @override
   Future<void> markAsRead(int notificationId) async {
-    try {
-      await apiService.patch(
-        endpoint: BackendEndpoints.markNotificationAsRead(notificationId),
-      );
-    } on DioException catch (e) {
-      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
-    }
+    await apiService.patch(
+      endpoint: BackendEndpoints.markNotificationAsRead(notificationId),
+    );
   }
 
   @override
   Future<void> markAllAsRead() async {
-    try {
-      await apiService.patch(
-        endpoint: BackendEndpoints.markAllNotificationsAsRead,
-      );
-    } on DioException catch (e) {
-      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
-    }
+    await apiService.patch(
+      endpoint: BackendEndpoints.markAllNotificationsAsRead,
+    );
   }
 }

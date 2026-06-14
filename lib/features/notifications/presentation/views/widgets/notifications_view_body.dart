@@ -101,10 +101,23 @@ class _NotificationsViewBodyState extends State<NotificationsViewBody> {
           const NotificationsAppBar(),
           const SizedBox(height: 16),
           Expanded(
-            child: BlocBuilder<NotificationsCubit, NotificationsState>(
+            child: BlocConsumer<NotificationsCubit, NotificationsState>(
+              listenWhen: (_, current) => current is NotificationsActionFailure,
+              listener: (context, state) {
+                if (state is NotificationsActionFailure) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.errMessage)));
+                }
+              },
+              buildWhen: (_, current) => current is! NotificationsActionFailure,
               builder: (context, state) {
                 if (state is NotificationsFailure) {
-                  return CustomErrorWidget(message: state.errMessage);
+                  return CustomErrorWidget(
+                    message: state.errMessage,
+                    onRetry: () =>
+                        context.read<NotificationsCubit>().getNotifications(),
+                  );
                 }
 
                 if (state is NotificationsLoading ||
