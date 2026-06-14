@@ -21,6 +21,7 @@ Flutter app helping Egyptian high school students choose universities.
 - **Stack:** Flutter + Dart, Clean Architecture, flutter_bloc (Cubit), Dio + ApiService, GetIt, SharedPreferences (Prefs), flutter_dotenv, dartz (Either)
 - **Fonts:** `IBMPlexSansArabic` (default in ThemeData — no need to set per TextStyle) + `Palestine` (special use)
 - **Colors:** see archive §AppColors — `primaryColor` dark green, `lightPrimaryColor` light green, `secondaryColor` yellow-green, `lightSecondaryColor` very light green bg
+- **Added packages:** `url_launcher` (for opening university website in browser)
 
 ---
 
@@ -28,13 +29,13 @@ Flutter app helping Egyptian high school students choose universities.
 
 | Feature | Domain | Data | Presentation | Notes |
 |---|---|---|---|---|
-| **browse** | ✅ | ✅ | ✅ | Cursor pagination + FavCubit + per_page=10 |
-| **fav** | ✅ | ✅ | ✅ | add/remove + optimistic update + rollback + deduplication in loadMore |
+| **browse** | ✅ | ✅ | ✅ | Cursor pagination + FavCubit + per_page=10 + NoInternetWidget + retry |
+| **fav** | ✅ | ✅ | ✅ | add/remove + optimistic update + rollback + deduplication + NoInternetWidget + retry |
 | **search** | ✅ | ✅ | ✅ | Cubit + page-based pagination + recent searches |
 | **home** | ✅ | ✅ | ✅ | Trending + Recommended |
-| **notifications** | ✅ | ✅ | ✅ | Global cubit + RouteObserver + unread count |
-| **guide** | ✅ | ✅ | ✅ | Articles + pagination + UI search filter |
-| **uni_detail** | ✅ | ✅ | ✅ | API integration done — 4 parallel calls via Future.wait |
+| **notifications** | ✅ | ✅ | ✅ | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar |
+| **guide** | ✅ | ✅ | ✅ | Articles + pagination + UI search filter + retry on failure |
+| **uni_detail** | ✅ | ✅ | ✅ | API integration done — 4 parallel calls via Future.wait + NoInternetWidget + retry + rate + website |
 | **profile** | ❌ | ❌ | ✅ | 4 screens UI done — needs Auth first |
 | **faheem** | ✅ | ❌ | ✅ | Chat UI + entities — waiting on backend |
 | **auth** | ❌ | ❌ | ❌ | Not started |
@@ -61,6 +62,8 @@ Flutter app helping Egyptian high school students choose universities.
 10. **Optimistic Update:** Fav only (with rollback for both add and remove)
 11. **UI Search:** Guide and Fav filter on existing data — not a Cubit method
 12. **API calls in `initState`** — not in `build`
+13. **Error handling:** `DioException` caught directly in repo → `ServerFailure.fromDioError(e)` → `left(...)` — NO `CustomExceptions` layer anymore
+14. **Data sources:** no try/catch — let `DioException` propagate to repo
 
 > ⚠️ If a new error occurs → always ask for the related file before attempting a fix.
 
@@ -101,6 +104,7 @@ Flutter app helping Egyptian high school students choose universities.
 - **If Claude is wrong** — tells him directly and won't go along with a wrong answer
 - **Commands are short and direct:** "fix", "send", "look at the whole code"
 - **Doesn't want comments removed** from code
+- **Comments in code must be in Arabic** — not English
 
 > ⚠️ **Important note:** If a new error occurs, always ask for the related file before attempting to fix it.
 
