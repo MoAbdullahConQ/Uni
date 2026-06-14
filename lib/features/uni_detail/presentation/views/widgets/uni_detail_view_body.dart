@@ -6,7 +6,9 @@ import 'package:uni/features/uni_detail/presentation/manager/uni_detail_cubit/un
 import 'package:uni/features/uni_detail/presentation/views/widgets/uni_detail_content.dart';
 
 class UniDetailViewBody extends StatefulWidget {
-  const UniDetailViewBody({super.key});
+  const UniDetailViewBody({super.key, required this.id});
+
+  final int id;
 
   @override
   State<UniDetailViewBody> createState() => _UniDetailViewBodyState();
@@ -36,7 +38,11 @@ class _UniDetailViewBodyState extends State<UniDetailViewBody>
           return const Center(child: CircularProgressIndicator());
         }
         if (state is UniDetailFailure) {
-          return CustomErrorWidget(message: state.errMessage);
+          return CustomErrorWidget(
+            message: state.errMessage,
+            onRetry: () =>
+                context.read<UniDetailCubit>().getUniDetail(widget.id),
+          );
         }
         if (state is UniDetailSuccess) {
           return UniDetailContent(

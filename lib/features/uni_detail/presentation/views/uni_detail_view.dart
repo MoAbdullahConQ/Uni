@@ -18,13 +18,13 @@ class UniDetailView extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           UniDetailCubit(getIt<GetUniDetailUseCase>())..getUniDetail(id),
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton: Padding(
+        floatingActionButton: const Padding(
           padding: EdgeInsets.only(bottom: 70),
           child: AskFaheemButton(),
         ),
-        body: SafeArea(child: UniDetailViewBody()),
+        body: SafeArea(child: UniDetailViewBody(id: id)),
       ),
     );
   }
