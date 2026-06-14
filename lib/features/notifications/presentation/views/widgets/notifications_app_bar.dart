@@ -16,6 +16,7 @@ class NotificationsAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationsCubit, NotificationsState>(
+      buildWhen: (_, current) => current is! NotificationsActionFailure,
       builder: (context, state) {
         return Row(
           children: [
