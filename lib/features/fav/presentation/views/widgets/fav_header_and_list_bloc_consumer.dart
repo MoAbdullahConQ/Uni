@@ -33,7 +33,15 @@ class FavHeaderAndListBlocConsumer extends StatelessWidget {
           current is FavLoading,
       builder: (context, state) {
         if (state is FavFailure) {
-          return CustomErrorWidget(message: state.errMessage);
+          return SizedBox(
+            height: MediaQuery.of(context).size.height - 300,
+            child: Center(
+              child: CustomErrorWidget(
+                message: state.errMessage,
+                onRetry: () => context.read<FavCubit>().getFavs(),
+              ),
+            ),
+          );
         }
 
         List<UniEntity> currentUnis = [];
@@ -49,7 +57,10 @@ class FavHeaderAndListBlocConsumer extends StatelessWidget {
           currentUnis = state.currentUnis;
           paginationError = state.errMessage;
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return SizedBox(
+            height: MediaQuery.of(context).size.height - 300,
+            child: const Center(child: CircularProgressIndicator()),
+          );
         }
 
         final filteredEntitiesList = getFilteredEntitiesList(currentUnis);
