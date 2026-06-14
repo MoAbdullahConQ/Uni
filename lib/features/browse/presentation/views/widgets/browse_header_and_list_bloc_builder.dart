@@ -28,7 +28,18 @@ class BrowseHeaderAndListBlocBuilder extends StatelessWidget {
         builder: (context, state) {
           // States
           if (state is BrowseFailure) {
-            return CustomErrorWidget(message: state.errMessage);
+            return SizedBox(
+              height:
+                  MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top -
+                  300,
+              child: Center(
+                child: CustomErrorWidget(
+                  message: state.errMessage,
+                  onRetry: () => context.read<BrowseCubit>().getUnis(),
+                ),
+              ),
+            );
           }
 
           List<UniEntity> currentUnis = [];
@@ -49,7 +60,7 @@ class BrowseHeaderAndListBlocBuilder extends StatelessWidget {
               height:
                   MediaQuery.of(context).size.height -
                   MediaQuery.of(context).padding.top -
-                  200,
+                  300,
               child: const Center(child: CircularProgressIndicator()),
             );
           }

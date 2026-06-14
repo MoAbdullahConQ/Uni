@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:uni/core/errors/custom_exceptions.dart';
-import 'package:uni/core/errors/failures.dart';
 import 'package:uni/core/helper_functions/get_unis_list.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
@@ -17,20 +14,16 @@ class BrowseRemoteDataSourceImpl implements BrowseRemoteDataSource {
 
   @override
   Future<UnisResponse> getUnis({String? cursor}) async {
-    try {
-      var response = await apiService.get(
-        endpoint: BackendEndpoints.getUniversities,
-        queryParameters: {'per_page': 10, if (cursor != null) 'cursor': cursor},
-      );
+    var response = await apiService.get(
+      endpoint: BackendEndpoints.getUniversities,
+      queryParameters: {'per_page': 10, if (cursor != null) 'cursor': cursor},
+    );
 
-      final nextCursor = response['meta']?['next_cursor'] as String?;
+    final nextCursor = response['meta']?['next_cursor'] as String?;
 
-      return UnisResponse(
-        uniEntities: getUnisList(response),
-        nextCursor: nextCursor,
-      );
-    } on DioException catch (e) {
-      throw CustomExceptions(message: ServerFailure.fromDioError(e).message);
-    }
+    return UnisResponse(
+      uniEntities: getUnisList(response),
+      nextCursor: nextCursor,
+    );
   }
 }
