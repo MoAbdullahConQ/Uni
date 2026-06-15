@@ -1,9 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:uni/core/errors/failures.dart';
-import 'package:uni/features/auth/domain/entities/auth_entity.dart';
 
 abstract class AuthRepo {
-  Future<Either<Failure, AuthEntity>> login({
+  Future<Either<Failure, void>> login({
     required String email,
     required String password,
   });
@@ -15,18 +14,14 @@ abstract class AuthRepo {
     required String passwordConfirmation,
   });
 
-  Future<Either<Failure, AuthEntity>> verifyOtp({
+  Future<Either<Failure, void>> verifyOtp({
     required String otp,
     required String email,
   });
 
-  Future<Either<Failure, void>> forgetPassword({
-    required String email,
-  });
+  Future<Either<Failure, void>> forgetPassword({required String email});
 
-  Future<Either<Failure, void>> resendOtp({
-    required String email,
-  });
+  Future<Either<Failure, void>> resendOtp({required String email});
 
   Future<Either<Failure, void>> resetPassword({
     required String password,

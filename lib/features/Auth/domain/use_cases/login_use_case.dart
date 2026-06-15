@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:uni/core/errors/failures.dart';
-import 'package:uni/features/auth/domain/entities/auth_entity.dart';
 import 'package:uni/features/auth/domain/repos/auth_repo.dart';
 
 class LoginUseCase {
@@ -8,7 +7,7 @@ class LoginUseCase {
 
   LoginUseCase(this.authRepo);
 
-  Future<Either<Failure, AuthEntity>> call({
+  Future<Either<Failure, void>> call({
     required String email,
     required String password,
   }) {
