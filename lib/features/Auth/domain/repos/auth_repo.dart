@@ -35,4 +35,10 @@ abstract class AuthRepo {
     required double percentage,
     required int age,
   });
+
+  // Used in profile feature (security screen)
+  Future<Either<Failure, void>> updatePassword({
+    required String password,
+    required String passwordConfirmation,
+  });
 }
