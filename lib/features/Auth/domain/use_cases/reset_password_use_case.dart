@@ -10,10 +10,12 @@ class ResetPasswordUseCase {
   Future<Either<Failure, void>> call({
     required String password,
     required String passwordConfirmation,
+    required String tempToken,
   }) {
     return authRepo.resetPassword(
       password: password,
       passwordConfirmation: passwordConfirmation,
+      tempToken: tempToken,
     );
   }
 }

@@ -27,6 +27,7 @@ abstract class AuthRepo {
   Future<Either<Failure, void>> resetPassword({
     required String password,
     required String passwordConfirmation,
+    required String tempToken,
   });
 
   Future<Either<Failure, void>> saveStudentInfo({
