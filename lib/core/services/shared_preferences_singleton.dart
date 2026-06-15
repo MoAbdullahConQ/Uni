@@ -39,7 +39,7 @@ class Prefs {
     return _instance._prefs!.getString(key) ?? "";
   }
 
-  // Future<bool> remove(String key) async {
-  //   return await prefs.remove(key);
-  // }
+  static Future<void> remove(String key) async {
+    await _instance._prefs!.remove(key);
+  }
 }
