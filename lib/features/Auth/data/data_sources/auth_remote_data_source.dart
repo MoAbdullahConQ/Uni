@@ -12,7 +12,7 @@ abstract class AuthRemoteDataSource {
     required String password,
     required String passwordConfirmation,
   });
-  Future<void> verifyOtp({required String otp, required String email});
+  Future<String> verifyOtp({required String otp, required String email});
   Future<void> forgetPassword({required String email});
   Future<void> resendOtp({required String email});
   Future<void> resetPassword({
@@ -40,10 +40,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this.apiService);
 
   @override
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     final response = await apiService.post(
       endpoint: BackendEndpoints.login,
       data: {'email': email, 'password': password},
@@ -72,17 +69,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> verifyOtp({
-    required String otp,
-    required String email,
-  }) async {
+  Future<String> verifyOtp({required String otp, required String email}) async {
     final response = await apiService.post(
       endpoint: BackendEndpoints.verifyOtp,
       data: {'otp': otp, 'email': email},
     );
-    // store the tokens in Prefs after verifying OTP
-    await Prefs.setString('token', response['data']['access_token']);
-    await Prefs.setString('refresh_token', response['data']['refresh_token']);
+    // store the access_token in the repo, which will decide whether to save it or pass it to the Cubit
+    return response['data']['access_token'] as String;
   }
 
   @override
@@ -153,9 +146,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserEntity> getMe() async {
-    final response = await apiService.get(
-      endpoint: BackendEndpoints.getMe,
-    );
+    final response = await apiService.get(endpoint: BackendEndpoints.getMe);
     return UserModel.fromJson(response['data']['user']);
   }
 }

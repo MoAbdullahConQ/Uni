@@ -15,7 +15,7 @@ abstract class AuthRepo {
     required String passwordConfirmation,
   });
 
-  Future<Either<Failure, void>> verifyOtp({
+  Future<Either<Failure, String>> verifyOtp({
     required String otp,
     required String email,
   });

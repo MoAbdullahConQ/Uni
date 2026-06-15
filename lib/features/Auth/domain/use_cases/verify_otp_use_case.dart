@@ -7,7 +7,7 @@ class VerifyOtpUseCase {
 
   VerifyOtpUseCase(this.authRepo);
 
-  Future<Either<Failure, void>> call({
+  Future<Either<Failure, String>> call({
     required String otp,
     required String email,
   }) {

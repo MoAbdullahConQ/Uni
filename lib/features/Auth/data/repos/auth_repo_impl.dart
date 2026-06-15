@@ -44,13 +44,13 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  Future<Either<Failure, void>> verifyOtp({
+  Future<Either<Failure, String>> verifyOtp({
     required String otp,
     required String email,
   }) async {
     try {
-      await remoteDataSource.verifyOtp(otp: otp, email: email);
-      return right(null);
+      final token = await remoteDataSource.verifyOtp(otp: otp, email: email);
+      return right(token);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioError(e));
     }
@@ -141,4 +141,5 @@ class AuthRepoImpl implements AuthRepo {
       return left(ServerFailure.fromDioError(e));
     }
   }
+  
 }
