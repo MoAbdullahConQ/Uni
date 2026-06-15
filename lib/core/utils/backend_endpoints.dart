@@ -37,4 +37,16 @@ class BackendEndpoints {
 
   // Search
   static const String search = '/search-univ';
+
+  // Auth
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String verifyOtp = '/verify-Otp';
+  static const String forgetPassword = '/forget-Password';
+  static const String resendOtp = '/resendOtp';
+  static const String resetPassword = '/auth/reset-Password';
+  static const String saveStudentInfo = '/student_info';
+  static const String updatePassword = '/auth/update-Password';
+  static const String getMe = '/auth/me';
+  static const String refreshToken = '/auth/refresh';
 }

@@ -1,0 +1,161 @@
+import 'package:uni/core/services/shared_preferences_singleton.dart';
+import 'package:uni/core/utils/api_service.dart';
+import 'package:uni/core/utils/backend_endpoints.dart';
+import 'package:uni/features/auth/data/models/user_model.dart';
+import 'package:uni/features/auth/domain/entities/user_entity.dart';
+
+abstract class AuthRemoteDataSource {
+  Future<void> login({required String email, required String password});
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  });
+  Future<void> verifyOtp({required String otp, required String email});
+  Future<void> forgetPassword({required String email});
+  Future<void> resendOtp({required String email});
+  Future<void> resetPassword({
+    required String password,
+    required String passwordConfirmation,
+    required String tempToken,
+  });
+  Future<void> saveStudentInfo({
+    required String studySection,
+    required String scientificDepartment,
+    required int governorateId,
+    required double percentage,
+    required int age,
+  });
+  Future<void> updatePassword({
+    required String password,
+    required String passwordConfirmation,
+  });
+  Future<UserEntity> getMe();
+}
+
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final ApiService apiService;
+
+  AuthRemoteDataSourceImpl(this.apiService);
+
+  @override
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    final response = await apiService.post(
+      endpoint: BackendEndpoints.login,
+      data: {'email': email, 'password': password},
+    );
+    // store the tokens in Prefs after login
+    await Prefs.setString('token', response['data']['access_token']);
+    await Prefs.setString('refresh_token', response['data']['refresh_token']);
+  }
+
+  @override
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    await apiService.post(
+      endpoint: BackendEndpoints.register,
+      data: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      },
+    );
+  }
+
+  @override
+  Future<void> verifyOtp({
+    required String otp,
+    required String email,
+  }) async {
+    final response = await apiService.post(
+      endpoint: BackendEndpoints.verifyOtp,
+      data: {'otp': otp, 'email': email},
+    );
+    // store the tokens in Prefs after verifying OTP
+    await Prefs.setString('token', response['data']['access_token']);
+    await Prefs.setString('refresh_token', response['data']['refresh_token']);
+  }
+
+  @override
+  Future<void> forgetPassword({required String email}) async {
+    await apiService.post(
+      endpoint: BackendEndpoints.forgetPassword,
+      data: {'email': email},
+    );
+  }
+
+  @override
+  Future<void> resendOtp({required String email}) async {
+    await apiService.post(
+      endpoint: BackendEndpoints.resendOtp,
+      data: {'email': email},
+    );
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String password,
+    required String passwordConfirmation,
+    required String tempToken,
+  }) async {
+    await apiService.postWithToken(
+      endpoint: BackendEndpoints.resetPassword,
+      token: tempToken,
+      data: {
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      },
+    );
+  }
+
+  @override
+  Future<void> saveStudentInfo({
+    required String studySection,
+    required String scientificDepartment,
+    required int governorateId,
+    required double percentage,
+    required int age,
+  }) async {
+    await apiService.post(
+      endpoint: BackendEndpoints.saveStudentInfo,
+      data: {
+        'study_section': studySection,
+        'scientific_department': scientificDepartment,
+        'governorate_id': governorateId,
+        'percentage': percentage,
+        'age': age,
+      },
+    );
+  }
+
+  @override
+  Future<void> updatePassword({
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    await apiService.post(
+      endpoint: BackendEndpoints.updatePassword,
+      data: {
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      },
+    );
+  }
+
+  @override
+  Future<UserEntity> getMe() async {
+    final response = await apiService.get(
+      endpoint: BackendEndpoints.getMe,
+    );
+    return UserModel.fromJson(response['data']['user']);
+  }
+}

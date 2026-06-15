@@ -67,4 +67,18 @@ class ApiService {
     );
     return response.data;
   }
+
+  // Used with the temporary token in the forgot password flow
+  Future<Map<String, dynamic>> postWithToken({
+    required String endpoint,
+    required String token,
+    Map<String, dynamic>? data,
+  }) async {
+    var response = await dio.post(
+      '${BackendEndpoints.baseUrl}$endpoint',
+      data: data,
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+    return response.data;
+  }
 }
