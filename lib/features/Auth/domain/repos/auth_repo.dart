@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:uni/core/errors/failures.dart';
+import 'package:uni/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepo {
   Future<Either<Failure, void>> login({
@@ -41,4 +42,7 @@ abstract class AuthRepo {
     required String password,
     required String passwordConfirmation,
   });
+
+  // Used in profile feature
+  Future<Either<Failure, UserEntity>> getMe();
 }
