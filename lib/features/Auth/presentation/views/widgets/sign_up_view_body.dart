@@ -3,20 +3,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
+import 'package:uni/features/auth/presentation/views/otp_view.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 import 'package:uni/features/auth/presentation/views/widgets/have_account_row.dart';
 import 'package:uni/features/auth/presentation/views/widgets/sign_up_form.dart';
 
-class SignUpViewBody extends StatelessWidget {
+class SignUpViewBody extends StatefulWidget {
   const SignUpViewBody({super.key});
+
+  @override
+  State<SignUpViewBody> createState() => _SignUpViewBodyState();
+}
+
+class _SignUpViewBodyState extends State<SignUpViewBody> {
+  // email is stored here to pass to OtpView after register success
+  String _email = '';
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          print('signup=============================$state');
-          //otp
+          Navigator.pushNamed(
+            context,
+            OtpView.routeName,
+            arguments: OtpArgs(email: _email, isRegister: true),
+          );
         } else if (state is AuthFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -41,7 +53,7 @@ class SignUpViewBody extends StatelessWidget {
               ),
               const SizedBox(height: 32),
 
-              SignUpForm(onEmailChanged: (String value) {}),
+              SignUpForm(onEmailChanged: (email) => _email = email),
               const SizedBox(height: 24),
 
               const HaveAccountRow(),

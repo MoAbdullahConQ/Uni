@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/features/auth/presentation/views/forgot_password_view.dart';
 import 'package:uni/features/auth/presentation/views/login_view.dart';
+import 'package:uni/features/auth/presentation/views/otp_view.dart';
 import 'package:uni/features/auth/presentation/views/sign_up_view.dart';
 import 'package:uni/features/browse/presentation/views/browse_view.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_chat_view.dart';
@@ -38,6 +39,9 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const ForgotPasswordView(),
       );
+    case OtpView.routeName:
+      final args = settings.arguments as OtpArgs;
+      return MaterialPageRoute(builder: (context) => OtpView(args: args));
     case MainView.routeName:
       return MaterialPageRoute(builder: (context) => const MainView());
     case HomeView.routeName:
