@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
@@ -69,6 +70,9 @@ class _OtpViewBodyState extends State<OtpViewBody> {
       listener: (context, state) {
         if (state is OtpSuccess) {
           if (widget.args.isRegister) {
+            // register flow: token must be persisted so SetupView's
+            // saveStudentInfo call is authenticated
+            Prefs.setString('token', state.token);
             Navigator.pushNamedAndRemoveUntil(
               context,
               SetupView.routeName,
