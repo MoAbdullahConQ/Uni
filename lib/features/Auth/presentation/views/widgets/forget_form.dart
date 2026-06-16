@@ -7,7 +7,9 @@ import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 
 class ForgetForm extends StatefulWidget {
-  const ForgetForm({super.key});
+  const ForgetForm({super.key, required this.emailController});
+
+  final TextEditingController emailController;
 
   @override
   State<ForgetForm> createState() => _ForgetFormState();
@@ -15,18 +17,11 @@ class ForgetForm extends StatefulWidget {
 
 class _ForgetFormState extends State<ForgetForm> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
-  }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthCubit>().forgetPassword(
-        email: _emailController.text.trim(),
+        email: widget.emailController.text.trim(),
       );
     }
   }
@@ -46,7 +41,7 @@ class _ForgetFormState extends State<ForgetForm> {
           ),
           const SizedBox(height: 8),
           CustomTextFormField(
-            controller: _emailController,
+            controller: widget.emailController, // ✅
             hintText: 'name@example.com',
             keyboardType: TextInputType.emailAddress,
             textAlign: TextAlign.right,
