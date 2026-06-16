@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
+import 'package:uni/features/auth/presentation/views/widgets/have_account_row.dart';
 import 'package:uni/features/auth/presentation/views/widgets/sign_up_form.dart';
 
 class SignUpViewBody extends StatelessWidget {
@@ -24,6 +25,9 @@ class SignUpViewBody extends StatelessWidget {
             const SizedBox(height: 32),
 
             SignUpForm(onEmailChanged: (String value) {}),
+            const SizedBox(height: 24),
+
+            const HaveAccountRow(),
             const SizedBox(height: 24),
           ],
         ),
