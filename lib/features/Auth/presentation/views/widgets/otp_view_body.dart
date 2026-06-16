@@ -185,6 +185,13 @@ class _ResendSection extends StatelessWidget {
             ),
           );
         }
+        if (state is OtpResendLoading) {
+          return const SizedBox(
+            height: 20,
+            width: 20,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          );
+        }
         return const SizedBox.shrink();
       },
     );
