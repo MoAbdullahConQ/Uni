@@ -21,6 +21,12 @@ class ResetPasswordViewBody extends StatelessWidget {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم تغيير كلمة المرور بنجاح ✓'),
+              backgroundColor: Color(0xFF6BBF26),
+            ),
+          );
           Navigator.pushNamedAndRemoveUntil(
             context,
             LoginView.routeName,
