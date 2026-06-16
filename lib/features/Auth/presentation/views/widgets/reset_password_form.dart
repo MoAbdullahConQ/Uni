@@ -36,10 +36,10 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthCubit>().resetPassword(
-            password: _passwordController.text,
-            passwordConfirmation: _confirmController.text,
-            tempToken: widget.tempToken,
-          );
+        password: _passwordController.text,
+        passwordConfirmation: _confirmController.text,
+        tempToken: widget.tempToken,
+      );
     }
   }
 
@@ -63,7 +63,13 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
               color: AppColors.primaryColor.withOpacity(.6),
             ),
             onChanged: (value) {
-              setState(() => _strength = calcStrength(value));
+              setState(() {
+                _strength = calcStrength(value);
+                // re-validate match against the (possibly already filled) confirm field
+                _passwordsMatch = _confirmController.text.isEmpty
+                    ? null
+                    : value == _confirmController.text;
+              });
             },
             validator: (value) {
               if (value == null || value.length < 8) {
@@ -101,8 +107,8 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             borderColor: _passwordsMatch == null
                 ? null
                 : _passwordsMatch!
-                    ? AppColors.secondaryColor
-                    : AppColors.red,
+                ? AppColors.secondaryColor
+                : AppColors.red,
             validator: (value) {
               if (value != _passwordController.text) {
                 return 'كلمتا المرور غير متطابقتين';
@@ -151,7 +157,6 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
               );
             },
           ),
-      
         ],
       ),
     );
