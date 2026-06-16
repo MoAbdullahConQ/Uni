@@ -17,7 +17,7 @@ lib/
 │   │   └── guide_video_entity.dart
 │   ├── errors/
 │   │   ├── failures.dart              (ServerFailure.fromDioError + fromResponse)
-│   │   └── custom_exceptions.dart     (موجودة لكن مش بتُستخدم — يمكن حذفها لاحقاً)
+│   │   └── custom_exceptions.dart     (exists but unused — could be deleted later)
 │   ├── helper_functions/
 │   │   ├── get_unis_list.dart
 │   │   ├── getDummyEntities.dart
@@ -27,9 +27,9 @@ lib/
 │   │   └── build_error_bar.dart
 │   ├── services/
 │   │   ├── get_it_service.dart
-│   │   ├── shared_preferences_singleton.dart (Prefs class)
+│   │   ├── shared_preferences_singleton.dart (Prefs class — now has working `remove()`)
 │   │   ├── custom_bloc_observer.dart
-│   │   └── database_service.dart      (abstract — not used currently)
+│   │   └── database_service.dart      (abstract — not used currently; was a Firebase-era leftover, confirmed irrelevant to new auth)
 │   ├── cubits/trending_cubit/
 │   │   ├── trending_cubit.dart        (catches DioException directly)
 │   │   └── trending_state.dart
@@ -43,7 +43,8 @@ lib/
 │   │   ├── app_text_style.dart
 │   │   ├── app_images.dart (Assets class)
 │   │   ├── app_fonts.dart
-│   │   └── backend_endpoints.dart
+│   │   ├── api_service.dart            (now has `postWithToken()` for temp-token calls)
+│   │   └── backend_endpoints.dart      (now has all auth endpoints — see §3)
 │   └── widgets/
 │       ├── uni_card.dart
 │       ├── uni_card_image.dart
@@ -54,7 +55,7 @@ lib/
 │       ├── uni_count_header.dart
 │       ├── search_bar_field.dart        ← StatefulWidget, accepts controller/onChanged/onClear/onSubmitted
 │       ├── custom_button.dart
-│       ├── back_button.dart             (CustomBackButton)
+│       ├── back_button.dart             (CustomBackButton — used as-is in auth screens too)
 │       ├── filter_button_badge.dart
 │       ├── filter_tab_bar_item.dart
 │       ├── ask_faheem_button.dart       ← global FAB
@@ -62,8 +63,8 @@ lib/
 │       ├── no_internet_widget.dart      ← full-screen error: robot illustration + retry + optional onBack
 │       ├── empty_state_widget.dart      ← icon + message for empty lists
 │       ├── custom_progress_hud.dart
-│       ├── custom_text_form_field.dart
-│       ├── password_field.dart
+│       ├── custom_text_form_field.dart  ← base for all form fields, used in auth forms too
+│       ├── password_field.dart          ← used in auth forms (login, signup, reset password)
 │       ├── rating.dart
 │       ├── type_badge_widget.dart
 │       ├── location_widget.dart         ← LocationRow has Expanded on the Text
@@ -74,161 +75,63 @@ lib/
 │       ├── guide_video_player_info.dart
 │       └── featured_guide_podcasts_section.dart  (dummy data)
 └── features/
-    ├── browse/
-    │   ├── data/
-    │   │   ├── data_sources/browse_remote_data_source.dart   (no try/catch)
-    │   │   └── repos/browse_repo_impl.dart                   (catches DioException)
-    │   ├── domain/
-    │   │   ├── repos/browse_repo.dart
-    │   │   └── use_cases/get_unis_use_case.dart
-    │   └── presentation/
-    │       ├── manager/browse_cubit/ → BrowseCubit, BrowseState
-    │       └── views/
-    │           ├── browse_view.dart
-    │           └── widgets/
-    │               ├── browse_view_body.dart
-    │               └── browse_header_and_list_bloc_builder.dart  ← NoInternetWidget on BrowseFailure
-    ├── search/
-    │   ├── data/
-    │   │   ├── data_sources/search_remote_data_source.dart   (no try/catch)
-    │   │   ├── models/search_uni_model.dart
-    │   │   └── repos/search_repo_impl.dart                   (catches DioException)
-    │   ├── domain/
-    │   │   ├── entities/search_filter_entity.dart
-    │   │   ├── repos/search_repo.dart
-    │   │   └── use_cases/ → SearchUnisUseCase, GetSpecialtiesUseCase
-    │   └── presentation/
-    │       ├── manager/
-    │       │   ├── search_cubit/ → SearchCubit, SearchCubitState
-    │       │   └── specialties_cubit/ → SpecialtiesCubit, SpecialtiesState
-    │       └── views/
-    │           ├── search_view.dart
-    │           └── widgets/
-    │               ├── search_view_body.dart
-    │               ├── search_content_bloc_builder.dart
-    │               ├── search_results_bloc_builder.dart
-    │               ├── search_home_widget.dart
-    │               ├── search_empty_widget.dart
-    │               ├── search_filter_bottom_sheet.dart
-    │               ├── recent_search_item.dart
-    │               ├── trending_search_chip.dart
-    │               ├── filter_type_checkbox.dart
-    │               ├── filter_specialty_chip.dart
-    │               ├── fees_range_search_filter_bottom_sheet.dart
-    │               ├── header_search_filter_bottom_sheet.dart
-    │               ├── results_btn_search_filter_bottom_sheet.dart
-    │               ├── specialties_search_filter_bottom_sheet.dart
-    │               └── uni_types_search_filter_bottom_sheet.dart
-    ├── fav/
-    │   ├── data/
-    │   │   ├── data_sources/fav_remote_data_source.dart      (no try/catch)
-    │   │   └── repos/fav_repo_impl.dart                      (catches DioException)
-    │   ├── domain/
-    │   │   ├── repos/fav_repo.dart
-    │   │   └── use_cases/ → GetFavsUseCase, AddToFavUseCase, RemoveFromFavUseCase
-    │   └── presentation/
-    │       ├── manager/fav_cubit/ → FavCubit, FavState
-    │       └── views/
-    │           ├── fav_view.dart
-    │           └── widgets/
-    │               ├── fav_view_body.dart
-    │               └── fav_header_and_list_bloc_consumer.dart  ← NoInternetWidget on FavFailure
-    ├── guide/
-    │   ├── data/
-    │   │   ├── data_sources/guide_remote_data_source.dart    (no try/catch)
-    │   │   ├── models/guide_article_model.dart
-    │   │   └── repos/guide_repo_impl.dart                    (catches DioException)
-    │   ├── domain/
-    │   │   ├── entities/ → guide_article_entity.dart, guide_podcast_entity.dart, articles_response.dart
-    │   │   ├── repos/guide_repo.dart
-    │   │   └── use_cases/get_articles_use_case.dart
-    │   └── presentation/
-    │       ├── manager/guide_cubit/ → GuideCubit, GuideState
-    │       └── views/
-    │           ├── guide_view.dart
-    │           ├── guide_articles_view.dart
-    │           ├── guide_article_detail_view.dart
-    │           ├── guide_videos_view.dart
-    │           ├── guide_podcasts_view.dart
-    │           └── widgets/
-    │               ├── guide_view_body.dart           ← CustomErrorWidget + onRetry on GuideFailure
-    │               ├── guide_articles_view_body.dart  ← NoInternetWidget + onBack on GuideFailure
-    │               ├── guide_article_detail_view_body.dart
-    │               ├── guide_article_card.dart
-    │               ├── guide_podcast_card.dart
-    │               └── guide_videos_view_body.dart
-    ├── notifications/
-    │   ├── data/
-    │   │   ├── data_sources/notifications_remote_data_source.dart  (no try/catch)
-    │   │   ├── models/notification_model.dart
-    │   │   └── repos/notifications_repo_impl.dart                  (catches DioException)
-    │   ├── domain/
-    │   │   ├── entities/ → notification_entity.dart, notifications_response.dart
-    │   │   ├── repos/notifications_repo.dart
-    │   │   └── use_cases/ → GetNotificationsUseCase, GetUnreadNotificationsCountUseCase,
-    │   │                     MarkNotificationAsReadUseCase, MarkAllNotificationsAsReadUseCase
-    │   └── presentation/
-    │       ├── manager/notifications_cubit/ → NotificationsCubit, NotificationsState
-    │       └── views/
-    │           ├── notifications_view.dart
-    │           └── widgets/
-    │               ├── notifications_view_body.dart    ← BlocConsumer: ActionFailure→snackbar, buildWhen ignores it
-    │               ├── notifications_app_bar.dart      ← buildWhen ignores NotificationsActionFailure
-    │               ├── notification_card.dart
-    │               ├── notification_group_section.dart ← onTap checks isRead before markAsRead
-    │               └── notification_icon_widget.dart
-    ├── home/
-    │   ├── data/
-    │   │   ├── data_sources/recommended_remote_data_source.dart  (no try/catch — catches DioException in cubit)
-    │   │   └── models/recommended_uni_model.dart
-    │   ├── domain/
-    │   │   └── entities/ → recommended_uni_entity.dart, bottom_navigation_bar_entity.dart
-    │   └── presentation/
-    │       ├── manager/recommended_cubit/ → RecommendedCubit (catches DioException directly)
-    │       └── views/
-    │           ├── main_view.dart    ← RecommendedCubit late final + retry logic في didPopNext و _onTabChanged
-    │           └── widgets/ → home_view_body.dart, custom_home_app_bar.dart, ...
-    ├── splash/ → presentation/views/splash_view.dart + widgets/
-    ├── on_boarding/ → presentation/views/on_boarding_view.dart + widgets/
-    ├── uni_detail/
+    ├── browse/ ... (unchanged — see prior structure)
+    ├── search/ ... (unchanged)
+    ├── fav/ ... (unchanged)
+    ├── guide/ ... (unchanged)
+    ├── notifications/ ... (unchanged)
+    ├── home/ ... (unchanged)
+    ├── auth/                                          ← NEW this session
     │   ├── domain/
     │   │   ├── entities/
-    │   │   │   ├── uni_detail_entity.dart    (includes rate: double, website: String)
-    │   │   │   ├── uni_faculty_entity.dart
-    │   │   │   └── uni_alumni_entity.dart
-    │   │   ├── repos/uni_detail_repo.dart
-    │   │   └── use_cases/get_uni_detail_use_case.dart
+    │   │   │   └── user_entity.dart
+    │   │   ├── repos/
+    │   │   │   └── auth_repo.dart
+    │   │   └── use_cases/
+    │   │       ├── login_use_case.dart
+    │   │       ├── register_use_case.dart
+    │   │       ├── verify_otp_use_case.dart
+    │   │       ├── forget_password_use_case.dart
+    │   │       ├── resend_otp_use_case.dart
+    │   │       ├── reset_password_use_case.dart
+    │   │       ├── save_student_info_use_case.dart
+    │   │       ├── update_password_use_case.dart       (used by profile feature later)
+    │   │       └── get_me_use_case.dart                 (used by profile feature later)
     │   ├── data/
     │   │   ├── models/
-    │   │   │   ├── uni_detail_model.dart
-    │   │   │   ├── uni_faculty_model.dart
-    │   │   │   └── uni_alumni_model.dart
-    │   │   ├── data_sources/uni_detail_remote_data_source.dart  (no try/catch — Future.wait 4 calls)
-    │   │   └── repos/uni_detail_repo_impl.dart                  (catches DioException)
+    │   │   │   └── user_model.dart
+    │   │   ├── data_sources/
+    │   │   │   └── auth_remote_data_source.dart
+    │   │   └── repos/
+    │   │       └── auth_repo_impl.dart
     │   └── presentation/
-    │       ├── manager/uni_detail_cubit/ → UniDetailCubit, UniDetailState
+    │       ├── manager/
+    │       │   ├── auth_cubit/
+    │       │   │   ├── auth_cubit.dart
+    │       │   │   └── auth_state.dart
+    │       │   └── otp_cubit/
+    │       │       ├── otp_cubit.dart
+    │       │       └── otp_state.dart
     │       └── views/
-    │           ├── uni_detail_view.dart          ← receives int id
+    │           ├── login_view.dart
+    │           ├── sign_up_view.dart
+    │           ├── forgot_password_view.dart
+    │           ├── otp_view.dart                        (defines OtpArgs{email, isRegister})
+    │           ├── reset_password_view.dart              ← PENDING, not yet built
+    │           ├── setup_view.dart                       ← PENDING, not yet built
     │           └── widgets/
-    │               ├── uni_detail_view_body.dart ← NoInternetWidget on failure + retry + onBack
-    │               ├── uni_detail_content.dart
-    │               ├── uni_detail_hero_image.dart
-    │               ├── uni_detail_info_header.dart  ← name + type + Rating(rate) + location
-    │               ├── uni_detail_tab_bar.dart
-    │               ├── uni_detail_bottom_bar.dart   ← FavCubit.favIds + addToFav/removeFromFav + "قدم الآن" placeholder
-    │               ├── uni_stats_row.dart
-    │               ├── stat_item.dart
-    │               ├── uni_overview_tab.dart         ← about + stats + website (url_launcher)
-    │               ├── uni_faculties_tab.dart         ← EmptyStateWidget if empty
-    │               ├── uni_alumni_tab.dart            ← EmptyStateWidget if alumni empty
-    │               ├── uni_alumni_card.dart
-    │               ├── campus_photos_grid.dart        ← EmptyStateWidget if photos empty + tap opens viewer
-    │               ├── campus_photos_sheet.dart       ← DraggableScrollableSheet full grid
-    │               ├── campus_photo_viewer.dart       ← fullscreen PageView + InteractiveViewer + counter
-    │               ├── faculty_item.dart
-    │               ├── faculty_item_header.dart
-    │               └── faculty_item_expanded_content.dart
-    ├── profile/ → presentation/views/ (4 screens UI only)
+    │               ├── login_view_body.dart
+    │               ├── login_form.dart
+    │               ├── auth_header.dart                  ← shared across all auth screens
+    │               ├── auth_social_buttons.dart           ← shared, Google/iCloud UI-only
+    │               ├── sign_up_view_body.dart
+    │               ├── sign_up_form.dart
+    │               ├── forgot_password_view_body.dart
+    │               ├── otp_view_body.dart                 (uses pinput package)
+    │               ├── reset_password_view_body.dart      ← PENDING
+    │               └── setup_view_body.dart               ← PENDING
+    ├── uni_detail/ ... (unchanged)
+    ├── profile/ → presentation/views/ (4 screens UI only — unblocked now that auth domain/data exist, not started)
     └── faheem/ → domain/entities/ + presentation/views/ (UI only)
 ```
 
@@ -362,6 +265,20 @@ class UniAlumniEntity {
   final String graduationYear; // "دفعة 1934" — parsed from "1934-06-10"
 }
 ```
+
+### UserEntity (NEW — features/auth/domain/entities/)
+
+```dart
+class UserEntity {
+  final int id;
+  final String name;
+  final String email;
+  final String? avatar;
+  final String type;
+}
+```
+> Used by `GetMeUseCase` (profile feature consumer). No `AuthEntity` exists — tokens never reach the UI, so they're handled as plain `String`/Prefs values, not wrapped in an Entity.
+
 ### API Response Structure (confirmed)
 ```json
 {
@@ -383,6 +300,106 @@ class UniAlumniEntity {
 > ⚠️ `world_ranking` may be a string like `"371"` or a range like `"200-300"` — `parseRanking()` is required
 > ⚠️ `is_fav_for_me` exists in the API response but is commented out in `UniEntity`
 
+### Auth API Response Structures (confirmed via Postman, this session)
+
+**POST /login**
+```json
+{
+  "status": 200,
+  "message": "User Logged In Successfully",
+  "data": {
+    "user": { "id": 28, "name": "...", "email": "...", "email_verified_at": null, "avatar": null, "created_at": "...", "updated_at": "...", "type": "user" },
+    "access_token": "473|...",
+    "refresh_token": "474|...",
+    "token_type": "Bearer",
+    "expires_in": 3600
+  }
+}
+```
+
+**POST /register**
+```json
+{
+  "status": 200,
+  "message": "User Register Successfully , OTP has been sent to your email",
+  "data": {
+    "otp": 619870,
+    "user": { "name": "...", "email": "...", "updated_at": "...", "created_at": "...", "id": 31 }
+  }
+}
+```
+> ⚠️ `otp` field is testing-only — backend confirmed it will be removed; in production OTP arrives by email only. `RegisterUseCase` returns `void`, not the OTP value.
+
+**POST /verify-Otp**
+```json
+{
+  "status": 200,
+  "message": "User verified successfully.",
+  "data": {
+    "access_token": "475|...",
+    "refresh_token": "476|...",
+    "token_type": "Bearer",
+    "expires_in": 3600
+  }
+}
+```
+> Shared endpoint for both register-flow and forgot-password-flow OTP verification. `VerifyOtpUseCase` returns `Either<Failure, String>` (the access_token) — the Cubit/view decides what to do with it based on context (`OtpArgs.isRegister`).
+
+**POST /forget-Password**
+```json
+{ "status": 200, "message": " OTP has been sent successfully", "data": { "otp": 585294 } }
+```
+> `otp` field is testing-only, same as register. `ForgetPasswordUseCase` returns `void`.
+
+**POST /auth/reset-Password** (requires Bearer temp token from verify-Otp)
+```json
+{ "status": 200, "message": "Password Has Changed Successfully" }
+```
+
+**POST /resendOtp**
+```json
+{ "status": 200, "message": "The Otp Resend Successfully", "data": { "otp": 455398 } }
+```
+> `otp` testing-only. `ResendOtpUseCase` returns `void`.
+
+**GET /auth/me**
+```json
+{
+  "status": 200,
+  "message": "User retrieved successfully",
+  "data": { "user": { "id": 28, "name": "...", "email": "...", "email_verified_at": null, "avatar": null, "created_at": "...", "updated_at": "...", "type": "user" } }
+}
+```
+
+**POST /auth/refresh**
+```json
+{ "access_token": "479|...", "refresh_token": "480|...", "token_type": "Bearer", "expires_in": 3600 }
+```
+> No envelope (no `status`/`message`/`data` wrapper) unlike other auth endpoints — confirmed from Postman. Handled entirely inside the Dio interceptor, not exposed to domain layer.
+
+**POST /auth/update-Password** (used by profile, requires normal Bearer token from Prefs)
+```json
+{ "status": 200, "message": "Password Updated Successfully" }
+```
+
+**POST /student_info**
+```json
+{
+  "status": 200,
+  "message": "تم إضافة معلوماتك بنجاح",
+  "data": {
+    "id": 1, "study_section": "علمي", "scientific_department": "علوم",
+    "governorate_id": 1, "user_id": 28, "percentage": 60, "age": 20,
+    "created_at": "...", "updated_at": "...",
+    "governorate": { "id": 1, "name_ar": "القاهرة", "name_en": "Cairo", "created_at": null, "updated_at": null }
+  }
+}
+```
+> Request body confirmed via Postman:
+```json
+{ "study_section": "science", "scientific_department": "scientific", "governorate_id": 1, "percentage": 60, "age": 20 }
+```
+> `study_section` API values: `science` | `literature` (UI labels: علمي / أدبي). `scientific_department` API values: `scientific` | `Mathematics` (UI labels: علوم / رياضة — needs final confirmation when building SetupView).
 
 ---
 
@@ -412,16 +429,26 @@ class BackendEndpoints {
 
   static const String getArticles = '/articles';
   static const String search = '/search-univ';
+
+  // Auth — added this session, confirmed in BackendEndpoints
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String verifyOtp = '/verify-Otp';
+  static const String forgetPassword = '/forget-Password';
+  static const String resendOtp = '/resendOtp';
+  static const String resetPassword = '/auth/reset-Password';
+  static const String saveStudentInfo = '/student_info';
+  static const String updatePassword = '/auth/update-Password';
+  static const String getMe = '/auth/me';
+  static const String refreshToken = '/auth/refresh';
 }
 ```
 
-**Not yet in codebase:**
+**No longer pending** (all confirmed and wired into the codebase this session):
 ```
-/login, /register, /verify-Otp, /forget-Password
-/auth/reset-Password, /auth/me, /auth/update-Password
-/resendOtp, /auth/refresh
-/student_info
-/aiChat/send
+/login, /register, /verify-Otp, /forget-Password,
+/auth/reset-Password, /auth/me, /auth/update-Password,
+/resendOtp, /auth/refresh, /student_info
 ```
 
 ---
@@ -436,10 +463,10 @@ DioException (from Dio)
   → UI: NoInternetWidget (full-screen) or CustomErrorWidget (inline)
 ```
 
-**`custom_exceptions.dart` موجودة لكن مش بتُستخدم في أي حاجة.**
+**`custom_exceptions.dart` exists but is unused anywhere — including the new auth feature, which uses the same DioException pattern as the rest of the app.**
 
 **Repos that catch DioException:**
-- `browse_repo_impl`, `fav_repo_impl`, `search_repo_impl`, `guide_repo_impl`, `notifications_repo_impl`, `uni_detail_repo_impl`
+- `browse_repo_impl`, `fav_repo_impl`, `search_repo_impl`, `guide_repo_impl`, `notifications_repo_impl`, `uni_detail_repo_impl`, **`auth_repo_impl`** (new)
 
 **Cubits that catch DioException directly (no repo):**
 - `TrendingCubit`, `RecommendedCubit`
@@ -489,6 +516,15 @@ class ApiService {
   Future<Map<String, dynamic>> post(...)
   Future<Map<String, dynamic>> patch(...)
   Future<List<dynamic>> getList(...)
+
+  // NEW this session — overrides Authorization header with a one-off token
+  // instead of the Prefs-stored one. Used only for reset-Password in the
+  // forgot-password flow, where the user has no normal session token yet.
+  Future<Map<String, dynamic>> postWithToken({
+    required String endpoint,
+    required String token,
+    Map<String, dynamic>? data,
+  })
 }
 ```
 
@@ -516,8 +552,13 @@ TOKEN=your_token_here   ← temporary for development
 - `GuideRemoteDataSource`, `GuideRepo`, `GetArticlesUseCase`, `GuideCubit`
 - `UniDetailRemoteDataSource`, `UniDetailRepo`, `GetUniDetailUseCase`
 
+**⏳ NOT yet registered (pending — next step in auth build):**
+- `AuthRemoteDataSource`, `AuthRepo`, and all 9 auth use cases (`LoginUseCase`, `RegisterUseCase`, `VerifyOtpUseCase`, `ForgetPasswordUseCase`, `ResendOtpUseCase`, `ResetPasswordUseCase`, `SaveStudentInfoUseCase`, `UpdatePasswordUseCase`, `GetMeUseCase`)
+- `AuthCubit` and `OtpCubit` are NOT GetIt singletons by design — each view creates its own instance via `BlocProvider(create: ...)`, since auth screens are transient (not persistent across the app's lifetime like FavCubit/NotificationsCubit)
+
 > ⚠️ `UniDetailCubit` NOT a singleton — created per-screen via `BlocProvider` in `UniDetailView`
 > ⚠️ `RecommendedCubit` NOT a singleton — created as `late final` in `MainView._MainViewState.initState` و بيتـclose في `dispose`
+> ⚠️ `AuthCubit` / `OtpCubit` NOT singletons — created per-view via `BlocProvider(create: ...)`, same reasoning as above but for auth screens specifically (transient flow, not persistent app state)
 
 ---
 
@@ -711,6 +752,14 @@ BrowseView, NotificationsView, FaheemChatView, FaheemHistoryView,
 UniDetailView (arguments: int id), SearchView
 ```
 
+**⏳ Pending additions (auth views built but not yet registered in routes):**
+```
+LoginView, SignUpView, ForgotPasswordView,
+OtpView (arguments: OtpArgs),
+ResetPasswordView (arguments: String tempToken) — view not built yet,
+SetupView — view not built yet
+```
+
 ---
 
 ## 17. Known Bugs & Pending Issues
@@ -722,9 +771,14 @@ UniDetailView (arguments: int id), SearchView
 - **`withOpacity` deprecated:** used in many files — works but newer Flutter suggests `.withValues(alpha:...)`
 - **`is_fav_for_me`:** present in API response but commented out in `UniEntity`
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
-- **"قدم الآن" button:** placeholder — no action until auth + profile API done
+- **"قدم الآن" button:** placeholder — no action until auth + profile API done (auth domain/data now ready, presentation in progress)
 - **`robot_internet.png`:** custom illustration for `NoInternetWidget` — must be added to `assets/images/` and `pubspec.yaml`
-- **`custom_exceptions.dart`:** موجودة لكن مش بتُستخدم — يمكن حذفها
+- **`custom_exceptions.dart`:** exists but unused — could be deleted later
+- **Auth — "مجالات الاهتمام" interest chips in SetupView:** no backend endpoint exists for this field — confirmed with backend dev, will stay static/UI-only until an endpoint is added
+- **Auth — pending pubspec.yaml change:** `pinput` package decided but not yet confirmed added
+- **Auth — pending GetIt registrations:** AuthRepo, AuthRemoteDataSource, all 9 use cases not yet registered
+- **Auth — pending route registrations:** all 6 auth views not yet added to `on_generate_routes.dart`
+- **Auth — ResetPasswordView and SetupView:** not yet built (next immediate step)
 
 ---
 
@@ -757,9 +811,20 @@ UniDetailView (arguments: int id), SearchView
 | `UniDetailViewBody` receives `id` param | Needed for retry button to re-call `getUniDetail(id)` |
 | `rate` shown in `UniDetailInfoHeader` | Consistent with card-level rating display |
 | `website` shown in `UniOverviewTab` | Natural place for university info |
-| Comments in code must be Arabic | Project convention |
+| Comments in code must be Arabic | **SUPERSEDED this session — now English only, see §below** |
 | `RecommendedCubit` → `late final` في `initState` | منع إعادة إنشاء الـ cubit في كل `build` |
 | `_recommendedCubit.close()` في `dispose` | منع memory leak |
 | retry في `didPopNext` و `_onTabChanged` | تحديث البيانات الفاشلة لما المستخدم يرجع للهوم |
 | `NoInternetWidget` في `GuideArticlesViewBody` | consistent مع باقي الـ pushed screens |
 | `GuideViewBody` يفضل `CustomErrorWidget` | inline error مش full-screen لأنه tab مش pushed screen |
+| **Code comments switched to English-only** (this session) | Standing rule going forward — overrides the older Arabic-comments decision above |
+| **No `AuthEntity`** | Tokens never appear in the UI and carry no business logic — handled as plain `String` values passed between Cubit/repo, not wrapped in an Entity |
+| **`verifyOtp` returns `String` (token), not `void`** | Same endpoint serves two flows (register vs forgot-password) with different consequences for the returned token; the Cubit/view decides what to do with it based on context, rather than the repo silently saving it to Prefs every time |
+| **`resetPassword` takes `tempToken` param, not from Prefs** | User has no active session during forgot-password flow; the temp token from `verify-Otp` is short-lived and scoped only to this one call |
+| **`ApiService.postWithToken()` added** | Needed a way to override the Authorization header for the one-off temp-token call without touching Prefs |
+| **`updatePassword` and `getMe` placed in `auth` feature, not `profile`** | Both endpoints are under `/auth/` — repo ownership follows endpoint namespace, not UI feature grouping |
+| **Only 2 Cubits for auth (`AuthCubit`, `OtpCubit`), no `SetupCubit`** | `saveStudentInfo` doesn't need separate logic from the rest of `AuthCubit`; OTP gets its own Cubit only because of the countdown-timer/resend logic, which is genuinely distinct |
+| **`AuthCubit`/`OtpCubit` are NOT GetIt singletons** | Unlike `FavCubit`/`NotificationsCubit`, auth screens are a one-time transient flow — no need to persist cubit instances across the app's lifetime |
+| **"مجالات الاهتمام" interest chips are static/UI-only in SetupView** | No backend endpoint exists yet for this field; confirmed with backend dev (sayed) it's not implemented |
+| **OTP UI uses `pinput` package with standard keyboard** | Matches the 4-6 digit boxed design without building a custom numpad widget; standard keyboard is acceptable since the original screenshots' custom numpad isn't a hard requirement |
+| **Old Firebase auth code (Google/Facebook/Firestore) fully discarded** | New backend is Laravel REST API; the previous `FirebaseAuthService`/`FirestoreService`/`DatabaseService` pattern has no equivalent need — `ApiService` covers everything. Social login buttons remain in the UI only as inactive placeholders |

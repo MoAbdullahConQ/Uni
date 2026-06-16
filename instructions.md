@@ -12,6 +12,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - "what do you think" → honest opinion, not a list of options
 - "fix" / "send" → execute without explanation
 - One tradeoff sentence max — don't hide it, don't over-explain it
+- When I ask "act as a [role] expert" → answer directly from that lens, don't soften or hedge — give the real expert take, including if it means re-flagging something already decided
 
 ---
 
@@ -26,6 +27,10 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - I confirm you understood before you write code
 - I verify APIs with Postman — treat JSON responses as ground truth
 - I value consistency — match existing patterns in the codebase
+- I re-verify previously-written code by re-uploading `lib.zip` after you send files — confirm it matches before moving to the next layer
+- I ask "why" about specific lines/decisions via inline review comments on generated files — answer precisely about that line, don't re-explain the whole feature
+- I sometimes ask the same architectural question twice from different angles (e.g. "where should X go") — answer consistently; if I'm re-asking, give the same answer with the reasoning restated briefly, don't act like it's a new decision
+- When I say "تمام" or "ايوة" after an explanation, that's confirmation to proceed — don't ask again
 
 ---
 
@@ -43,6 +48,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - Keep existing comments in code — don't remove them
 - Diagnose the real cause of errors directly — no extra questions
 - If you need to review code → ask for `lib.zip` or the specific file first
+- When a screen's UI shows a feature with no matching backend endpoint (e.g. "مجالات الاهتمام" interest tags) → make it static/UI-only and flag it, don't invent an endpoint or skip silently
+- When I upload reference images of screens → study them fully before describing the flow, and proactively map every screen to its specific endpoint(s)
 
 **Never:**
 - Don't rewrite working code unless asked
@@ -52,12 +59,13 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - Don't suggest Firebase or any alternative backend
 - Don't give a list of options when a recommendation is asked for
 - Don't put logic in the Cubit if it can be done in the UI
-- Don't add new dependencies without asking
+- Don't add new dependencies without asking — **exception:** if I explicitly ask for a package recommendation (e.g. "is there a good package for X"), propose one directly
 - Don't repeat a note I said I'd handle later
-- Don't add English comments in code — Arabic only
+- Don't add English comments in code — **as of this session, this is reversed: all code comments must be in English now**
 - Don't put feature-specific code in `core/` — core is shared only
 - Don't add Repo/UseCase layers without clear business logic justification
 - Don't start writing code before the plan is approved
+- Don't add an Entity for data that never reaches the UI or carries no business logic (e.g. we removed `AuthEntity` because tokens are storage-only, never displayed)
 
 ---
 
@@ -76,6 +84,9 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Null preference:** `null` over dummy values like `BoxBorder.none`
 - **Conditional logic in `build()`:** helper methods, not inline if/else in constructors
 - **`CustomTextFormField`** is the base for all form fields — build on it
+- **Code comments:** English only (as of this session — previously Arabic; this is now the standing rule going forward)
+- **Entity rule:** only create an Entity if its data is shown in the UI or used in business logic. Tokens/internal-only data → no Entity, handle as primitives (e.g. `String`) passed between layers
+- **Cubit scope per feature:** not every screen needs its own Cubit. Group screens that share the same "object" of work (e.g. all non-OTP auth screens → one `AuthCubit`) instead of over-splitting; split only when the sub-flow has genuinely distinct logic (e.g. OTP's countdown timer/resend → separate `OtpCubit`)
 
 ---
 
@@ -101,6 +112,12 @@ NestedScrollView (ClampingScrollPhysics)
 
 **GridView:** `width: double.infinity` on image, `childAspectRatio: 0.65` for podcast cards
 
+**Auth token refresh (do not suggest alternatives):** handled entirely in a Dio interceptor inside `ApiService` — never as a domain use case. On `401` → call `/auth/refresh` → save new tokens to Prefs → retry original request. Domain/Cubit layers have no knowledge of refresh logic.
+
+**Forgot-password temporary token (do not suggest alternatives):** `verify-Otp` in the forgot-password flow returns a short-lived token used only for `reset-Password`. It is held in `OtpCubit`/`AuthCubit` state and passed as a method parameter (`tempToken`) — never written to Prefs. `ApiService.postWithToken()` overrides the Authorization header for this one call.
+
+**OTP package:** use `pinput` for all OTP input UI — matches design, supports custom box decoration and auto-submit. Standard keyboard (no custom numpad) is fine for entry.
+
 ---
 
 ## 7. Error UI Rules
@@ -118,16 +135,40 @@ NestedScrollView (ClampingScrollPhysics)
 ## 8. Current Focus
 
 **Features done:** browse, fav, search, home, notifications, guide, uni_detail
-**Next up (in order):** auth → splash → onboarding → profile API → faheem API (waiting on backend)
+**In progress:** auth (domain ✅, data ✅, presentation — in progress, paused mid-build)
+**Next up after auth:** splash → onboarding → profile API → faheem API (waiting on backend)
 
 ---
 
-## 9. Session Summary — آخر شات
+## 9. Session Summary — هذا الشات (Auth Feature Build)
 
-**اللي عملناه:**
-1. **`GuideArticlesViewBody`** — غيّرنا `GuideFailure` من `CustomErrorWidget` لـ `NoInternetWidget` مع `onRetry` و `onBack`
-2. **`MainView`** — إصلاح مشكلة إن البيانات مش بتتحدث لو النت اتقطع:
-   - `RecommendedCubit` اتنقل من `build` لـ `late final` في `initState` + `close()` في `dispose`
-   - `BlocProvider.value` بدل `BlocProvider(create:...)` للـ recommended
-   - `didPopNext` بيعمل retry للـ cubits الفاشلة + دايماً بيحدث notifications
-   - `_onTabChanged` method منفصلة بتعمل retry للـ TrendingCubit و RecommendedCubit لو فاشلين لما يرجع لـ tab 0
+**اللي خلصناه:**
+1. **Domain layer كامل** — `UserEntity`, `AuthRepo` (8 methods), 8 use cases (`Login`, `Register`, `VerifyOtp`, `ForgetPassword`, `ResendOtp`, `ResetPassword`, `SaveStudentInfo`, `UpdatePassword`, `GetMe`)
+2. **Data layer كامل** — `UserModel`, `AuthRemoteDataSource` + impl, `AuthRepoImpl`
+3. **Core file updates** — `ApiService.postWithToken()` added, `BackendEndpoints` auth endpoints added, `Prefs.remove()` activated
+4. **Presentation — Cubits done** — `AuthCubit` (login/register/forgetPassword/resetPassword/saveStudentInfo/logout), `OtpCubit` (verifyOtp/resendOtp/countdown timer)
+5. **Presentation — Views in progress (12 files sent, paused before ResetPasswordView and SetupView):**
+   - `LoginView` + `LoginViewBody` + `LoginForm`
+   - `AuthHeader` (shared widget across auth screens)
+   - `AuthSocialButtons` (shared, no backend action — Google/iCloud are UI-only placeholders)
+   - `SignUpView` + `SignUpViewBody` + `SignUpForm`
+   - `ForgotPasswordView` + `ForgotPasswordViewBody`
+   - `OtpView` + `OtpViewBody` (uses `pinput`, has `OtpArgs{email, isRegister}` to branch navigation)
+
+**باقي في الـ presentation (لسه متعمول):**
+- `ResetPasswordView` + body — receives `tempToken` as route argument from `OtpView`
+- `SetupView` + body — student info form (study_section, scientific_department, governorate_id, percentage, age) + static "مجالات الاهتمام" chips (no backend yet)
+- `pubspec.yaml` — add `pinput` dependency (decided, not yet confirmed added)
+- GetIt registration for `AuthRepo`, `AuthRemoteDataSource`, and auth use cases (not yet done)
+- Route registration in `on_generate_routes.dart` for all 6 auth views (not yet done)
+- AndroidManifest / main.dart wiring not discussed yet
+
+**قرارات مهمة اتاخدت في الشات ده:**
+- `AuthEntity` تم حذفها — التوكنز مالها UI تمثيل، فمفيش لازمة لـ Entity
+- `verifyOtp` يرجع `String` (access_token) مش `void` — العلاقة: register flow يحفظه في Prefs عن طريق الـ Cubit، forgot-password flow يحطه في `OtpSuccess(token)` وييمشي مع الشاشة كـ navigation argument
+- `resetPassword` يحتاج `tempToken` كـ parameter إضافي (مش من Prefs)
+- `updatePassword` و `getMe` تم وضعهم في `auth` feature (مش profile) لأن الـ endpoint فيه `/auth/`
+- 2 Cubits بس: `AuthCubit` (كل حاجة غير OTP) و `OtpCubit` (verify+resend+timer) — مفيش `SetupCubit` منفصل، `saveStudentInfo` هتتحط في `AuthCubit`
+- كل كومنتات الكود من دلوقتي بالإنجليزي (تغيير عن القاعدة القديمة)
+- مفيش Firebase/Google/Facebook auth — الكود القديم اللي كان عامل فيه ده تم تجاهله بالكامل، الأزرار موجودة في الـ UI بس بدون أي action
+- الـ OTP UI بيستخدم `pinput` package + standard keyboard (مش custom numpad)
