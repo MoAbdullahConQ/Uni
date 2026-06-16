@@ -8,6 +8,7 @@ import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/features/auth/presentation/manager/otp_cubit/otp_cubit.dart';
 import 'package:uni/features/auth/presentation/views/otp_view.dart';
 import 'package:uni/features/auth/presentation/views/reset_password_view.dart';
+import 'package:uni/features/auth/presentation/views/setup_view.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 
 class OtpViewBody extends StatefulWidget {
@@ -68,7 +69,11 @@ class _OtpViewBodyState extends State<OtpViewBody> {
       listener: (context, state) {
         if (state is OtpSuccess) {
           if (widget.args.isRegister) {
-            print('==SetupView=====================');
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              SetupView.routeName,
+              (route) => false,
+            );
           } else {
             Navigator.pushReplacementNamed(
               context,
