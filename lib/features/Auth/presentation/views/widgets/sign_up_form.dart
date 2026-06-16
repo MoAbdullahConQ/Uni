@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uni/core/helper_functions/calc_strength.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/core/widgets/password_field.dart';
+import 'package:uni/core/widgets/security_strength_indicator.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/widgets/terms_and_conditions.dart';
 
@@ -26,6 +28,9 @@ class _SignUpFormState extends State<SignUpForm> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _agreedToTerms = false;
+
+  double _strength = 0;
+  bool? _passwordsMatch;
 
   @override
   void dispose() {
@@ -107,7 +112,26 @@ class _SignUpFormState extends State<SignUpForm> {
               size: 20,
               color: AppColors.primaryColor.withOpacity(.6),
             ),
+            onChanged: (value) {
+              setState(() {
+                _strength = calcStrength(value);
+                // re-validate match against the (possibly already filled) confirm field
+                _passwordsMatch = _confirmPasswordController.text.isEmpty
+                    ? null
+                    : value == _confirmPasswordController.text;
+              });
+            },
+            validator: (value) {
+              if (value == null || value.length < 8) {
+                return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+              }
+              return null;
+            },
           ),
+          const SizedBox(height: 8),
+
+          // strength indicator
+          SecurityStrengthIndicator(strength: _strength),
           const SizedBox(height: 16),
 
           // confirm password field
@@ -123,6 +147,18 @@ class _SignUpFormState extends State<SignUpForm> {
               size: 20,
               color: AppColors.primaryColor.withOpacity(.6),
             ),
+            onChanged: (value) {
+              setState(() {
+                _passwordsMatch = value.isEmpty
+                    ? null
+                    : value == _passwordController.text;
+              });
+            },
+            borderColor: _passwordsMatch == null
+                ? null
+                : _passwordsMatch!
+                ? AppColors.secondaryColor
+                : AppColors.red,
             validator: (value) {
               if (value == null || value.isEmpty) return 'هذا الحقل مطلوب';
               if (value != _passwordController.text) {
@@ -131,6 +167,22 @@ class _SignUpFormState extends State<SignUpForm> {
               return null;
             },
           ),
+          if (_passwordsMatch != null) ...[
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                _passwordsMatch!
+                    ? 'كلمتا المرور متطابقتان ✓'
+                    : 'كلمتا المرور غير متطابقتين',
+                style: TextStyles.regular12.copyWith(
+                  color: _passwordsMatch!
+                      ? const Color(0xFF6BBF26)
+                      : AppColors.red,
+                ),
+              ),
+            ),
+          ],
 
           // Terms and Conditions checkbox
           TermsAndConditions(
