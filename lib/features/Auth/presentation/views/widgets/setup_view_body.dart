@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 
 class SetupViewBody extends StatelessWidget {
   const SetupViewBody({super.key});
@@ -11,7 +12,19 @@ class SetupViewBody extends StatelessWidget {
         horizontal: kHorizontalPadding,
         vertical: kTopPadding,
       ),
-      child: Column(children: []),
+      child: Center(
+        child: Column(
+          children: [
+            // header
+            AuthHeader(
+              title: 'جهز ملفك الشخصي🎓',
+              subtitle: 'ساعدنا نخصص تجربتك بناءً على اهتماماتك',
+            ),
+
+            SizedBox(height: 32),
+          ],
+        ),
+      ),
     );
   }
 }
