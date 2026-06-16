@@ -13,9 +13,14 @@ class ApiService {
           options.headers['Accept'] = 'application/json';
           options.headers['Api-Key'] = dotenv.env['API_KEY'] ?? '';
 
-          final token = Prefs.getString('token');
-          if (token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
+          // only set token if not already set (e.g. postWithToken passes its own)
+          if (!options.headers.keys.any(
+            (k) => k.toLowerCase() == 'authorization',
+          )) {
+            final token = Prefs.getString('token');
+            if (token.isNotEmpty) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
           }
 
           return handler.next(options);
