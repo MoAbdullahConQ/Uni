@@ -1,5 +1,5 @@
 # Claude Memory File — Core (Active)
-> Last updated: June 2026
+> Last updated: June 2026 (session: auth polish + UX fixes)
 
 ---
 
@@ -37,8 +37,8 @@ Flutter app helping Egyptian high school students choose universities.
 | **notifications** | ✅     | ✅   | ✅           | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar  |
 | **guide**         | ✅     | ✅   | ✅           | Articles + pagination + UI search filter + retry on failure + NoInternetWidget in GuideArticlesView |
 | **uni_detail**    | ✅     | ✅   | ✅           | API integration done — 4 parallel calls via Future.wait + NoInternetWidget + retry + rate + website |
-| **auth**          | ✅     | ✅   | ✅           | All views done + GetIt registered + routes registered — see §5                                      |
-| **profile**       | ❌     | ❌   | ✅           | 4 screens UI done — needs Auth (now done), API integration not started                              |
+| **auth**          | ✅     | ✅   | ✅           | Complete + polished this session — see §5. UX decisions, token-save bug fix, validation fixes done  |
+| **profile**       | ❌     | ❌   | ✅           | 4 screens UI done — needs Auth (now done), API integration not started — **next up**                |
 | **faheem**        | ✅     | ❌   | ✅           | Chat UI + entities — waiting on backend                                                             |
 | **splash**        | ❌     | ❌   | ✅           | Needs token check logic                                                                             |
 | **on_boarding**   | ❌     | ❌   | ✅           | Needs SharedPreferences seen flag                                                                   |
@@ -67,12 +67,13 @@ Flutter app helping Egyptian high school students choose universities.
 14. **Data sources:** no try/catch — let `DioException` propagate to repo
 15. **Entity rule:** only create an Entity for data shown in UI or used in business logic — pure storage/internal data (e.g. tokens) stays as primitives between layers, no Entity wrapper
 16. **Cubit-per-feature, not per-screen:** group screens sharing the same logical flow into one Cubit; split only for genuinely distinct sub-logic (timers, separate polling, etc.)
+17. **Selector widgets with multiple options take a `Map<String, IconData>` for icons** — never one shared `icon` reused across all options (fixed this session in `StudyTypeSelector`)
 
 > ⚠️ If a new error occurs → always ask for the related file before attempting a fix.
 
 ---
 
-## 5. Auth Feature — Completed ✅
+## 5. Auth Feature — Complete & Polished ✅
 
 **Domain layer — ✅ Done**
 
@@ -86,10 +87,10 @@ Flutter app helping Egyptian high school students choose universities.
 - `UserModel extends UserEntity` with `fromJson`
 - `AuthRemoteDataSource` (abstract) + `AuthRemoteDataSourceImpl` — no try/catch
 - `login()` saves tokens to Prefs directly
-- `verifyOtp()` returns access_token as `String` — Cubit decides what to do with it
+- `verifyOtp()` returns access_token as `String` — Cubit/View decides what to do with it
 - `AuthRepoImpl implements AuthRepo` — catches `DioException` → `ServerFailure.fromDioError(e)`
 
-**Presentation layer — ✅ Done**
+**Presentation layer — ✅ Done + polished this session**
 
 Cubits:
 
@@ -98,13 +99,15 @@ Cubits:
 
 Views (all built):
 
-- `LoginView` + `LoginViewBody` + `LoginForm`
-- `SignUpView` + `SignUpViewBody` + `SignUpForm`
+- `LoginView` + `LoginViewBody` + `LoginForm` — success → `pushNamedAndRemoveUntil(MainView)`, no SnackBar
+- `SignUpView` + `SignUpViewBody` + `SignUpForm` — **updated this session:** password strength indicator + live confirm-match check (border color + text), Terms checkbox opens bottom sheet
 - `ForgotPasswordView` + `ForgotPasswordViewBody`
-- `OtpView` + `OtpViewBody` — `OtpArgs{email, isRegister}` controls navigation
-- `ResetPasswordView` + `ResetPasswordViewBody` + `ResetPasswordForm` + `VerifiedBadge`
-- `SetupView` + `SetupViewBody` + `SetupGovernorateDropdown` + `SetupPercentageField` + `SetupAgeField`
+- `OtpView` + `OtpViewBody` — `OtpArgs{email, isRegister}` controls navigation. **Bug fixed this session:** register flow now saves `state.token` to `Prefs` before navigating to `SetupView` (was missing — caused unauthenticated error on `saveStudentInfo`)
+- `ResetPasswordView` + `ResetPasswordViewBody` + `ResetPasswordForm` + `VerifiedBadge` — **updated this session:** same live confirm-match recheck behavior as SignUpForm (editing password after confirm is filled re-validates match)
+- `SetupView` + `SetupViewBody` + `SetupGovernorateDropdown` + `SetupPercentageField` + `SetupAgeField` — **updated this session:** success SnackBar "تم إنشاء حسابك بنجاح ✓" added before navigating to MainView (this is the true end-of-register-flow success point)
 - `AuthHeader` (shared), `AuthSocialButtons` (UI-only placeholders)
+- `StudyTypeSelector` (moved to `core/widgets`, was `PersonalDataStudyTypeSelector` in profile) — now takes `Map<String, IconData>` instead of single `icon`
+- `TermsAndConditionsSheet` (new, `core/widgets`) — bottom sheet, static content, opened from `TermsAndConditions` widget's "الشروط والأحكام" tap
 
 **GetIt — ✅ Registered:**
 `AuthRemoteDataSource`, `AuthRepo`, `LoginUseCase`, `RegisterUseCase`, `VerifyOtpUseCase`, `ForgetPasswordUseCase`, `ResendOtpUseCase`, `ResetPasswordUseCase`, `SaveStudentInfoUseCase`, `UpdatePasswordUseCase`, `GetMeUseCase`
@@ -112,17 +115,25 @@ Views (all built):
 **Routes — ✅ Registered:**
 `LoginView`, `SignUpView`, `ForgotPasswordView`, `OtpView(OtpArgs)`, `ResetPasswordView(String tempToken)`, `SetupView`
 
-**Auth flow:**
+**Auth flow (confirmed working):**
 
-- Register → OtpView(isRegister:true) → SetupView → MainView
-- ForgotPassword → OtpView(isRegister:false) → ResetPasswordView(tempToken) → LoginView
-- Login → MainView
+- Register → OtpView(isRegister:true) → token saved to Prefs → SetupView → saveStudentInfo (authenticated ✅) → SnackBar success → MainView
+- ForgotPassword → OtpView(isRegister:false) → ResetPasswordView(tempToken as nav argument, NOT saved to Prefs) → LoginView
+- Login → MainView (no SnackBar, immediate)
 
-**Core fixes made for auth:**
+**Core fixes made for auth (cumulative):**
 
 - `ApiService.postWithToken()` — overrides Authorization header for temp-token calls
-- Interceptor fix: `options.headers.keys.any((k) => k.toLowerCase() == 'authorization')` — prevents interceptor from overwriting manually set Authorization header (was `containsKey` which is case-sensitive and failed)
+- Interceptor fix: `options.headers.keys.any((k) => k.toLowerCase() == 'authorization')` — case-insensitive check
 - `Prefs.remove(key)` — activated
+- **This session:** `Prefs.setString('token', state.token)` added in `OtpViewBody` for the register-flow branch
+- **This session:** `CustomTextFormField`'s `errorStyle: TextStyle(fontSize:0, height:0)` removed (was hiding ALL validation error text app-wide) + `autovalidateMode: AutovalidateMode.onUserInteraction` added
+
+**Known UX decisions (do not revisit unless asked):**
+- Register `AuthSuccess` → no SnackBar (mid-flow, not real completion)
+- Setup `AuthSuccess` → SnackBar + navigate (real completion point)
+- Login `AuthSuccess` → no SnackBar, immediate navigate
+- Terms & Conditions → bottom sheet, not full page, static content
 
 ---
 
@@ -134,6 +145,10 @@ Views (all built):
 4. **Faheem/Chat AI** — `POST /aiChat/send` (waiting on backend)
 5. **Search Debounce** — 500ms in `search_view_body.dart`
 6. **Fav Pagination** — after sayed fixes the backend bug
+
+**Open item (discussed, not yet decided/built):** confirm-password validator mismatch case currently returns `''` to suppress duplicate text but still reserves blank error-line space (Flutter behavior). Proposed fix: move mismatch check fully out of `validator`, drive red border via existing `borderColor` prop only, block submit via explicit check in `_submit()`. Not yet approved — discuss before implementing. Decide if this also applies to `ResetPasswordForm`.
+
+**Backend conversation needed with sayed:** duplicate-email-but-unverified edge case — `/register` creates the user record immediately (before OTP verification), so if a user abandons the flow pre-OTP, retrying registration with the same email gets a generic "already registered" error with no way to distinguish verified vs unverified accounts. No frontend fix possible without a backend change (either allow re-registration for unverified emails, or return a distinguishable error/status).
 
 ---
 
@@ -162,7 +177,10 @@ Views (all built):
 - **Sometimes re-asks the same architectural question** — wants consistent answer, not a new decision
 - **When debugging:** expects Claude to ask for the relevant file first before guessing
 - **When Claude asks for a file and it's in the zip:** will say "معاك كل حاجة" — use the zip
-- **Prefers SnackBar over Toast** for transient success messages (decided this session)
+- **Prefers SnackBar over Toast** for transient success messages
+- **Sends screenshots of UI bugs** — diagnose root cause in framework/widget behavior, not just symptom
+- **Reports backend/data inconsistencies he notices himself** (dashboard, Postman) — treat as a flag for a sayed conversation, not something to silently work around
+- **Will explicitly call out if Claude writes code during a discussion turn** — only implement after an explicit go-ahead ("fix", "go", a clear choice between options)
 
 > ⚠️ **Important note:** If a new error occurs, always ask for the related file before attempting to fix it. If lib.zip was uploaded, read it from there.
 

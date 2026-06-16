@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026
+> Last updated: June 2026 (session: auth polish + UX fixes)
 
 ---
 
@@ -27,7 +27,7 @@ lib/
 │   │   └── build_error_bar.dart
 │   ├── services/
 │   │   ├── get_it_service.dart
-│   │   ├── shared_preferences_singleton.dart (Prefs class — has working `remove()`)
+│   │   ├── shared_preferences_singleton.dart (Prefs class — has working `remove()`, `setString()`, `getString()`)
 │   │   ├── custom_bloc_observer.dart
 │   │   └── database_service.dart      (abstract — unused, Firebase-era leftover)
 │   ├── cubits/trending_cubit/
@@ -63,7 +63,7 @@ lib/
 │       ├── no_internet_widget.dart
 │       ├── empty_state_widget.dart
 │       ├── custom_progress_hud.dart
-│       ├── custom_text_form_field.dart
+│       ├── custom_text_form_field.dart  ✅ fixed this session — see §16
 │       ├── password_field.dart
 │       ├── rating.dart
 │       ├── type_badge_widget.dart
@@ -73,7 +73,9 @@ lib/
 │       ├── guide_video_card.dart
 │       ├── guide_video_player.dart
 │       ├── guide_video_player_info.dart
-│       └── featured_guide_podcasts_section.dart
+│       ├── featured_guide_podcasts_section.dart
+│       ├── study_type_selector.dart     ✅ NEW this session — moved here from profile, icons map
+│       └── terms_and_conditions_sheet.dart ✅ NEW this session — bottom sheet, static T&C content
 └── features/
     ├── browse/ ... (done)
     ├── search/ ... (done)
@@ -81,7 +83,7 @@ lib/
     ├── guide/ ... (done)
     ├── notifications/ ... (done)
     ├── home/ ... (done)
-    ├── auth/                                          ← COMPLETED this session
+    ├── auth/                                          ← COMPLETE & POLISHED (this session)
     │   ├── domain/
     │   │   ├── entities/user_entity.dart
     │   │   ├── repos/auth_repo.dart
@@ -108,26 +110,27 @@ lib/
     │           ├── sign_up_view.dart
     │           ├── forgot_password_view.dart
     │           ├── otp_view.dart                    (defines OtpArgs{email, isRegister})
-    │           ├── reset_password_view.dart          ✅ built this session
-    │           ├── setup_view.dart                   ✅ built this session
+    │           ├── reset_password_view.dart
+    │           ├── setup_view.dart
     │           └── widgets/
     │               ├── login_view_body.dart
     │               ├── login_form.dart
     │               ├── auth_header.dart
     │               ├── auth_social_buttons.dart
     │               ├── sign_up_view_body.dart
-    │               ├── sign_up_form.dart
+    │               ├── sign_up_form.dart            ✅ updated this session — strength + match check
     │               ├── forgot_password_view_body.dart
-    │               ├── otp_view_body.dart
-    │               ├── reset_password_view_body.dart ✅ built this session
-    │               ├── reset_password_form.dart      ✅ built this session
-    │               ├── verified_badge.dart           ✅ built this session
-    │               ├── setup_view_body.dart          ✅ built this session
-    │               ├── setup_governorate_dropdown.dart ✅ built this session
-    │               ├── setup_percentage_field.dart   ✅ built this session
-    │               └── setup_age_field.dart          ✅ built this session
+    │               ├── otp_view_body.dart            ✅ fixed this session — token persistence bug
+    │               ├── reset_password_view_body.dart
+    │               ├── reset_password_form.dart      ✅ updated this session — live match recheck
+    │               ├── verified_badge.dart
+    │               ├── setup_view_body.dart          ✅ updated this session — success SnackBar
+    │               ├── setup_governorate_dropdown.dart
+    │               ├── setup_percentage_field.dart
+    │               ├── setup_age_field.dart
+    │               └── terms_and_conditions.dart     ✅ updated this session — opens bottom sheet
     ├── uni_detail/ ... (done)
-    ├── profile/ → presentation/views/ (4 screens UI only — API integration pending)
+    ├── profile/ → presentation/views/ (4 screens UI only — API integration pending — NEXT UP)
     └── faheem/ → domain/entities/ + presentation/views/ (UI only — waiting on backend)
 ```
 
@@ -291,20 +294,28 @@ class ApiService {
 
 ---
 
-## 5. Auth Flows (confirmed and working)
+## 5. Auth Flows (confirmed and working — including register-flow token fix)
 
 **Register flow:**
 1. `SignUpView` → register → `pushNamed` → `OtpView(OtpArgs(email, isRegister: true))`
-2. `OtpView` → verifyOtp ✅ → token in `OtpSuccess` → save token to Prefs → `pushNamedAndRemoveUntil` → `SetupView` + `(route) => false`
-3. `SetupView` → saveStudentInfo ✅ → `pushNamedAndRemoveUntil` → `MainView` + `(route) => false`
+2. `OtpView` → verifyOtp ✅ → token in `OtpSuccess` → **`Prefs.setString('token', state.token)`** (bug fixed this session — was missing) → `pushNamedAndRemoveUntil` → `SetupView` + `(route) => false`
+3. `SetupView` → saveStudentInfo ✅ (now authenticated correctly) → SnackBar "تم إنشاء حسابك بنجاح ✓" (added this session) → `pushNamedAndRemoveUntil` → `MainView` + `(route) => false`
 
 **Forgot password flow:**
 1. `ForgotPasswordView` → forgetPassword ✅ → `pushNamed` → `OtpView(OtpArgs(email, isRegister: false))`
-2. `OtpView` → verifyOtp ✅ → token in `OtpSuccess` → `pushReplacementNamed` → `ResetPasswordView(tempToken)`
+2. `OtpView` → verifyOtp ✅ → token in `OtpSuccess` → NOT saved to Prefs (intentional — temp token only) → `pushReplacementNamed` → `ResetPasswordView(tempToken)`
 3. `ResetPasswordView` → resetPassword ✅ → SnackBar "تم تغيير كلمة المرور بنجاح ✓" → `pushNamedAndRemoveUntil` → `LoginView` + `(route) => false`
 
 **Login flow:**
-1. `LoginView` → login ✅ → `pushNamedAndRemoveUntil` → `MainView` + `(route) => false`
+1. `LoginView` → login ✅ → `pushNamedAndRemoveUntil` → `MainView` + `(route) => false` — no SnackBar (immediate success, decided this session)
+
+**Success-message UX (decided this session):**
+| Flow | AuthSuccess moment | SnackBar? |
+|---|---|---|
+| Register (`register()` call) | mid-flow, not real completion | ❌ No |
+| Setup (`saveStudentInfo()` call) | true end of register flow | ✅ "تم إنشاء حسابك بنجاح ✓" |
+| Login (`login()` call) | immediate full success | ❌ No |
+| Reset Password (`resetPassword()` call) | full success | ✅ "تم تغيير كلمة المرور بنجاح ✓" |
 
 ---
 
@@ -330,6 +341,7 @@ class ApiService {
 }
 ```
 > `otp` field is testing-only — will be removed in production.
+> ⚠️ **Known backend quirk (flagged this session, unresolved):** the user record is created immediately by this endpoint, before OTP verification. If the user abandons the flow before verifying, retrying registration with the same email returns a generic "already registered" error with no distinction between a verified and an unverified account. Needs a conversation with sayed — either allow re-registration/resend for unverified emails, or return a distinguishable error code/status for this case. No frontend-only fix exists.
 
 **POST /verify-Otp**
 ```json
@@ -338,7 +350,7 @@ class ApiService {
   "data": { "access_token": "475|...", "refresh_token": "476|..." }
 }
 ```
-> Shared endpoint for register + forgot-password flows. Returns temp token used for reset-Password.
+> Shared endpoint for register + forgot-password flows. Returns temp token used for reset-Password. In the register flow this token IS persisted to Prefs (see §5); in the forgot-password flow it is NOT persisted, only passed as a navigation argument.
 
 **POST /forget-Password**
 ```json
@@ -424,6 +436,7 @@ SearchView
 - `_timer?.cancel()` inside fold success branch of `verifyOtp` — stops timer only on success, not on wrong OTP
 - `buildWhen` in `_ResendSection` excludes `OtpResendLoading` — prevents widget disappearing during resend loading
 - `OtpResendLoading` shows a small `CircularProgressIndicator` in place of the resend text
+- **`OtpViewBody` listener (register branch) saves the verified token to Prefs before navigating** — see §5/§16 for the bug history
 
 ---
 
@@ -439,7 +452,8 @@ SearchView
 | مجالات الاهتمام | — | UI-only, no backend endpoint |
 
 `SetupGovernorateDropdown` has all 26 Egyptian governorates hardcoded with their IDs.
-Reuses `PersonalDataStudyTypeSelector` and `PersonalDataInterestsSelector` from profile feature.
+Reuses `StudyTypeSelector` (moved to `core/widgets` this session) and `PersonalDataInterestsSelector` from profile feature.
+SetupViewBody shows a success SnackBar ("تم إنشاء حسابك بنجاح ✓") on `AuthSuccess` before navigating to `MainView` — added this session, this is the true completion point of the register flow.
 
 ---
 
@@ -500,6 +514,8 @@ abstract class AppColors {
 - **`robot_internet.png`:** must be in `assets/images/` and `pubspec.yaml`
 - **`custom_exceptions.dart`:** exists but unused
 - **Auth — "مجالات الاهتمام":** UI-only, no backend endpoint yet
+- **Backend — duplicate-email-unverified edge case:** see §6 note under `/register` — needs a conversation with sayed, no frontend fix possible alone
+- **Confirm-password validator reserved-space issue (open, not yet fixed):** in `SignUpForm`'s confirm field, `validator` returns `''` on mismatch to avoid a duplicate message (the manual match-text below the field already shows it), but Flutter still reserves blank line height for the error slot whenever `errorText != null`, even when empty. Proposed fix (discussed, not yet approved): remove the mismatch check from `validator` entirely (validator only checks "required"), drive the red border purely via the existing `borderColor` prop, and block submission with an explicit equality check inside `_submit()` instead of relying on `_formKey.currentState!.validate()` for this specific rule. Decide if `ResetPasswordForm`'s confirm field needs the identical fix.
 
 ---
 
@@ -530,3 +546,26 @@ abstract class AppColors {
 | **SnackBar over Toast for success messages** | SnackBar disappears before navigation completes — cleaner UX |
 | **Register flow: OTP → SetupView (not LoginView)** | Simpler — no need to detect new vs existing user from API |
 | **`pushReplacementNamed` from OtpView → ResetPasswordView** | OTP screen not needed in back stack after verification |
+| **Register `AuthSuccess` → no SnackBar** | Mid-flow, not real completion — would be misleading |
+| **Setup `AuthSuccess` → SnackBar + navigate** | True end of register flow, deserves explicit success feedback |
+| **Login `AuthSuccess` → no SnackBar, immediate navigate** | Already a complete, instant success — no ambiguity to clarify |
+| **Register-flow token saved to Prefs in `OtpViewBody`** | Required for `SetupView`'s `saveStudentInfo` call to be authenticated; forgot-password flow's temp token deliberately stays out of Prefs |
+| **`StudyTypeSelector` takes `Map<String, IconData>` not single `icon`** | Single shared icon was a bug — every option showed the same icon regardless of which one it represented |
+| **Terms & Conditions = bottom sheet (`DraggableScrollableSheet`), not full page** | Secondary, short-read content; full-page navigation breaks the sign-up flow unnecessarily |
+| **Terms & Conditions content is static/hardcoded, written once** | No backend endpoint for this; content treated as final unless explicitly asked to change |
+| **`CustomTextFormField`'s zero-size `errorStyle` removed** | Was hiding ALL validation error messages app-wide, not just the intended case — a real regression, not a deliberate hidden-error design |
+| **`autovalidateMode: AutovalidateMode.onUserInteraction` added to `CustomTextFormField`** | Without it, stale error text persists after the user corrects a field, until the next manual `validate()` call |
+| **Confirm-password mismatch validator returns `''` instead of removing the check (interim, not final)** | Suppresses duplicate message but still reserves error-line space — flagged as an open item, full fix (move check out of validator) pending approval |
+
+---
+
+## 16. Validation Bug History — `CustomTextFormField` (this session)
+
+Sequence of issues found and fixed, in order:
+
+1. **Original bug:** `errorStyle: TextStyle(fontSize: 0, height: 0)` was set globally in `CustomTextFormField`'s `InputDecoration`, hiding error text on every field in the app (not an isolated issue — affected all forms). Discovered via a screenshot showing empty space where "هذا الحقل مطلوب" should have appeared, even though the red border was visible.
+2. **Fix 1:** Removed the zero-size `errorStyle` override; added `autovalidateMode: AutovalidateMode.onUserInteraction` so errors clear/update live as the user types, instead of only at `validate()` calls.
+3. **New issue surfaced by fix 1:** In `SignUpForm`'s confirm-password field, two messages now appeared simultaneously on mismatch — the field's own `validator` message ("كلمة المرور غير متطابقة") and the manual match-status `Text` widget below the field ("كلمتا المرور غير متطابقتين"). Root cause: two independent sources of truth for the same check.
+4. **Interim fix:** `validator` returns `''` (empty string) instead of a message on mismatch — keeps the field in an error state (red border) without printing text.
+5. **Remaining issue (open, see §14):** Flutter's `InputDecorator` reserves the error-line height whenever `errorText != null`, regardless of whether the string is empty — so a blank gap still appears between the field and the manual match text below it.
+6. **Proposed final fix (discussed, NOT implemented yet):** Remove the mismatch check from `validator` entirely (validator only handles "required"); drive the red/green border purely from the existing `_passwordsMatch`-driven `borderColor` prop; enforce the mismatch block in `_submit()` with an explicit `if (_passwordController.text != _confirmPasswordController.text) return;` check, independent of `_formKey.currentState!.validate()`. Awaiting go-ahead — also need to decide if this same fix should be applied to `ResetPasswordForm`.
