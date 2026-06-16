@@ -10,10 +10,8 @@ class OtpCubit extends Cubit<OtpState> {
   final VerifyOtpUseCase verifyOtpUseCase;
   final ResendOtpUseCase resendOtpUseCase;
 
-  OtpCubit({
-    required this.verifyOtpUseCase,
-    required this.resendOtpUseCase,
-  }) : super(OtpInitial());
+  OtpCubit({required this.verifyOtpUseCase, required this.resendOtpUseCase})
+    : super(OtpInitial());
 
   Timer? _timer;
   static const int _timerDuration = 30;
@@ -34,29 +32,23 @@ class OtpCubit extends Cubit<OtpState> {
     });
   }
 
-  Future<void> verifyOtp({
-    required String otp,
-    required String email,
-  }) async {
+  Future<void> verifyOtp({required String otp, required String email}) async {
     emit(OtpLoading());
     final result = await verifyOtpUseCase.call(otp: otp, email: email);
-    result.fold(
-      (failure) => emit(OtpFailure(failure.message)),
-      (token) => emit(OtpSuccess(token)),
-    );
+    result.fold((failure) => emit(OtpFailure(failure.message)), (token) {
+      _timer?.cancel(); // stop only on success
+      emit(OtpSuccess(token));
+    });
   }
 
   Future<void> resendOtp({required String email}) async {
     emit(OtpResendLoading());
     final result = await resendOtpUseCase.call(email: email);
-    result.fold(
-      (failure) => emit(OtpResendFailure(failure.message)),
-      (_) {
-        emit(OtpResendSuccess());
-        // restart the timer after resend
-        startTimer();
-      },
-    );
+    result.fold((failure) => emit(OtpResendFailure(failure.message)), (_) {
+      emit(OtpResendSuccess());
+      // restart the timer after resend
+      startTimer();
+    });
   }
 
   @override
