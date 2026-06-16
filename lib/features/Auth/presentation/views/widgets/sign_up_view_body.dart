@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uni/constants.dart';
+import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 
 class SignUpViewBody extends StatelessWidget {
   const SignUpViewBody({super.key});
@@ -6,8 +8,22 @@ class SignUpViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: Column(children: []),
+      padding: EdgeInsets.symmetric(
+        horizontal: kHorizontalPadding,
+        vertical: kTopPadding,
+      ),
+      child: Center(
+        child: Column(
+          children: [
+            SizedBox(height: 50),
+            AuthHeader(
+              title: 'إنشاء حساب جديد 🚀',
+              subtitle: 'إملئ جميع بياناتك لتبدأ رحلتك التعليمية معنا',
+            ),
+            SizedBox(height: 32),
+          ],
+        ),
+      ),
     );
   }
 }

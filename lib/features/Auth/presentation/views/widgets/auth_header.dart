@@ -9,11 +9,11 @@ class AuthHeader extends StatelessWidget {
     required this.subtitle,
     this.showLogo = false,
     // this.icon,
-    required this.verticalPaddingContainer,
-    required this.horizontalPaddingContainer,
+    this.verticalPaddingContainer,
+    this.horizontalPaddingContainer,
     this.colorContainer,
     this.childContainer,
-    required this.borderRadius,
+    this.borderRadius,
   });
 
   final String title;
@@ -23,7 +23,7 @@ class AuthHeader extends StatelessWidget {
   // optional icon widget shown above title (used in forgot password, reset password screens)
   // final Widget? icon;
 
-  final double verticalPaddingContainer,
+  final double? verticalPaddingContainer,
       horizontalPaddingContainer,
       borderRadius;
 
@@ -37,19 +37,19 @@ class AuthHeader extends StatelessWidget {
       children: [
         if (showLogo) ...[
           Container(
-            margin: const EdgeInsets.only(left: 22),
+            margin: const EdgeInsets.only(left: 24),
             transform: Matrix4.identity()
               ..translate(0.0, 0.0)
               ..rotateZ(0.16),
             padding: EdgeInsets.symmetric(
-              vertical: verticalPaddingContainer,
-              horizontal: horizontalPaddingContainer,
+              vertical: verticalPaddingContainer ?? 0,
+              horizontal: horizontalPaddingContainer ?? 0,
             ),
             decoration: ShapeDecoration(
               color: colorContainer,
               shape: RoundedRectangleBorder(
                 side: const BorderSide(color: AppColors.borderColor, width: 1),
-                borderRadius: BorderRadius.circular(borderRadius),
+                borderRadius: BorderRadius.circular(borderRadius ?? 0),
               ),
             ),
             child: childContainer,
@@ -60,7 +60,7 @@ class AuthHeader extends StatelessWidget {
         const SizedBox(height: 30),
         Text(
           title,
-          style: TextStyles.bold30.copyWith(color: AppColors.primaryColor),
+          style: TextStyles.bold28.copyWith(color: AppColors.primaryColor),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
