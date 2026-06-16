@@ -3,6 +3,7 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 import 'package:uni/core/widgets/study_type_selector.dart';
+import 'package:uni/features/auth/presentation/views/widgets/setup_governorate_dropdown.dart';
 
 class SetupViewBody extends StatefulWidget {
   const SetupViewBody({super.key});
@@ -14,6 +15,8 @@ class SetupViewBody extends StatefulWidget {
 class _SetupViewBodyState extends State<SetupViewBody> {
   // علمي → 'science' | أدبي → 'literature'
   String _studySection = 'علمي';
+
+  int? _governorateId;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,14 @@ class _SetupViewBodyState extends State<SetupViewBody> {
             ),
             const SizedBox(height: 24),
 
-
+            // المحافظة
+            const FieldLabel(label: 'المحافظة'),
+            const SizedBox(height: 8),
+            SetupGovernorateDropdown(
+              selectedId: _governorateId,
+              onChanged: (id) => setState(() => _governorateId = id),
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
