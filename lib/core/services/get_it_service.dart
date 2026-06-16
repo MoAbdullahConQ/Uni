@@ -5,6 +5,18 @@ import 'package:uni/core/cubits/trending_cubit/trending_cubit.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/data_sources/trending_remote_data_source.dart';
 import 'package:uni/core/utils/api_service.dart';
+import 'package:uni/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:uni/features/auth/data/repos/auth_repo_impl.dart';
+import 'package:uni/features/auth/domain/repos/auth_repo.dart';
+import 'package:uni/features/auth/domain/use_cases/forget_password_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/get_me_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/login_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/register_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/resend_otp_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/reset_password_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/save_student_info_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/update_password_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/verify_otp_use_case.dart';
 import 'package:uni/features/browse/data/data_sources/browse_remote_data_source.dart';
 import 'package:uni/features/browse/data/repos/browse_repo_impl.dart';
 import 'package:uni/features/browse/domain/repos/browse_repo.dart';
@@ -156,4 +168,33 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<GetUniDetailUseCase>(
     GetUniDetailUseCase(getIt<UniDetailRepo>()),
   );
+
+  // ===== AUTH =====
+  getIt.registerSingleton<AuthRemoteDataSource>(
+    AuthRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+  getIt.registerSingleton<AuthRepo>(
+    AuthRepoImpl(getIt<AuthRemoteDataSource>()),
+  );
+  getIt.registerSingleton<LoginUseCase>(LoginUseCase(getIt<AuthRepo>()));
+  getIt.registerSingleton<RegisterUseCase>(RegisterUseCase(getIt<AuthRepo>()));
+  getIt.registerSingleton<VerifyOtpUseCase>(
+    VerifyOtpUseCase(getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<ForgetPasswordUseCase>(
+    ForgetPasswordUseCase(getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<ResendOtpUseCase>(
+    ResendOtpUseCase(getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<ResetPasswordUseCase>(
+    ResetPasswordUseCase(getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<SaveStudentInfoUseCase>(
+    SaveStudentInfoUseCase(getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<UpdatePasswordUseCase>(
+    UpdatePasswordUseCase(getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<GetMeUseCase>(GetMeUseCase(getIt<AuthRepo>()));
 }
