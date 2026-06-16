@@ -4,34 +4,29 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
-import 'package:uni/core/widgets/password_field.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
-import 'package:uni/features/auth/presentation/views/forgot_password_view.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class ForgetForm extends StatefulWidget {
+  const ForgetForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<ForgetForm> createState() => _ForgetFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _ForgetFormState extends State<ForgetForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthCubit>().login(
+      context.read<AuthCubit>().forgetPassword(
         email: _emailController.text.trim(),
-        password: _passwordController.text,
       );
     }
   }
@@ -43,14 +38,13 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // email field
           Text(
-            'البريد الإلكتروني أو الهاتف',
+            'البريد الإلكتروني',
             style: TextStyles.semiBold14.copyWith(
               color: AppColors.primaryColor,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           CustomTextFormField(
             controller: _emailController,
             hintText: 'name@example.com',
@@ -63,54 +57,11 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 24),
-
-          // password field
-          Text(
-            'كلمة المرور',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
-          const SizedBox(height: 10),
-          PasswordField(
-            controller: _passwordController,
-            hintText: '••••••••',
-            keyboardType: TextInputType.visiblePassword,
-            textAlign: TextAlign.right,
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              size: 20,
-              color: AppColors.primaryColor.withOpacity(.6),
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          // forgot password
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                splashColor: Colors.transparent,
-                borderRadius: BorderRadius.circular(6),
-                onTap: () =>
-                    Navigator.pushNamed(context, ForgotPasswordView.routeName),
-                child: Text(
-                  'نسيت كلمة المرور؟',
-                  style: TextStyles.regular14.copyWith(
-                    color: AppColors.primaryColor.withOpacity(.7),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-            ],
-          ),
-          const SizedBox(height: 24),
-          // submit button
           BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               return CustomButton(
                 onPressed: state is AuthLoading ? () {} : _submit,
-                text: state is AuthLoading ? '' : 'تسجيل الدخول',
+                text: state is AuthLoading ? '' : 'إرسال الرمز',
                 backgroundColor: AppColors.secondaryColor,
                 prefixIcon: state is AuthLoading
                     ? const SizedBox(

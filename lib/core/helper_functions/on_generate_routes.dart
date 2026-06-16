@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/features/auth/presentation/views/forgot_password_view.dart';
 import 'package:uni/features/auth/presentation/views/login_view.dart';
 import 'package:uni/features/auth/presentation/views/sign_up_view.dart';
 import 'package:uni/features/browse/presentation/views/browse_view.dart';
@@ -33,6 +34,10 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const LoginView());
     case SignUpView.routeName:
       return MaterialPageRoute(builder: (context) => const SignUpView());
+    case ForgotPasswordView.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const ForgotPasswordView(),
+      );
     case MainView.routeName:
       return MaterialPageRoute(builder: (context) => const MainView());
     case HomeView.routeName:
