@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni/features/auth/presentation/views/login_view.dart';
 import 'package:uni/features/browse/presentation/views/browse_view.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_chat_view.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_history_view.dart';
@@ -27,6 +28,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const SplashView());
     case OnBoardingView.routeName:
       return MaterialPageRoute(builder: (context) => const OnBoardingView());
+    case LoginView.routeName:
+      return MaterialPageRoute(builder: (context) => const LoginView());
     case MainView.routeName:
       return MaterialPageRoute(builder: (context) => const MainView());
     case HomeView.routeName:
