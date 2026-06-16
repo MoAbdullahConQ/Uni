@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uni/core/cubits/trending_cubit/trending_cubit.dart';
-import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/data_sources/trending_remote_data_source.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/features/auth/data/data_sources/auth_remote_data_source.dart';
@@ -57,9 +55,6 @@ final GetIt getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   // Dio
   getIt.registerSingleton<Dio>(Dio());
-
-  // TODO: remove before production
-  await Prefs.setString('token', dotenv.env['TOKEN'] ?? '');
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));

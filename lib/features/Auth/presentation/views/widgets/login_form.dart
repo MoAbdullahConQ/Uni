@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/core/widgets/password_field.dart';
+import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/login_view.dart';
 
 class LoginForm extends StatefulWidget {
@@ -24,6 +26,16 @@ class _LoginFormState extends State<LoginForm> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthCubit>().login(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -94,16 +106,27 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 24),
           // submit button
-          CustomButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _emailController.text.trim();
-                _passwordController.text;
-              }
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              return CustomButton(
+                onPressed: state is AuthLoading ? () {} : _submit,
+                text: state is AuthLoading ? '' : 'تسجيل الدخول',
+                backgroundColor: AppColors.secondaryColor,
+                prefixIcon: state is AuthLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primaryColor,
+                        ),
+                      )
+                    : null,
+                style: TextStyles.bold16.copyWith(
+                  color: AppColors.primaryColor,
+                ),
+              );
             },
-            text: 'تسجيل الدخول',
-            backgroundColor: AppColors.secondaryColor,
-            style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
           ),
         ],
       ),
