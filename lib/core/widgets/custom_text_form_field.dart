@@ -23,7 +23,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool obscureText;
 
   final String hintText;
-  final IconData? prefixIcon;
+  final Widget? prefixIcon;
   final TextInputType keyboardType;
   final void Function(String?)? onSaved;
   final TextAlign textAlign;
@@ -53,13 +53,7 @@ class CustomTextFormField extends StatelessWidget {
         hintStyle: TextStyles.regular16.copyWith(
           color: AppColors.primaryColor.withOpacity(.6),
         ),
-        prefixIcon: prefixIcon != null
-            ? Icon(
-                prefixIcon,
-                size: 24,
-                color: AppColors.primaryColor.withOpacity(.5),
-              )
-            : null,
+        prefixIcon: prefixIcon,
         filled: true,
         fillColor: const Color(0xFFF9FAFA),
         contentPadding: const EdgeInsets.symmetric(

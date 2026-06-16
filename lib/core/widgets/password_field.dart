@@ -17,7 +17,7 @@ class PasswordField extends StatefulWidget {
   });
 
   final String hintText;
-  final IconData? prefixIcon;
+  final Widget? prefixIcon;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final void Function(String?)? onSaved;

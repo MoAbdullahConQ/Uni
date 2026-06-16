@@ -35,7 +35,7 @@ class _PasswordSectionState extends State<PasswordSection> {
           hintText: '••••••••',
           textAlign: TextAlign.start,
           keyboardType: TextInputType.visiblePassword,
-          prefixIcon: Icons.lock_outline,
+          prefixIcon: const Icon(Icons.lock_outline, size: 24),
           borderColor: AppColors.primaryColor.withOpacity(.1),
         ),
         const SizedBox(height: 4),
@@ -63,7 +63,8 @@ class _PasswordSectionState extends State<PasswordSection> {
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',
-          prefixIcon: Icons.lock_outline,
+          prefixIcon: const Icon(Icons.lock_outline, size: 24),
+
           controller: widget.newPasswordController,
           borderColor: AppColors.primaryColor.withOpacity(.1),
           onChanged: (value) {
@@ -85,7 +86,7 @@ class _PasswordSectionState extends State<PasswordSection> {
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',
-          prefixIcon: Icons.lock_outline,
+          prefixIcon: const Icon(Icons.lock_outline, size: 24),
           controller: widget.confirmPasswordController,
           onChanged: (value) {
             setState(() {

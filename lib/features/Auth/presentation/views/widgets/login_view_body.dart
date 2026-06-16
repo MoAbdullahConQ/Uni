@@ -6,6 +6,8 @@ import 'package:uni/core/utils/app_fonts.dart';
 import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
+import 'package:uni/features/auth/presentation/views/widgets/login_form.dart';
+import 'package:uni/features/auth/presentation/views/widgets/or_divider.dart';
 
 class LoginViewBody extends StatelessWidget {
   const LoginViewBody({super.key});
@@ -45,6 +47,14 @@ class LoginViewBody extends StatelessWidget {
                 ],
               ),
             ),
+
+            const SizedBox(height: 40),
+
+            // login form
+            const LoginForm(),
+            const SizedBox(height: 24),
+
+      
           ],
         ),
       ),

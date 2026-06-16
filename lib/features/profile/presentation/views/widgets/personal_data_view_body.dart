@@ -60,9 +60,13 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── Name ──
                     const PersonalDataFieldLabel(label: 'الاسم بالكامل'),
                     const SizedBox(height: 8),
-                    const CustomTextFormField(
+                    CustomTextFormField(
                       hintText: 'مجدي عبدالغني',
-                      prefixIcon: Icons.person_outline,
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        size: 24,
+                        color: AppColors.primaryColor.withOpacity(.5),
+                      ),
                       keyboardType: TextInputType.name,
                       textAlign: TextAlign.start,
                     ),
@@ -71,9 +75,13 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── Email──
                     const PersonalDataFieldLabel(label: 'البريد الإلكتروني'),
                     const SizedBox(height: 8),
-                    const CustomTextFormField(
+                    CustomTextFormField(
                       hintText: 'ahmed.m@example.com',
-                      prefixIcon: Icons.email_outlined,
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        size: 24,
+                        color: AppColors.primaryColor.withOpacity(.5),
+                      ),
                       keyboardType: TextInputType.emailAddress,
                       textAlign: TextAlign.end,
                     ),
@@ -116,7 +124,9 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── حفظ التعديلات ──
                     CustomButton(
                       backgroundColor: AppColors.secondaryColor,
-                      style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
+                      style: TextStyles.bold16.copyWith(
+                        color: AppColors.primaryColor,
+                      ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();

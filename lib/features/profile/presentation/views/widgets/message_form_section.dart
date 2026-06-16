@@ -39,9 +39,14 @@ class MessageFormSection extends StatelessWidget {
           children: [
             const PersonalDataFieldLabel(label: 'الاسم'),
             const SizedBox(height: 8),
-            const CustomTextFormField(
+            CustomTextFormField(
               hintText: 'اكتب اسمك بالكامل',
-              prefixIcon: Icons.person_outline,
+              prefixIcon: Icon(
+                Icons.person_outline,
+                size: 24,
+                color: AppColors.primaryColor.withOpacity(.5),
+              ),
+
               keyboardType: TextInputType.name,
               textAlign: TextAlign.start,
             ),
