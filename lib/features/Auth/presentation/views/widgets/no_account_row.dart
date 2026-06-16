@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/features/splash/presentation/views/splash_view.dart';
+import 'package:uni/features/auth/presentation/views/sign_up_view.dart';
 
 class NoAccountRow extends StatelessWidget {
   const NoAccountRow({super.key});
@@ -19,7 +19,7 @@ class NoAccountRow extends StatelessWidget {
         const SizedBox(width: 8),
 
         GestureDetector(
-          onTap: () => Navigator.pushNamed(context, SplashView.routeName),
+          onTap: () => Navigator.pushNamed(context, SignUpView.routeName),
           child: Text(
             'إنشاء حساب جديد',
             style: TextStyles.semiBold16.copyWith(
