@@ -90,7 +90,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── الشعبة الدراسية ──
                     const FieldLabel(label: 'الشعبة الدراسية'),
                     const SizedBox(height: 6),
-                    PersonalDataStudyTypeSelector(
+                    StudyTypeSelector(
                       options: const ['أدبي', 'علمي'],
                       selected: studyCategory,
                       onSelected: (v) => setState(() => studyCategory = v),
@@ -100,7 +100,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     // ── الشعبة العلمية ──
                     const FieldLabel(label: 'الشعبة العلمية'),
                     const SizedBox(height: 6),
-                    PersonalDataStudyTypeSelector(
+                    StudyTypeSelector(
                       options: const ['علوم', 'رياضة'],
                       selected: studyTrack,
                       onSelected: (v) => setState(() => studyTrack = v),

@@ -38,7 +38,7 @@ class _SetupViewBodyState extends State<SetupViewBody> {
             // الشعبة الدراسية
             const FieldLabel(label: 'الشعبة الدراسية'),
             const SizedBox(height: 8),
-            PersonalDataStudyTypeSelector(
+            StudyTypeSelector(
               options: const ['أدبي', 'علمي'],
               selected: _studySection,
               onSelected: (v) => setState(() => _studySection = v),

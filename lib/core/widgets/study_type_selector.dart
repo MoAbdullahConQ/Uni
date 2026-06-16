@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class PersonalDataStudyTypeSelector extends StatelessWidget {
+class StudyTypeSelector extends StatelessWidget {
   final List<String> options;
   final String selected;
   final ValueChanged<String> onSelected;
   final Map<String, IconData>? icons;
 
-  const PersonalDataStudyTypeSelector({
+  const StudyTypeSelector({
     super.key,
     required this.options,
     required this.selected,
@@ -46,12 +46,20 @@ class PersonalDataStudyTypeSelector extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: ShapeDecoration(
-                              color: const Color(0x4CFFFEFE),
+                              color: AppColors.lightSecondaryColor.withOpacity(
+                                0.4,
+                              ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(33554400),
+                                borderRadius: BorderRadius.circular(50),
                               ),
                             ),
-                            child: Icon(icons![option]),
+                            child: Icon(
+                              icons![option],
+                              size: 30,
+                              color: selected == option
+                                  ? AppColors.primaryColor
+                                  : AppColors.subtitleColor,
+                            ),
                           ),
                         SizedBox(height: icons != null ? 8 : 0),
                         Text(
