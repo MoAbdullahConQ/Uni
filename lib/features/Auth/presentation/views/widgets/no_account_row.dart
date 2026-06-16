@@ -22,7 +22,7 @@ class NoAccountRow extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, SignUpView.routeName),
           child: Text(
             'إنشاء حساب جديد',
-            style: TextStyles.semiBold16.copyWith(
+            style: TextStyles.regular16.copyWith(
               color: AppColors.primaryColor,
               decoration: TextDecoration.underline,
               decorationColor: AppColors.secondaryColor,

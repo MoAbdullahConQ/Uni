@@ -23,12 +23,12 @@ class TermsAndConditions extends StatelessWidget {
           'أوافق على',
           style: TextStyles.regular14.copyWith(color: AppColors.subtitleColor),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
         GestureDetector(
           onTap: () {},
           child: Text(
             'الشروط والأحكام',
-            style: TextStyles.semiBold14.copyWith(
+            style: TextStyles.regular14.copyWith(
               color: AppColors.primaryColor,
               decoration: TextDecoration.underline,
             ),
