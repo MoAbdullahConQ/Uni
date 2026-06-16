@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
-
+import 'package:uni/core/utils/app_colors.dart';
+import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/core/widgets/percentage_field.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 import 'package:uni/core/widgets/study_type_selector.dart';
 import 'package:uni/features/auth/presentation/views/widgets/setup_age_field.dart';
 import 'package:uni/features/auth/presentation/views/widgets/setup_governorate_dropdown.dart';
+import 'package:uni/features/profile/presentation/views/widgets/personal_data_interests_selector.dart';
 
 class SetupViewBody extends StatefulWidget {
   const SetupViewBody({super.key});
@@ -94,6 +96,22 @@ class _SetupViewBodyState extends State<SetupViewBody> {
             ),
             const SizedBox(height: 24),
 
+            // مجالات الاهتمام — UI only, no backend endpoint yet
+            Row(
+              children: [
+                const FieldLabel(label: 'مجالات الاهتمام'),
+                const SizedBox(width: 8),
+                Text(
+                  '(اختر 3 على الأقل)',
+                  style: TextStyles.regular12.copyWith(
+                    color: AppColors.subtitleColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const PersonalDataInterestsSelector(),
+            const SizedBox(height: 32),
           ],
         ),
       ),
