@@ -20,13 +20,6 @@ class _PersonalDataInterestsSelectorState
     'علوم',
     'فنون تطبيقية',
     'إعلام',
-    'إعلام',
-    'علوم',
-    'فنون تطبيقية',
-    'إعلام',
-    'إعلام',
-    'إعلام',
-    'إعلام',
   ];
 
   final Set<String> selected = {'هندسة', 'إدارة أعمال'};

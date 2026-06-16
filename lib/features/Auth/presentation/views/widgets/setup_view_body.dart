@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+
 import 'package:uni/core/widgets/field_label.dart';
+import 'package:uni/core/widgets/percentage_field.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 import 'package:uni/core/widgets/study_type_selector.dart';
+import 'package:uni/features/auth/presentation/views/widgets/setup_age_field.dart';
 import 'package:uni/features/auth/presentation/views/widgets/setup_governorate_dropdown.dart';
 
 class SetupViewBody extends StatefulWidget {
@@ -17,6 +20,9 @@ class _SetupViewBodyState extends State<SetupViewBody> {
   String _studySection = 'علمي';
 
   int? _governorateId;
+
+  final _percentageController = TextEditingController();
+  final _ageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +55,7 @@ class _SetupViewBodyState extends State<SetupViewBody> {
             ),
             const SizedBox(height: 24),
 
-            // المحافظة
+            // Governorate
             const FieldLabel(label: 'المحافظة'),
             const SizedBox(height: 8),
             SetupGovernorateDropdown(
@@ -57,6 +63,37 @@ class _SetupViewBodyState extends State<SetupViewBody> {
               onChanged: (id) => setState(() => _governorateId = id),
             ),
             const SizedBox(height: 24),
+
+            Row(
+              children: [
+                // percentage
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const FieldLabel(label: 'النسبة المئوية'),
+                      const SizedBox(height: 8),
+                      PercentageField(controller: _percentageController),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // age
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const FieldLabel(label: 'السن'),
+                      const SizedBox(height: 8),
+                      SetupAgeField(controller: _ageController),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
           ],
         ),
       ),

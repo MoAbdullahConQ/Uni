@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/core/widgets/field_label.dart';
+import 'package:uni/core/widgets/percentage_field.dart';
 import 'package:uni/features/profile/presentation/views/widgets/governorate_dropdown.dart';
-import 'package:uni/features/profile/presentation/views/widgets/percentage_field.dart';
 
 class StatsSection extends StatelessWidget {
   const StatsSection({super.key});
