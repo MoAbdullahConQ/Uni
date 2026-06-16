@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/helper_functions/calc_strength.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/core/widgets/password_field.dart';
-import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
-import 'package:uni/features/profile/presentation/views/widgets/security_strength_indicator.dart';
+import 'package:uni/core/widgets/security_strength_indicator.dart';
 
 class PasswordSection extends StatefulWidget {
   const PasswordSection({
@@ -29,7 +29,7 @@ class _PasswordSectionState extends State<PasswordSection> {
     return Column(
       children: [
         // ── nowPasswordController──
-        const PersonalDataFieldLabel(label: 'كلمة المرور الحالية'),
+        const FieldLabel(label: 'كلمة المرور الحالية'),
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',
@@ -59,7 +59,7 @@ class _PasswordSectionState extends State<PasswordSection> {
         const SizedBox(height: 30),
 
         // ── newPasswordController ──
-        const PersonalDataFieldLabel(label: 'كلمة المرور الجديدة'),
+        const FieldLabel(label: 'كلمة المرور الجديدة'),
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',
@@ -82,7 +82,7 @@ class _PasswordSectionState extends State<PasswordSection> {
         const SizedBox(height: 24),
 
         // ── confirmPasswordController ──
-        const PersonalDataFieldLabel(label: 'تأكيد كلمة المرور الجديدة'),
+        const FieldLabel(label: 'تأكيد كلمة المرور الجديدة'),
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',

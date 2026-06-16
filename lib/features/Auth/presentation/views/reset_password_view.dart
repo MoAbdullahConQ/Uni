@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:uni/features/auth/domain/use_cases/forget_password_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/login_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/register_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/reset_password_use_case.dart';
+import 'package:uni/features/auth/domain/use_cases/save_student_info_use_case.dart';
+import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/widgets/reset_password_view_body.dart';
 
 class ResetPasswordView extends StatelessWidget {
@@ -10,8 +18,17 @@ class ResetPasswordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(child: ResetPasswordViewBody(tempToken: tempToken)),
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        loginUseCase: GetIt.instance<LoginUseCase>(),
+        registerUseCase: GetIt.instance<RegisterUseCase>(),
+        forgetPasswordUseCase: GetIt.instance<ForgetPasswordUseCase>(),
+        resetPasswordUseCase: GetIt.instance<ResetPasswordUseCase>(),
+        saveStudentInfoUseCase: GetIt.instance<SaveStudentInfoUseCase>(),
+      ),
+      child: Scaffold(
+        body: SafeArea(child: ResetPasswordViewBody(tempToken: tempToken)),
+      ),
     );
   }
 }

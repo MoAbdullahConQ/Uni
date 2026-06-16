@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class PersonalDataFieldLabel extends StatelessWidget {
+class FieldLabel extends StatelessWidget {
   final String label;
 
-  const PersonalDataFieldLabel({super.key, required this.label});
+  const FieldLabel({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {

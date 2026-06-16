@@ -4,9 +4,9 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
+import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/documents_section.dart';
-import 'package:uni/features/profile/presentation/views/widgets/personal_data_field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_interests_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_study_type_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
@@ -58,7 +58,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 30),
 
                     // ── Name ──
-                    const PersonalDataFieldLabel(label: 'الاسم بالكامل'),
+                    const FieldLabel(label: 'الاسم بالكامل'),
                     const SizedBox(height: 8),
                     CustomTextFormField(
                       hintText: 'مجدي عبدالغني',
@@ -73,7 +73,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 16),
 
                     // ── Email──
-                    const PersonalDataFieldLabel(label: 'البريد الإلكتروني'),
+                    const FieldLabel(label: 'البريد الإلكتروني'),
                     const SizedBox(height: 8),
                     CustomTextFormField(
                       hintText: 'ahmed.m@example.com',
@@ -88,7 +88,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 16),
 
                     // ── الشعبة الدراسية ──
-                    const PersonalDataFieldLabel(label: 'الشعبة الدراسية'),
+                    const FieldLabel(label: 'الشعبة الدراسية'),
                     const SizedBox(height: 6),
                     PersonalDataStudyTypeSelector(
                       options: const ['أدبي', 'علمي'],
@@ -98,7 +98,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 16),
 
                     // ── الشعبة العلمية ──
-                    const PersonalDataFieldLabel(label: 'الشعبة العلمية'),
+                    const FieldLabel(label: 'الشعبة العلمية'),
                     const SizedBox(height: 6),
                     PersonalDataStudyTypeSelector(
                       options: const ['علوم', 'رياضة'],
@@ -112,7 +112,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 16),
 
                     // ── مجالات الاهتمام ──
-                    const PersonalDataFieldLabel(label: 'مجالات الاهتمام'),
+                    const FieldLabel(label: 'مجالات الاهتمام'),
                     const SizedBox(height: 6),
                     const PersonalDataInterestsSelector(),
                     const SizedBox(height: 24),
