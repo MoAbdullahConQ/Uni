@@ -21,27 +21,27 @@ Flutter app helping Egyptian high school students choose universities.
 - **Stack:** Flutter + Dart, Clean Architecture, flutter_bloc (Cubit), Dio + ApiService, GetIt, SharedPreferences (Prefs), flutter_dotenv, dartz (Either)
 - **Fonts:** `IBMPlexSansArabic` (default in ThemeData — no need to set per TextStyle) + `Palestine` (special use)
 - **Colors:** see archive §AppColors — `primaryColor` dark green, `lightPrimaryColor` light green, `secondaryColor` yellow-green, `lightSecondaryColor` very light green bg
-- **Added packages:** `url_launcher` (open university website), **`pinput`** (OTP input UI — decided this session, not yet confirmed added to pubspec.yaml)
-- **Code comments:** **English only as of this session** (previously Arabic — this is a hard switch going forward)
+- **Added packages:** `url_launcher` (open university website), `pinput` ✅ (added to pubspec.yaml)
+- **Code comments:** **English only** (hard rule — no Arabic comments)
 
 ---
 
 ## 3. Features Status
 
-| Feature | Domain | Data | Presentation | Notes |
-|---|---|---|---|---|
-| **browse** | ✅ | ✅ | ✅ | Cursor pagination + FavCubit + per_page=10 + NoInternetWidget + retry |
-| **fav** | ✅ | ✅ | ✅ | add/remove + optimistic update + rollback + deduplication + NoInternetWidget + retry |
-| **search** | ✅ | ✅ | ✅ | Cubit + page-based pagination + recent searches |
-| **home** | ✅ | ✅ | ✅ | Trending + Recommended + retry on tab switch + retry on didPopNext |
-| **notifications** | ✅ | ✅ | ✅ | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar |
-| **guide** | ✅ | ✅ | ✅ | Articles + pagination + UI search filter + retry on failure + NoInternetWidget in GuideArticlesView |
-| **uni_detail** | ✅ | ✅ | ✅ | API integration done — 4 parallel calls via Future.wait + NoInternetWidget + retry + rate + website |
-| **auth** | ✅ | ✅ | 🟡 in progress | See §5 below for exact status |
-| **profile** | ❌ | ❌ | ✅ | 4 screens UI done — needs Auth first (now unblocked, not started) |
-| **faheem** | ✅ | ❌ | ✅ | Chat UI + entities — waiting on backend |
-| **splash** | ❌ | ❌ | ✅ | Needs Auth first (now unblocked, not started) |
-| **on_boarding** | ❌ | ❌ | ✅ | Needs Auth first (now unblocked, not started) |
+| Feature           | Domain | Data | Presentation | Notes                                                                                               |
+| ----------------- | ------ | ---- | ------------ | --------------------------------------------------------------------------------------------------- |
+| **browse**        | ✅     | ✅   | ✅           | Cursor pagination + FavCubit + per_page=10 + NoInternetWidget + retry                               |
+| **fav**           | ✅     | ✅   | ✅           | add/remove + optimistic update + rollback + deduplication + NoInternetWidget + retry                |
+| **search**        | ✅     | ✅   | ✅           | Cubit + page-based pagination + recent searches                                                     |
+| **home**          | ✅     | ✅   | ✅           | Trending + Recommended + retry on tab switch + retry on didPopNext                                  |
+| **notifications** | ✅     | ✅   | ✅           | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar  |
+| **guide**         | ✅     | ✅   | ✅           | Articles + pagination + UI search filter + retry on failure + NoInternetWidget in GuideArticlesView |
+| **uni_detail**    | ✅     | ✅   | ✅           | API integration done — 4 parallel calls via Future.wait + NoInternetWidget + retry + rate + website |
+| **auth**          | ✅     | ✅   | ✅           | All views done + GetIt registered + routes registered — see §5                                      |
+| **profile**       | ❌     | ❌   | ✅           | 4 screens UI done — needs Auth (now done), API integration not started                              |
+| **faheem**        | ✅     | ❌   | ✅           | Chat UI + entities — waiting on backend                                                             |
+| **splash**        | ❌     | ❌   | ✅           | Needs token check logic                                                                             |
+| **on_boarding**   | ❌     | ❌   | ✅           | Needs SharedPreferences seen flag                                                                   |
 
 ---
 
@@ -72,57 +72,68 @@ Flutter app helping Egyptian high school students choose universities.
 
 ---
 
-## 5. Auth Feature — Detailed Status (current focus)
+## 5. Auth Feature — Completed ✅
 
 **Domain layer — ✅ Done**
+
 - `UserEntity` (id, name, email, avatar?, type)
-- `AuthRepo` (abstract, 8 methods: login, register, verifyOtp, forgetPassword, resendOtp, resetPassword, saveStudentInfo, updatePassword, getMe)
+- `AuthRepo` (abstract, 9 methods: login, register, verifyOtp, forgetPassword, resendOtp, resetPassword, saveStudentInfo, updatePassword, getMe)
 - Use cases: `LoginUseCase`, `RegisterUseCase`, `VerifyOtpUseCase`, `ForgetPasswordUseCase`, `ResendOtpUseCase`, `ResetPasswordUseCase`, `SaveStudentInfoUseCase`, `UpdatePasswordUseCase`, `GetMeUseCase`
-- No `AuthEntity` — removed; tokens have no UI representation
+- No `AuthEntity` — tokens have no UI representation
 
 **Data layer — ✅ Done**
+
 - `UserModel extends UserEntity` with `fromJson`
-- `AuthRemoteDataSource` (abstract) + `AuthRemoteDataSourceImpl` — no try/catch, login() saves tokens to Prefs directly, verifyOtp() returns the access_token as String (doesn't auto-save — repo/cubit decides)
+- `AuthRemoteDataSource` (abstract) + `AuthRemoteDataSourceImpl` — no try/catch
+- `login()` saves tokens to Prefs directly
+- `verifyOtp()` returns access_token as `String` — Cubit decides what to do with it
 - `AuthRepoImpl implements AuthRepo` — catches `DioException` → `ServerFailure.fromDioError(e)`
 
-**Core file changes made this session:**
-- `ApiService.postWithToken({endpoint, token, data})` — added for the forgot-password temp-token flow
-- `BackendEndpoints` — added: `login`, `register`, `verifyOtp`, `forgetPassword`, `resendOtp`, `resetPassword`, `saveStudentInfo`, `updatePassword`, `getMe`, `refreshToken`
-- `Prefs.remove(key)` — activated (was commented out)
+**Presentation layer — ✅ Done**
 
-**Presentation layer — 🟡 In progress, paused mid-build**
+Cubits:
 
-Cubits (done):
-- `AuthCubit` — login, register, forgetPassword, resetPassword (takes `tempToken`), saveStudentInfo, logout (clears Prefs tokens)
-- `OtpCubit` — verifyOtp (returns token via `OtpSuccess(token)`), resendOtp, countdown timer (30s, `OtpTick`/`OtpResendEnabled` states)
+- `AuthCubit` — login, register, forgetPassword, resetPassword (takes `tempToken`), saveStudentInfo, logout
+- `OtpCubit` — verifyOtp (returns token via `OtpSuccess(token)`), resendOtp, countdown timer (30s)
 
-Views sent so far (12 files):
-- `LoginView`, `LoginViewBody`, `LoginForm`
-- `AuthHeader` (shared across all auth screens — logo/icon + title + subtitle)
-- `AuthSocialButtons` (shared — Google/iCloud buttons, UI only, no backend action)
-- `SignUpView`, `SignUpViewBody`, `SignUpForm`
-- `ForgotPasswordView`, `ForgotPasswordViewBody`
-- `OtpView`, `OtpViewBody` (uses `pinput` package, `OtpArgs{email, isRegister}` controls post-verify navigation)
+Views (all built):
 
-**Still pending — next steps when resuming:**
-1. `ResetPasswordView` + `ResetPasswordViewBody` — receives `tempToken` via route argument, calls `AuthCubit.resetPassword`
-2. `SetupView` + `SetupViewBody` — student info form (study_section: "علمي/أدبي" with API values `science`/`literature`, scientific_department with API values `scientific`/`Mathematics`, governorate dropdown, percentage, age) + static "مجالات الاهتمام" interest chips (UI-only, no backend endpoint exists for this yet)
-3. Add `pinput` to `pubspec.yaml` (decided, not confirmed written)
-4. Register `AuthRepo`, `AuthRemoteDataSource`, all 9 use cases in GetIt (`registerSingleton`, per project convention)
-5. Register all 6 auth routes in `on_generate_routes.dart`
-6. Confirm `AndroidManifest.xml` / `main.dart` need no further changes for auth (not yet discussed)
+- `LoginView` + `LoginViewBody` + `LoginForm`
+- `SignUpView` + `SignUpViewBody` + `SignUpForm`
+- `ForgotPasswordView` + `ForgotPasswordViewBody`
+- `OtpView` + `OtpViewBody` — `OtpArgs{email, isRegister}` controls navigation
+- `ResetPasswordView` + `ResetPasswordViewBody` + `ResetPasswordForm` + `VerifiedBadge`
+- `SetupView` + `SetupViewBody` + `SetupGovernorateDropdown` + `SetupPercentageField` + `SetupAgeField`
+- `AuthHeader` (shared), `AuthSocialButtons` (UI-only placeholders)
+
+**GetIt — ✅ Registered:**
+`AuthRemoteDataSource`, `AuthRepo`, `LoginUseCase`, `RegisterUseCase`, `VerifyOtpUseCase`, `ForgetPasswordUseCase`, `ResendOtpUseCase`, `ResetPasswordUseCase`, `SaveStudentInfoUseCase`, `UpdatePasswordUseCase`, `GetMeUseCase`
+
+**Routes — ✅ Registered:**
+`LoginView`, `SignUpView`, `ForgotPasswordView`, `OtpView(OtpArgs)`, `ResetPasswordView(String tempToken)`, `SetupView`
+
+**Auth flow:**
+
+- Register → OtpView(isRegister:true) → SetupView → MainView
+- ForgotPassword → OtpView(isRegister:false) → ResetPasswordView(tempToken) → LoginView
+- Login → MainView
+
+**Core fixes made for auth:**
+
+- `ApiService.postWithToken()` — overrides Authorization header for temp-token calls
+- Interceptor fix: `options.headers.keys.any((k) => k.toLowerCase() == 'authorization')` — prevents interceptor from overwriting manually set Authorization header (was `containsKey` which is case-sensitive and failed)
+- `Prefs.remove(key)` — activated
 
 ---
 
 ## 6. Next Steps (in order)
 
-1. **Auth** — 🟡 in progress (see §5) — finish ResetPasswordView, SetupView, GetIt registration, routes
-2. **Splash** — token check → MainView or OnBoarding
-3. **OnBoarding** — mark seen in SharedPreferences
-4. **Profile — API Integration** — `GET /auth/me` (use case already built: `GetMeUseCase`) + `POST /student_info` (already built: `SaveStudentInfoUseCase`) + `POST /auth/update-Password` (already built: `UpdatePasswordUseCase`) — all 3 use cases already exist in `auth` domain, profile just needs to call them
-5. **Faheem/Chat AI** — `POST /aiChat/send` (waiting on backend)
-6. **Search Debounce** — 500ms in `search_view_body.dart`
-7. **Fav Pagination** — after sayed fixes the backend bug
+1. **Splash** — token check → MainView or OnBoarding
+2. **OnBoarding** — mark seen in SharedPreferences
+3. **Profile — API Integration** — `GET /auth/me` (`GetMeUseCase`) + `POST /student_info` (`SaveStudentInfoUseCase`) + `POST /auth/update-Password` (`UpdatePasswordUseCase`) — all use cases already in `auth` domain
+4. **Faheem/Chat AI** — `POST /aiChat/send` (waiting on backend)
+5. **Search Debounce** — 500ms in `search_view_body.dart`
+6. **Fav Pagination** — after sayed fixes the backend bug
 
 ---
 
@@ -132,29 +143,28 @@ Views sent so far (12 files):
 - **Finds bugs himself** and comes to ask — doesn't wait to be told
 - **Prefers short answers** — no long explanations, get to the point
 - **Says "continue"** when he wants to keep going
-- **Rejects over-engineering** — like refusing `UniversityModel` nested inside `UniEntity`, or refusing extra Cubits when one Cubit can cover a flow
+- **Rejects over-engineering**
 - **Asks "why"** before executing — understands the decision first
 - **Compares against existing patterns** — "see how we did it in the other feature"
 - **Values consistency** — if another feature did something a certain way, he'll do it the same way
 - **Gives direct feedback** — like "you're hallucinating" or "you're dumb man" (joking)
 - **Confirms before execution** — verifies Claude understood the requirement before writing code
 - **Works in Arabic** even for technical topics
-- **Uploads lib.zip** with every checkpoint — read the original code before replying — and **re-uploads it again after receiving files to verify Claude's output landed correctly** before moving to the next layer
+- **Uploads lib.zip** with every checkpoint — read before replying — re-uploads after receiving files to verify output
 - **Sends API responses as JSON** when debugging — treat them as ground truth
 - **Uses Postman** to verify before talking to the team
-- **Doesn't like refactoring** after Claude sends code — prefers to stay in control himself
-- **Catches contradictions quickly** — "you said above you'd remove the fav cubit"
-- **Notices solution inconsistencies** — like `registerLazySingleton` when the whole codebase uses `registerSingleton`
-- **Trusts himself** — reviews code himself when in doubt
-- **If Claude is wrong** — tells him directly and won't go along with a wrong answer
+- **Doesn't like refactoring** after Claude sends code
+- **Catches contradictions quickly**
+- **Notices solution inconsistencies**
 - **Commands are short and direct:** "fix", "send", "look at the whole code"
 - **Doesn't want comments removed** from code
-- **Comments in code must now be in English** — changed this session (was Arabic-only before)
-- **Uses inline review comments on sent files** to ask "why" about a specific line — expects a precise answer about that line, not a re-explanation of the whole file
-- **Sometimes re-asks the same architectural question from a different angle** — wants the same consistent answer, treats it as a check not a new question
-- **Appreciates being asked "act as an X expert"** and getting the direct expert opinion, even if it slightly second-guesses a recent decision
+- **Uses inline review comments** to ask "why" about a specific line — answer precisely, not re-explain the whole file
+- **Sometimes re-asks the same architectural question** — wants consistent answer, not a new decision
+- **When debugging:** expects Claude to ask for the relevant file first before guessing
+- **When Claude asks for a file and it's in the zip:** will say "معاك كل حاجة" — use the zip
+- **Prefers SnackBar over Toast** for transient success messages (decided this session)
 
-> ⚠️ **Important note:** If a new error occurs, always ask for the related file before attempting to fix it.
+> ⚠️ **Important note:** If a new error occurs, always ask for the related file before attempting to fix it. If lib.zip was uploaded, read it from there.
 
 ---
 
