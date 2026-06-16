@@ -6,12 +6,14 @@ class PersonalDataStudyTypeSelector extends StatelessWidget {
   final List<String> options;
   final String selected;
   final ValueChanged<String> onSelected;
+  final Map<String, IconData>? icons;
 
   const PersonalDataStudyTypeSelector({
     super.key,
     required this.options,
     required this.selected,
     required this.onSelected,
+    this.icons,
   });
 
   @override
@@ -38,16 +40,33 @@ class PersonalDataStudyTypeSelector extends StatelessWidget {
                     ),
                   ),
                   child: Center(
-                    child: Text(
-                      option,
-                      style: (selected == option
-                              ? TextStyles.bold14
-                              : TextStyles.regular14)
-                          .copyWith(
-                        color: selected == option
-                            ? AppColors.primaryColor
-                            : AppColors.subtitleColor,
-                      ),
+                    child: Column(
+                      children: [
+                        if (icons != null && icons![option] != null)
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: ShapeDecoration(
+                              color: const Color(0x4CFFFEFE),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(33554400),
+                              ),
+                            ),
+                            child: Icon(icons![option]),
+                          ),
+                        SizedBox(height: icons != null ? 8 : 0),
+                        Text(
+                          option,
+                          style:
+                              (selected == option
+                                      ? TextStyles.bold14
+                                      : TextStyles.regular14)
+                                  .copyWith(
+                                    color: selected == option
+                                        ? AppColors.primaryColor
+                                        : AppColors.subtitleColor,
+                                  ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

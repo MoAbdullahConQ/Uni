@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:uni/constants.dart';
+import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
+import 'package:uni/core/widgets/study_type_selector.dart';
 
-class SetupViewBody extends StatelessWidget {
+class SetupViewBody extends StatefulWidget {
   const SetupViewBody({super.key});
 
   @override
+  State<SetupViewBody> createState() => _SetupViewBodyState();
+}
+
+class _SetupViewBodyState extends State<SetupViewBody> {
+  // علمي → 'science' | أدبي → 'literature'
+  String _studySection = 'علمي';
+
+  @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
         horizontal: kHorizontalPadding,
         vertical: kTopPadding,
       ),
@@ -16,12 +26,27 @@ class SetupViewBody extends StatelessWidget {
         child: Column(
           children: [
             // header
-            AuthHeader(
+            const AuthHeader(
               title: 'جهز ملفك الشخصي🎓',
               subtitle: 'ساعدنا نخصص تجربتك بناءً على اهتماماتك',
             ),
+            const SizedBox(height: 32),
 
-            SizedBox(height: 32),
+            // الشعبة الدراسية
+            const FieldLabel(label: 'الشعبة الدراسية'),
+            const SizedBox(height: 8),
+            PersonalDataStudyTypeSelector(
+              options: const ['أدبي', 'علمي'],
+              selected: _studySection,
+              onSelected: (v) => setState(() => _studySection = v),
+              icons: const {
+                'أدبي': Icons.menu_book_outlined,
+                'علمي': Icons.science_outlined,
+              },
+            ),
+            const SizedBox(height: 24),
+
+
           ],
         ),
       ),

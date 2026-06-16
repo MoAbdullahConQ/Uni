@@ -8,7 +8,7 @@ import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/documents_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_interests_selector.dart';
-import 'package:uni/features/profile/presentation/views/widgets/personal_data_study_type_selector.dart';
+import 'package:uni/core/widgets/study_type_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/stats_Section.dart';
 
