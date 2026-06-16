@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/core/widgets/password_field.dart';
+import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/widgets/terms_and_conditions.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -31,6 +33,24 @@ class _SignUpFormState extends State<SignUpForm> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _submit() {
+    if (!_agreedToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يجب الموافقة على الشروط والأحكام')),
+      );
+      return;
+    }
+    if (_formKey.currentState!.validate()) {
+      widget.onEmailChanged(_emailController.text.trim());
+      context.read<AuthCubit>().register(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        passwordConfirmation: _confirmPasswordController.text,
+      );
+    }
   }
 
   @override
@@ -139,28 +159,27 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 16),
 
           // submit button
-          CustomButton(
-            onPressed: () {
-              if (!_agreedToTerms) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('يجب الموافقة على الشروط والأحكام'),
-                  ),
-                );
-                return;
-              }
-              if (_formKey.currentState!.validate()) {
-                widget.onEmailChanged(_emailController.text.trim());
-
-                _nameController.text.trim();
-                _emailController.text.trim();
-                _passwordController.text;
-                _confirmPasswordController.text;
-              }
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              return CustomButton(
+                onPressed: state is AuthLoading ? () {} : _submit,
+                text: state is AuthLoading ? '' : 'إنشاء الحساب',
+                prefixIcon: state is AuthLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primaryColor,
+                        ),
+                      )
+                    : null,
+                backgroundColor: AppColors.secondaryColor,
+                style: TextStyles.bold16.copyWith(
+                  color: AppColors.primaryColor,
+                ),
+              );
             },
-            text: 'إنشاء الحساب',
-            backgroundColor: AppColors.secondaryColor,
-            style: TextStyles.bold16.copyWith(color: AppColors.primaryColor),
           ),
         ],
       ),
