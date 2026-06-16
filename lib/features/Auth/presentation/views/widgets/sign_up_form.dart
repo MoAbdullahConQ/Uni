@@ -4,6 +4,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
+import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/core/widgets/password_field.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/widgets/terms_and_conditions.dart';
@@ -61,12 +62,7 @@ class _SignUpFormState extends State<SignUpForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // name field
-          Text(
-            'الاسم بالكامل',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'الاسم بالكامل'),
           const SizedBox(height: 8),
           CustomTextFormField(
             controller: _nameController,
@@ -82,12 +78,8 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 16),
 
           // email field
-          Text(
-            'البريد الإلكتروني',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'البريد الإلكتروني'),
+
           const SizedBox(height: 8),
           CustomTextFormField(
             controller: _emailController,
@@ -103,12 +95,7 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 16),
 
           // password field
-          Text(
-            'كلمة المرور',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'كلمة المرور'),
           const SizedBox(height: 8),
           PasswordField(
             controller: _passwordController,
@@ -124,12 +111,7 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 16),
 
           // confirm password field
-          Text(
-            'تأكيد كلمة المرور',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'تأكيد كلمة المرور'),
           const SizedBox(height: 8),
           PasswordField(
             controller: _confirmPasswordController,

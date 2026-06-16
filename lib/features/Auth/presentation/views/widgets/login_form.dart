@@ -4,6 +4,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
+import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/core/widgets/password_field.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/forgot_password_view.dart';
@@ -44,12 +45,7 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // email field
-          Text(
-            'البريد الإلكتروني أو الهاتف',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'البريد الإلكتروني أو الهاتف'),
           const SizedBox(height: 10),
           CustomTextFormField(
             controller: _emailController,
@@ -65,12 +61,7 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 24),
 
           // password field
-          Text(
-            'كلمة المرور',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'كلمة المرور'),
           const SizedBox(height: 10),
           PasswordField(
             controller: _passwordController,

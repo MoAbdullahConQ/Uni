@@ -4,6 +4,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
+import 'package:uni/core/widgets/field_label.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 
 class ForgetForm extends StatefulWidget {
@@ -33,12 +34,7 @@ class _ForgetFormState extends State<ForgetForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'البريد الإلكتروني',
-            style: TextStyles.semiBold14.copyWith(
-              color: AppColors.primaryColor,
-            ),
-          ),
+          const FieldLabel(label: 'البريد الإلكتروني'),
           const SizedBox(height: 8),
           CustomTextFormField(
             controller: widget.emailController, // ✅
