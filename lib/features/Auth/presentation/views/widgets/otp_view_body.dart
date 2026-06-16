@@ -7,6 +7,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/features/auth/presentation/manager/otp_cubit/otp_cubit.dart';
 import 'package:uni/features/auth/presentation/views/otp_view.dart';
+import 'package:uni/features/auth/presentation/views/reset_password_view.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 
 class OtpViewBody extends StatefulWidget {
@@ -66,7 +67,15 @@ class _OtpViewBodyState extends State<OtpViewBody> {
     return BlocListener<OtpCubit, OtpState>(
       listener: (context, state) {
         if (state is OtpSuccess) {
-          print('==yes=====================');
+          if (widget.args.isRegister) {
+            print('==SetupView=====================');
+          } else {
+            Navigator.pushReplacementNamed(
+              context,
+              ResetPasswordView.routeName,
+              arguments: state.token,
+            );
+          }
         } else if (state is OtpFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
