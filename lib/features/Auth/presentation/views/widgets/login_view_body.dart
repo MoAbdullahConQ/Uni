@@ -54,7 +54,9 @@ class LoginViewBody extends StatelessWidget {
             const LoginForm(),
             const SizedBox(height: 24),
 
-      
+            // divider
+            const OrDivider(),
+            const SizedBox(height: 16),
           ],
         ),
       ),
