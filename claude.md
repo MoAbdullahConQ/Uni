@@ -1,5 +1,5 @@
 # Claude Memory File — Core (Active)
-> Last updated: June 2026 (session: auth polish + UX fixes)
+> Last updated: June 2026 (session: splash + onboarding + 401 interceptor + validator fixes)
 
 ---
 
@@ -22,7 +22,7 @@ Flutter app helping Egyptian high school students choose universities.
 - **Fonts:** `IBMPlexSansArabic` (default in ThemeData — no need to set per TextStyle) + `Palestine` (special use)
 - **Colors:** see archive §AppColors — `primaryColor` dark green, `lightPrimaryColor` light green, `secondaryColor` yellow-green, `lightSecondaryColor` very light green bg
 - **Added packages:** `url_launcher` (open university website), `pinput` ✅ (added to pubspec.yaml)
-- **Code comments:** **English only** (hard rule — no Arabic comments)
+- **Code comments:** **English only** (hard rule)
 
 ---
 
@@ -37,11 +37,11 @@ Flutter app helping Egyptian high school students choose universities.
 | **notifications** | ✅     | ✅   | ✅           | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar  |
 | **guide**         | ✅     | ✅   | ✅           | Articles + pagination + UI search filter + retry on failure + NoInternetWidget in GuideArticlesView |
 | **uni_detail**    | ✅     | ✅   | ✅           | API integration done — 4 parallel calls via Future.wait + NoInternetWidget + retry + rate + website |
-| **auth**          | ✅     | ✅   | ✅           | Complete + polished this session — see §5. UX decisions, token-save bug fix, validation fixes done  |
-| **profile**       | ❌     | ❌   | ✅           | 4 screens UI done — needs Auth (now done), API integration not started — **next up**                |
+| **auth**          | ✅     | ✅   | ✅           | Complete + polished — see archive §Auth Feature                                                     |
+| **splash**        | ✅     | ✅   | ✅           | token check → MainView or OnBoarding or LoginView — DONE this session                               |
+| **on_boarding**   | ✅     | ✅   | ✅           | marks seen in SharedPreferences → navigates to LoginView — DONE this session                        |
+| **profile**       | ❌     | ❌   | ✅           | 4 screens UI done — API integration not started — **next up**                                       |
 | **faheem**        | ✅     | ❌   | ✅           | Chat UI + entities — waiting on backend                                                             |
-| **splash**        | ❌     | ❌   | ✅           | Needs token check logic                                                                             |
-| **on_boarding**   | ❌     | ❌   | ✅           | Needs SharedPreferences seen flag                                                                   |
 
 ---
 
@@ -67,88 +67,65 @@ Flutter app helping Egyptian high school students choose universities.
 14. **Data sources:** no try/catch — let `DioException` propagate to repo
 15. **Entity rule:** only create an Entity for data shown in UI or used in business logic — pure storage/internal data (e.g. tokens) stays as primitives between layers, no Entity wrapper
 16. **Cubit-per-feature, not per-screen:** group screens sharing the same logical flow into one Cubit; split only for genuinely distinct sub-logic (timers, separate polling, etc.)
-17. **Selector widgets with multiple options take a `Map<String, IconData>` for icons** — never one shared `icon` reused across all options (fixed this session in `StudyTypeSelector`)
+17. **Selector widgets with multiple options take a `Map<String, IconData>` for icons** — never one shared `icon` reused across all options
 
 > ⚠️ If a new error occurs → always ask for the related file before attempting a fix.
 
 ---
 
-## 5. Auth Feature — Complete & Polished ✅
+## 5. Global app infrastructure — this session additions
 
-**Domain layer — ✅ Done**
+**`main.dart` globals:**
+```dart
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+String? pendingSnackBarMessage; // used for 401 session-expired message
+```
 
-- `UserEntity` (id, name, email, avatar?, type)
-- `AuthRepo` (abstract, 9 methods: login, register, verifyOtp, forgetPassword, resendOtp, resetPassword, saveStudentInfo, updatePassword, getMe)
-- Use cases: `LoginUseCase`, `RegisterUseCase`, `VerifyOtpUseCase`, `ForgetPasswordUseCase`, `ResendOtpUseCase`, `ResetPasswordUseCase`, `SaveStudentInfoUseCase`, `UpdatePasswordUseCase`, `GetMeUseCase`
-- No `AuthEntity` — tokens have no UI representation
+**401 interceptor in `ApiService`:**
+- On 401 → `Prefs.remove('token')` → set `pendingSnackBarMessage` → `navigatorKey.currentState?.pushNamedAndRemoveUntil(LoginView.routeName, ...)`
+- Uses `GlobalKey<NavigatorState>` — no context needed
+- Decision: `GlobalKey<NavigatorState>` chosen over per-Cubit 401 handling and Stream/EventBus — simplest correct solution
 
-**Data layer — ✅ Done**
+**`LoginViewBody`:**
+- Converted to `StatefulWidget` (was `StatelessWidget`)
+- `initState` reads `pendingSnackBarMessage` via `addPostFrameCallback` → shows SnackBar → sets to `null`
+- Normal login flow: `pendingSnackBarMessage` is null → no SnackBar shown
 
-- `UserModel extends UserEntity` with `fromJson`
-- `AuthRemoteDataSource` (abstract) + `AuthRemoteDataSourceImpl` — no try/catch
-- `login()` saves tokens to Prefs directly
-- `verifyOtp()` returns access_token as `String` — Cubit/View decides what to do with it
-- `AuthRepoImpl implements AuthRepo` — catches `DioException` → `ServerFailure.fromDioError(e)`
+**Splash flow (`splash_view_body.dart`):**
+```dart
+void executeNavigation() {
+  final token = Prefs.getString('token');
+  final isOnBoardingViewSeen = Prefs.getBool(kIsOnBoardingViewSeenKey);
+  Future.delayed(const Duration(seconds: 2), () {
+    if (!mounted) return;
+    if (token.isNotEmpty) {
+      Navigator.pushReplacementNamed(context, MainView.routeName);
+    } else if (isOnBoardingViewSeen) {
+      Navigator.pushReplacementNamed(context, LoginView.routeName);
+    } else {
+      Navigator.pushReplacementNamed(context, OnBoardingView.routeName);
+    }
+  });
+}
+```
 
-**Presentation layer — ✅ Done + polished this session**
-
-Cubits:
-
-- `AuthCubit` — login, register, forgetPassword, resetPassword (takes `tempToken`), saveStudentInfo, logout
-- `OtpCubit` — verifyOtp (returns token via `OtpSuccess(token)`), resendOtp, countdown timer (30s)
-
-Views (all built):
-
-- `LoginView` + `LoginViewBody` + `LoginForm` — success → `pushNamedAndRemoveUntil(MainView)`, no SnackBar
-- `SignUpView` + `SignUpViewBody` + `SignUpForm` — **updated this session:** password strength indicator + live confirm-match check (border color + text), Terms checkbox opens bottom sheet
-- `ForgotPasswordView` + `ForgotPasswordViewBody`
-- `OtpView` + `OtpViewBody` — `OtpArgs{email, isRegister}` controls navigation. **Bug fixed this session:** register flow now saves `state.token` to `Prefs` before navigating to `SetupView` (was missing — caused unauthenticated error on `saveStudentInfo`)
-- `ResetPasswordView` + `ResetPasswordViewBody` + `ResetPasswordForm` + `VerifiedBadge` — **updated this session:** same live confirm-match recheck behavior as SignUpForm (editing password after confirm is filled re-validates match)
-- `SetupView` + `SetupViewBody` + `SetupGovernorateDropdown` + `SetupPercentageField` + `SetupAgeField` — **updated this session:** success SnackBar "تم إنشاء حسابك بنجاح ✓" added before navigating to MainView (this is the true end-of-register-flow success point)
-- `AuthHeader` (shared), `AuthSocialButtons` (UI-only placeholders)
-- `StudyTypeSelector` (moved to `core/widgets`, was `PersonalDataStudyTypeSelector` in profile) — now takes `Map<String, IconData>` instead of single `icon`
-- `TermsAndConditionsSheet` (new, `core/widgets`) — bottom sheet, static content, opened from `TermsAndConditions` widget's "الشروط والأحكام" tap
-
-**GetIt — ✅ Registered:**
-`AuthRemoteDataSource`, `AuthRepo`, `LoginUseCase`, `RegisterUseCase`, `VerifyOtpUseCase`, `ForgetPasswordUseCase`, `ResendOtpUseCase`, `ResetPasswordUseCase`, `SaveStudentInfoUseCase`, `UpdatePasswordUseCase`, `GetMeUseCase`
-
-**Routes — ✅ Registered:**
-`LoginView`, `SignUpView`, `ForgotPasswordView`, `OtpView(OtpArgs)`, `ResetPasswordView(String tempToken)`, `SetupView`
-
-**Auth flow (confirmed working):**
-
-- Register → OtpView(isRegister:true) → token saved to Prefs → SetupView → saveStudentInfo (authenticated ✅) → SnackBar success → MainView
-- ForgotPassword → OtpView(isRegister:false) → ResetPasswordView(tempToken as nav argument, NOT saved to Prefs) → LoginView
-- Login → MainView (no SnackBar, immediate)
-
-**Core fixes made for auth (cumulative):**
-
-- `ApiService.postWithToken()` — overrides Authorization header for temp-token calls
-- Interceptor fix: `options.headers.keys.any((k) => k.toLowerCase() == 'authorization')` — case-insensitive check
-- `Prefs.remove(key)` — activated
-- **This session:** `Prefs.setString('token', state.token)` added in `OtpViewBody` for the register-flow branch
-- **This session:** `CustomTextFormField`'s `errorStyle: TextStyle(fontSize:0, height:0)` removed (was hiding ALL validation error text app-wide) + `autovalidateMode: AutovalidateMode.onUserInteraction` added
-
-**Known UX decisions (do not revisit unless asked):**
-- Register `AuthSuccess` → no SnackBar (mid-flow, not real completion)
-- Setup `AuthSuccess` → SnackBar + navigate (real completion point)
-- Login `AuthSuccess` → no SnackBar, immediate navigate
-- Terms & Conditions → bottom sheet, not full page, static content
+**OnBoarding flow (`on_boarding_view.dart`):**
+- On done/skip → `Prefs.setBool(kIsOnBoardingViewSeenKey, true)` → `pushReplacementNamed(LoginView.routeName)`
+- Was incorrectly navigating to `MainView` — fixed this session
 
 ---
 
 ## 6. Next Steps (in order)
 
-1. **Splash** — token check → MainView or OnBoarding
-2. **OnBoarding** — mark seen in SharedPreferences
-3. **Profile — API Integration** — `GET /auth/me` (`GetMeUseCase`) + `POST /student_info` (`SaveStudentInfoUseCase`) + `POST /auth/update-Password` (`UpdatePasswordUseCase`) — all use cases already in `auth` domain
-4. **Faheem/Chat AI** — `POST /aiChat/send` (waiting on backend)
-5. **Search Debounce** — 500ms in `search_view_body.dart`
-6. **Fav Pagination** — after sayed fixes the backend bug
+1. **Profile — API Integration** — `GET /auth/me` + `POST /student_info` + `POST /auth/update-Password` — all use cases already in `auth` domain
+2. **Faheem/Chat AI** — `POST /aiChat/send` (waiting on backend)
+3. **Search Debounce** — 500ms in `search_view_body.dart`
+4. **Fav Pagination** — after sayed fixes the backend bug
 
-**Open item (discussed, not yet decided/built):** confirm-password validator mismatch case currently returns `''` to suppress duplicate text but still reserves blank error-line space (Flutter behavior). Proposed fix: move mismatch check fully out of `validator`, drive red border via existing `borderColor` prop only, block submit via explicit check in `_submit()`. Not yet approved — discuss before implementing. Decide if this also applies to `ResetPasswordForm`.
+**Open item — session-expired SnackBar:** `pendingSnackBarMessage` approach is implemented but SnackBar was still not showing reliably at end of session. The `addPostFrameCallback` in `LoginViewBody.initState` reads `pendingSnackBarMessage` directly (not via `ModalRoute.arguments`). Last known state: still debugging — verify first thing next session.
 
-**Backend conversation needed with sayed:** duplicate-email-but-unverified edge case — `/register` creates the user record immediately (before OTP verification), so if a user abandons the flow pre-OTP, retrying registration with the same email gets a generic "already registered" error with no way to distinguish verified vs unverified accounts. No frontend fix possible without a backend change (either allow re-registration for unverified emails, or return a distinguishable error/status).
+**Backend conversation needed with sayed:** duplicate-email-but-unverified edge case — no frontend fix possible.
 
 ---
 
@@ -179,8 +156,11 @@ Views (all built):
 - **When Claude asks for a file and it's in the zip:** will say "معاك كل حاجة" — use the zip
 - **Prefers SnackBar over Toast** for transient success messages
 - **Sends screenshots of UI bugs** — diagnose root cause in framework/widget behavior, not just symptom
-- **Reports backend/data inconsistencies he notices himself** (dashboard, Postman) — treat as a flag for a sayed conversation, not something to silently work around
-- **Will explicitly call out if Claude writes code during a discussion turn** — only implement after an explicit go-ahead ("fix", "go", a clear choice between options)
+- **Reports backend/data inconsistencies he notices himself** — treat as a flag for a sayed conversation
+- **Will explicitly call out if Claude writes code during a discussion turn** — only implement after explicit go-ahead
+- **Catches Claude when it proposes a solution that contradicts itself mid-session** — stay consistent
+- **When debugging, sends print log output** — read it carefully before proposing a fix
+- **Figures out root cause himself from logs** and points it out directly — Claude should confirm, not re-explain
 
 > ⚠️ **Important note:** If a new error occurs, always ask for the related file before attempting to fix it. If lib.zip was uploaded, read it from there.
 
