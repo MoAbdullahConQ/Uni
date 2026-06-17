@@ -43,10 +43,14 @@ class SecurityStrengthIndicator extends StatelessWidget {
           }),
         ),
         const SizedBox(height: 4),
-        Text(
-          'قوة كلمة المرور: $_label',
-          style: TextStyles.regular12.copyWith(color: _activeColor),
-        ),
+        if (strength > 0)
+          Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: Text(
+              'قوة كلمة المرور: $_label',
+              style: TextStyles.regular12.copyWith(color: _activeColor),
+            ),
+          ),
       ],
     );
   }
