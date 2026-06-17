@@ -41,9 +41,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: getIt<FavCubit>()),
-        BlocProvider.value(
-          value: getIt<NotificationsCubit>()..getNotifications(),
-        ),
+        BlocProvider.value(value: getIt<NotificationsCubit>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

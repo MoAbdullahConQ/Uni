@@ -39,13 +39,13 @@ class _MainViewState extends State<MainView> with RouteAware {
       const ProfileViewBody(),
     ];
 
-    // تهيئة الـ cubits وتحميل البيانات
     _recommendedCubit = RecommendedCubit(getIt<RecommendedRemoteDataSource>())
       ..fetchRecommendedUnis();
 
     getIt<TrendingCubit>().fetchTrendingUnis();
     getIt<FavCubit>().getFavs();
     getIt<GuideCubit>().getArticles();
+    getIt<NotificationsCubit>().getNotifications();
   }
 
   @override
