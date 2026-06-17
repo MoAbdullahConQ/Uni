@@ -7,7 +7,6 @@ import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_fonts.dart';
-import 'package:uni/features/auth/presentation/views/login_view.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
 import 'package:uni/features/splash/presentation/views/splash_view.dart';
@@ -62,7 +61,7 @@ class MyApp extends StatelessWidget {
             Directionality(textDirection: TextDirection.rtl, child: child!),
         debugShowCheckedModeBanner: false,
         onGenerateRoute: onGenerateRoute,
-        initialRoute: LoginView.routeName,
+        initialRoute: SplashView.routeName,
         navigatorObservers: [routeObserver],
       ),
     );
