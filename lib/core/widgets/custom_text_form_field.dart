@@ -35,6 +35,13 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      errorBuilder: (context, errorText) => Transform.translate(
+        offset: const Offset(14, 0),
+        child: Text(
+          errorText,
+          style: TextStyles.regular12.copyWith(color: AppColors.red,fontFamily:'IBMPlexSansArabic'),
+        ),
+      ),
       obscureText: obscureText,
       controller: controller,
       onSaved: onSaved,
@@ -67,8 +74,9 @@ class CustomTextFormField extends StatelessWidget {
           borderColor ?? AppColors.primaryColor.withOpacity(.1),
         ),
         isDense: true,
+
         // errorStyle: const TextStyle(fontSize: 0, height: 0),
-        errorStyle: TextStyles.regular12.copyWith(color: AppColors.red),
+        // errorStyle: TextStyles.regular12.copyWith(color: AppColors.red),
         errorBorder: buildBorder(borderColor ?? AppColors.red),
         focusedErrorBorder: buildFocusedBorder(borderColor ?? AppColors.red),
       ),

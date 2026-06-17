@@ -169,8 +169,8 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           if (_passwordsMatch != null) ...[
             const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerRight,
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
               child: Text(
                 _passwordsMatch!
                     ? 'كلمتا المرور متطابقتان ✓'
