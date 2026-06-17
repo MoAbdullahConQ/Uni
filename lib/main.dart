@@ -14,6 +14,9 @@ import 'package:uni/generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+// pendingSnackBarMessage removed — session-expired message now travels as
+// route arguments only (see ApiService 401 interceptor + LoginViewBody).
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +46,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         theme: ThemeData(
           fontFamily: AppFonts.arabicFont,
           scaffoldBackgroundColor: Colors.white,

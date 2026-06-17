@@ -14,8 +14,30 @@ import 'package:uni/features/auth/presentation/views/widgets/no_Account_row.dart
 import 'package:uni/features/auth/presentation/views/widgets/or_divider.dart';
 import 'package:uni/features/home/presentation/views/main_view.dart';
 
-class LoginViewBody extends StatelessWidget {
+class LoginViewBody extends StatefulWidget {
   const LoginViewBody({super.key});
+
+  @override
+  State<LoginViewBody> createState() => _LoginViewBodyState();
+}
+
+class _LoginViewBodyState extends State<LoginViewBody> {
+  @override
+  void initState() {
+    super.initState();
+    // show session-expired message if navigated here from 401 interceptor.
+    // read from route arguments only — each navigation owns its own message,
+    // nothing is left "pending" across sessions/navigations.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      final message = args as String?;
+      if (message != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: AppColors.red),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +75,6 @@ class LoginViewBody extends StatelessWidget {
                 showLogo: true,
                 verticalPaddingContainer: 8,
                 horizontalPaddingContainer: 16,
-                // icon: Icon(Icons.logo_dev),
                 colorContainer: AppColors.primaryColor,
                 childContainer: Column(
                   children: [

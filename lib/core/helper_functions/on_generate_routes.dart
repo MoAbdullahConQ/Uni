@@ -33,8 +33,13 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const SplashView());
     case OnBoardingView.routeName:
       return MaterialPageRoute(builder: (context) => const OnBoardingView());
-    case LoginView.routeName:
-      return MaterialPageRoute(builder: (context) => const LoginView());
+     case LoginView.routeName:
+      // settings must be passed so ModalRoute.of(context)?.settings.arguments
+      // (used for the 401 session-expired message) isn't lost.
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (context) => const LoginView(),
+      );
     case SignUpView.routeName:
       return MaterialPageRoute(builder: (context) => const SignUpView());
     case ForgotPasswordView.routeName:

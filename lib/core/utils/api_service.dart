@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
+import 'package:uni/features/auth/presentation/views/login_view.dart';
+import 'package:uni/main.dart';
 
 class ApiService {
   final Dio dio;
@@ -24,6 +26,19 @@ class ApiService {
           }
 
           return handler.next(options);
+        },
+        onError: (error, handler) {
+          if (error.response?.statusCode == 401) {
+            Prefs.remove('token');
+            // message is passed as route arguments only — no global state.
+            // each navigation owns its own message; nothing is left "pending".
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              LoginView.routeName,
+              (route) => false,
+              arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
+            );
+          }
+          return handler.next(error);
         },
       ),
     );
