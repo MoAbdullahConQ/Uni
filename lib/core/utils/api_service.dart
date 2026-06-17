@@ -7,6 +7,7 @@ import 'package:uni/main.dart';
 
 class ApiService {
   final Dio dio;
+  bool _isHandlingUnauthorized = false;
 
   ApiService(this.dio) {
     dio.interceptors.add(
@@ -29,14 +30,20 @@ class ApiService {
         },
         onError: (error, handler) {
           if (error.response?.statusCode == 401) {
-            Prefs.remove('token');
-            // message is passed as route arguments only — no global state.
-            // each navigation owns its own message; nothing is left "pending".
-            navigatorKey.currentState?.pushNamedAndRemoveUntil(
-              LoginView.routeName,
-              (route) => false,
-              arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
-            );
+            // guard against multiple concurrent requests (e.g. notifications list +
+            // unread count) each triggering their own redirect when the token expires.
+            if (!_isHandlingUnauthorized) {
+              _isHandlingUnauthorized = true;
+              Prefs.remove('token');
+              navigatorKey.currentState
+                  ?.pushNamedAndRemoveUntil(
+                    LoginView.routeName,
+                    (route) => false,
+                    arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
+                  )
+                  .then((_) => _isHandlingUnauthorized = false);
+            }
+            return handler.next(error);
           }
           return handler.next(error);
         },
