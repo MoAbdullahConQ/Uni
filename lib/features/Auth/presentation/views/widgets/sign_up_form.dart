@@ -48,6 +48,8 @@ class _SignUpFormState extends State<SignUpForm> {
       );
       return;
     }
+    // block submission if passwords don't match — independent of validator
+    if (_passwordController.text != _confirmPasswordController.text) return;
     if (_formKey.currentState!.validate()) {
       widget.onEmailChanged(_emailController.text.trim());
       context.read<AuthCubit>().register(
@@ -84,7 +86,6 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // email field
           const FieldLabel(label: 'البريد الإلكتروني'),
-
           const SizedBox(height: 8),
           CustomTextFormField(
             controller: _emailController,
@@ -132,6 +133,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // strength indicator
           SecurityStrengthIndicator(strength: _strength),
+
           const SizedBox(height: 16),
 
           // confirm password field
@@ -159,11 +161,9 @@ class _SignUpFormState extends State<SignUpForm> {
                 : _passwordsMatch!
                 ? AppColors.secondaryColor
                 : AppColors.red,
+            // validator only checks required — match is enforced in _submit()
             validator: (value) {
               if (value == null || value.isEmpty) return 'هذا الحقل مطلوب';
-              if (value != _passwordController.text) {
-                return 'كلمة المرور غير متطابقة';
-              }
               return null;
             },
           ),
