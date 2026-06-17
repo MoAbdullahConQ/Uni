@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: splash + onboarding + 401 interceptor + validator fixes)
+> Last updated: June 2026 (session: 401 SnackBar debug + onGenerateRoute settings fix + NotificationsCubit trigger cleanup)
 
 ---
 
@@ -8,7 +8,7 @@
 ```
 lib/
 ├── constants.dart              (kHorizontalPadding=16, kTopPadding=16, kIsOnBoardingViewSeenKey)
-├── main.dart                   (routeObserver, navigatorKey, pendingSnackBarMessage defined here globally)
+├── main.dart                   (routeObserver, navigatorKey defined here — pendingSnackBarMessage REMOVED this session)
 ├── core/
 │   ├── entities/
 │   │   ├── uni_entity.dart
@@ -21,7 +21,7 @@ lib/
 │   ├── helper_functions/
 │   │   ├── get_unis_list.dart
 │   │   ├── getDummyEntities.dart
-│   │   ├── on_generate_routes.dart
+│   │   ├── on_generate_routes.dart     ✅ updated this session — every case now passes settings: settings
 │   │   ├── recent_searches_helper.dart
 │   │   ├── calc_strength.dart
 │   │   └── build_error_bar.dart
@@ -43,7 +43,7 @@ lib/
 │   │   ├── app_text_style.dart
 │   │   ├── app_images.dart
 │   │   ├── app_fonts.dart
-│   │   ├── api_service.dart            ✅ updated this session — onError 401 interceptor added
+│   │   ├── api_service.dart            ✅ updated this session — 401 interceptor now uses route arguments only, no global variable
 │   │   └── backend_endpoints.dart
 │   └── widgets/
 │       ├── uni_card.dart
@@ -63,7 +63,7 @@ lib/
 │       ├── no_internet_widget.dart
 │       ├── empty_state_widget.dart
 │       ├── custom_progress_hud.dart
-│       ├── custom_text_form_field.dart  ✅ errorStyle + errorBuilder + errorBorder fixed
+│       ├── custom_text_form_field.dart  ✅ errorStyle + errorBuilder + errorBorder fixed (prior session)
 │       ├── password_field.dart
 │       ├── rating.dart
 │       ├── type_badge_widget.dart
@@ -78,19 +78,22 @@ lib/
 │       └── terms_and_conditions_sheet.dart
 └── features/
     ├── browse/ ... (done)
-    ├── search/ ... (done)
+    ├── search/ ... (done — debounce still pending)
     ├── fav/ ... (done)
     ├── guide/ ... (done)
     ├── notifications/ ... (done)
+    │   └── presentation/manager/notifications_cubit/
+    │       └── notifications_cubit.dart  — confirmed this session: double-emit per call (list + unread count) is intentional
     ├── home/ ... (done)
+    │   └── presentation/views/main_view.dart  ✅ updated this session — added getNotifications() call in initState; didPopNext/_onTabChanged calls confirmed intentional (kept)
     ├── auth/ ... (done — see §Auth Feature)
     │   └── presentation/views/widgets/
-    │       ├── login_view_body.dart     ✅ StatefulWidget + pendingSnackBarMessage SnackBar
-    │       ├── sign_up_form.dart        ✅ validator fix — match check moved to _submit()
+    │       ├── login_view_body.dart     ✅ updated this session — reads session-expired message from ModalRoute arguments, no global variable, debug prints removed
+    │       ├── sign_up_form.dart        (validator fix from prior session — match check in _submit())
     │       └── ...
-    ├── splash/                          ✅ DONE this session
+    ├── splash/
     │   └── presentation/views/widgets/splash_view_body.dart
-    ├── on_boarding/                     ✅ DONE this session
+    ├── on_boarding/
     │   └── presentation/views/on_boarding_view.dart
     ├── uni_detail/ ... (done)
     ├── profile/ → presentation/views/ (4 screens UI only — API integration pending — NEXT UP)
@@ -211,7 +214,7 @@ class BackendEndpoints {
 
 ---
 
-## 4. ApiService — Current State
+## 4. ApiService — Current State (post this session)
 
 ```dart
 class ApiService {
@@ -234,14 +237,12 @@ class ApiService {
       onError: (error, handler) {
         if (error.response?.statusCode == 401) {
           Prefs.remove('token');
-          pendingSnackBarMessage = 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً';
-          Future.microtask(() {
-            navigatorKey.currentState?.pushNamedAndRemoveUntil(
-              LoginView.routeName,
-              (route) => false,
-              arguments: pendingSnackBarMessage,
-            );
-          });
+          // message passed as route arguments only — no global state.
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            LoginView.routeName,
+            (route) => false,
+            arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
+          );
         }
         return handler.next(error);
       },
@@ -263,7 +264,7 @@ class ApiService {
 }
 ```
 
-> ⚠️ **Open issue:** session-expired SnackBar still not showing reliably at end of session. `LoginViewBody.initState` reads `pendingSnackBarMessage` via `addPostFrameCallback` — verify next session.
+> ✅ **RESOLVED this session:** session-expired SnackBar now confirmed working reliably. Root cause was `onGenerateRoute` not forwarding `settings: settings` to `MaterialPageRoute` (see §8 Known Bugs — moved here as resolved). `pendingSnackBarMessage` global variable fully removed.
 
 ---
 
@@ -282,9 +283,10 @@ class ApiService {
 **Login flow:**
 1. `LoginView` → login ✅ → `pushNamedAndRemoveUntil` → `MainView` — no SnackBar
 
-**401 / session expired flow:**
-1. Any API call returns 401 → interceptor → `Prefs.remove('token')` → `pendingSnackBarMessage` set → `pushNamedAndRemoveUntil` → `LoginView`
-2. `LoginViewBody.initState` → reads `pendingSnackBarMessage` → shows SnackBar → clears it
+**401 / session expired flow (finalized this session):**
+1. Any API call returns 401 → interceptor → `Prefs.remove('token')` → `pushNamedAndRemoveUntil(LoginView.routeName, arguments: message)`
+2. `LoginViewBody.initState` → reads `ModalRoute.of(context)?.settings.arguments as String?` → shows SnackBar if non-null
+3. No cleanup needed — each navigation's arguments are scoped to that route instance only
 
 ---
 
@@ -309,7 +311,7 @@ class ApiService {
   "data": { "otp": 619870, "user": { "name": "...", "email": "...", "id": 31 } }
 }
 ```
-> ⚠️ Known backend quirk: user record created before OTP verification — duplicate email returns generic error. Needs sayed conversation.
+> ⚠️ Known backend quirk: user record created before OTP verification — duplicate email returns generic error. Needs sayed conversation. (Still open — unrelated to this session's work.)
 
 **POST /verify-Otp**
 ```json
@@ -361,6 +363,7 @@ Dio → ApiService
 ```
 
 > `AuthCubit` / `OtpCubit` are NOT registered in GetIt — created per-view via `BlocProvider(create: ...)`.
+> `NotificationsCubit` IS a GetIt singleton, but `getNotifications()` is no longer auto-called at registration/startup time — see §9 MainView trigger points.
 
 ---
 
@@ -382,9 +385,64 @@ UniDetailView (arguments: int id),
 SearchView
 ```
 
+> ✅ **Fixed this session:** every case now passes `settings: settings` to its `MaterialPageRoute` constructor. Previously omitted everywhere — meant `ModalRoute.of(context)?.settings.arguments` always returned `null` regardless of what was passed to `pushNamed`/`pushNamedAndRemoveUntil`. This was the actual root cause of the session-expired SnackBar not appearing (see §14).
+
 ---
 
-## 9. OtpCubit — Important Behavior
+## 9. MainView — NotificationsCubit Trigger Points (finalized this session)
+
+```dart
+@override
+void initState() {
+  super.initState();
+  // ...other init calls...
+  getIt<NotificationsCubit>().getNotifications(); // added this session
+}
+
+@override
+void didPopNext() {
+  getIt<NotificationsCubit>().getNotifications(); // kept — refresh on returning from a pushed screen
+  // ...other failure-state reload checks unchanged...
+}
+
+void _onTabChanged(int index) {
+  if (index == 0 && currentIndex != 0) {
+    getIt<NotificationsCubit>().getNotifications(); // kept — refresh when returning to home tab
+    // ...
+  }
+  setState(() => currentIndex = index);
+}
+```
+
+All three trigger points are intentional and confirmed — covers "just logged in," "app restarted while logged in," "returned from a pushed screen," and "switched back to home tab." `main.dart`/`MultiBlocProvider` no longer calls `getNotifications()` at all (removed — was firing on a possibly-expired token at cold start, causing an unwanted/confusing 401 redirect immediately on app open).
+
+---
+
+## 10. NotificationsCubit — Internal Emit Behavior (confirmed this session, not a bug)
+
+`getNotifications()` body (relevant part):
+```dart
+Future<void> getNotifications() async {
+  _allNotifications = [];
+  _nextCursor = null;
+  if (state is! NotificationsSuccess) emit(NotificationsLoading());
+
+  final result = await getNotificationsUseCase.call();
+  result.fold((failure) => emit(NotificationsFailure(failure.message)), (data) {
+    _allNotifications = data.notifications;
+    _nextCursor = data.nextCursor;
+    _emitSuccess();           // <-- emit #1
+  });
+
+  await _fetchUnreadCount();  // <-- may trigger emit #2 internally, if count changed
+}
+```
+
+`_fetchUnreadCount()` emits a second `NotificationsSuccess` (with updated `unreadCount`) only if the count actually changed from before. This means a single `getNotifications()` call can legitimately produce two `Success` states in the log — confirmed as intentional (list and unread-count are independent concerns), left unchanged by explicit decision.
+
+---
+
+## 11. OtpCubit — Important Behavior
 
 - `startTimer()` — called in `OtpView` via `..startTimer()` on create
 - `_timer?.cancel()` inside fold success branch of `verifyOtp` — stops timer only on success
@@ -393,7 +451,7 @@ SearchView
 
 ---
 
-## 10. SetupView — Field Mapping
+## 12. SetupView — Field Mapping
 
 | UI Label | API field | API values |
 |---|---|---|
@@ -406,7 +464,7 @@ SearchView
 
 ---
 
-## 11. Error Handling Pattern
+## 13. Error Handling Pattern
 
 ```
 DioException → propagates from data source → caught in repo → left(ServerFailure.fromDioError(e))
@@ -416,7 +474,7 @@ DioException → propagates from data source → caught in repo → left(ServerF
 
 ---
 
-## 12. Error UI Rules
+## 14. Error UI Rules
 
 | Situation | Widget |
 |---|---|
@@ -429,7 +487,7 @@ DioException → propagates from data source → caught in repo → left(ServerF
 
 ---
 
-## 13. AppColors
+## 15. AppColors
 
 ```dart
 abstract class AppColors {
@@ -448,12 +506,12 @@ abstract class AppColors {
 
 ---
 
-## 14. Known Bugs & Pending Issues
+## 16. Known Bugs & Pending Issues (current — resolved items moved to §17)
 
 - **Backend Bug — Fav Pagination:** same items regardless of cursor → deduplication in `FavCubit.loadMore()`
 - **`HomeView` dead code:** exists but never navigated to
 - **`SearchResultsWidget` dead code:** unused
-- **Search Debounce:** not implemented — every keystroke triggers search
+- **Search Debounce:** not implemented — every keystroke triggers search — **next up**
 - **`withOpacity` deprecated:** works but newer Flutter suggests `.withValues(alpha:...)`
 - **`is_fav_for_me`:** in API response but commented out in `UniEntity`
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
@@ -461,11 +519,11 @@ abstract class AppColors {
 - **`custom_exceptions.dart`:** exists but unused
 - **Auth — "مجالات الاهتمام":** UI-only, no backend endpoint yet
 - **Backend — duplicate-email-unverified edge case:** needs sayed conversation
-- **Session-expired SnackBar:** implemented but not confirmed working at end of session — verify next session
+- **Faheem `/aiChat/send`:** waiting on backend — sayed's current status unconfirmed, ask next session
 
 ---
 
-## 15. All Decisions Made
+## 17. All Decisions Made
 
 | Decision | Reason |
 |---|---|
@@ -505,15 +563,19 @@ abstract class AppColors {
 | **`errorBorder`/`focusedErrorBorder` use `AppColors.red` as fallback** | `borderColor ?? AppColors.red` |
 | **Confirm-password match check moved to `_submit()`** | Removes reserved blank error-line space, validator only checks "required" |
 | **`SecurityStrengthIndicator` shows when `_passwordController.text.isNotEmpty`** | Smooth UX, no sudden appear/disappear |
-| **`GlobalKey<NavigatorState>` for 401 redirect** | Simplest correct solution — no context needed in interceptor |
-| **`pendingSnackBarMessage` global in `main.dart`** | Passes session-expired message to `LoginView` without route arguments timing issues |
 | **Splash → LoginView (not OnBoarding) when token missing but onboarding seen** | Correct flow |
-| **OnBoarding → LoginView (not MainView)** | Was a bug — fixed this session |
+| **OnBoarding → LoginView (not MainView)** | Was a bug — fixed in a prior session |
 | **Login fields not cleared on failed login** | User may have typo in password only — clearing all fields forces re-typing email |
+| **`pendingSnackBarMessage` global REMOVED — message travels via route `arguments` only** | Global mutable state caused a "leftover message" bug across unrelated navigations; route arguments are scoped per-navigation, no cleanup needed |
+| **Every `onGenerateRoute` case must pass `settings: settings`** | Root cause of the SnackBar arguments always being `null` — omission silently breaks any future use of route arguments too |
+| **`NotificationsCubit.getNotifications()` removed from `main.dart`/`MultiBlocProvider` startup call** | Was firing with a possibly-expired token at cold start, causing a confusing immediate 401 redirect on app open |
+| **`NotificationsCubit.getNotifications()` added to `MainView.initState()`** | Ensures fresh notifications right after login or app restart while logged in |
+| **`didPopNext()` and `_onTabChanged()` notification refresh calls kept (not deduplicated)** | User wants notifications "always fresh" across all re-entry points to MainView — intentional, not a bug |
+| **`getNotifications()` double-emit (list + unread count) left as-is** | Two independent concerns updating separately is intentional, not a bug to merge |
 
 ---
 
-## 16. CustomTextFormField — Validation & Error Style (final state)
+## 18. CustomTextFormField — Validation & Error Style (final state)
 
 - `errorStyle: TextStyles.regular12.copyWith(color: AppColors.red)` — matches strength indicator style
 - `errorBuilder` used to align error text right: `Align(alignment: Alignment.centerRight, child: Text(errorText, style: ...))`
@@ -524,15 +586,46 @@ abstract class AppColors {
 
 ---
 
-## 17. Session Summary — هذا الشات
+## 19. Session Summary — جلسات سابقة (مرجع تاريخي)
 
-1. **Validator fix (confirm-password):** moved match check out of `validator` entirely → `_submit()` explicit check → no reserved blank space
-2. **`SecurityStrengthIndicator`:** shows when `_passwordController.text.isNotEmpty` — smooth UX
-3. **`CustomTextFormField` error alignment:** tried `textDirection`, `Directionality`, `errorStyle` textAlign (doesn't exist) → settled on `errorBuilder` with `Align(centerRight)`
-4. **`errorBorder` fix:** `buildBorder(borderColor ?? AppColors.red)` — red border shows correctly on error state
-5. **Splash feature:** `executeNavigation()` checks token → onboarding seen → routes correctly
-6. **OnBoarding bug fix:** was navigating to `MainView` → fixed to `LoginView`
-7. **401 interceptor:** `GlobalKey<NavigatorState>` + `pendingSnackBarMessage` global → redirect to `LoginView` on any 401
-8. **`LoginViewBody`:** converted to `StatefulWidget` — reads `pendingSnackBarMessage` in `initState` via `addPostFrameCallback`
-9. **Session-expired SnackBar:** still not confirmed working at end of session — open issue for next session
-10. **Login fields on failure:** decided NOT to clear fields — user may have typo in password only
+**جلسة: Auth Polish + UX Fixes**
+1. Register success UX: `AuthSuccess` بعد register → `OtpView` بدون SnackBar
+2. Login success UX: فوري بدون SnackBar
+3. "تم إنشاء حسابك بنجاح ✓" بعد `saveStudentInfo` في `SetupView`
+4. Backend quirk: duplicate-email-unverified — يحتاج نقاش مع سايد (لسه مفتوح)
+5. `StudyTypeSelector` → core widget بـ `Map<String, IconData>`
+6. Bug: `OtpViewBody` register flow كانت مش بتحفظ التوكن في Prefs قبل `SetupView` — تم الفيكس
+7. `SignUpForm` + `ResetPasswordForm`: password strength + live match check
+8. Terms & Conditions → bottom sheet، محتوى ثابت
+9. Validation bug: `errorStyle` صفري كانت بتخفي كل رسائل الخطأ — تم الفيكس
+10. تكرار رسائل الخطأ (validator + match Text) — اتحل بـ `errorBuilder` + match check في `_submit()`
+
+**جلسة: Splash + Onboarding + 401 Interceptor (أول نسخة) + Validator Fixes**
+1. Validator fix (confirm-password) — موضّح في §18
+2. `SecurityStrengthIndicator` — يظهر لما الباسورد مش فاضي
+3. `CustomTextFormField` error alignment — `errorBuilder` + `Align(centerRight)`
+4. `errorBorder` fix
+5. Splash feature: `executeNavigation()` — تم بناؤها
+6. OnBoarding bug fix: كانت بتروح `MainView` بدل `LoginView`
+7. أول نسخة من 401 interceptor: `GlobalKey<NavigatorState>` + `pendingSnackBarMessage` global — **هذه النسخة استُبدلت بالكامل في الجلسة التالية (انظر §20)**
+8. `LoginViewBody`: تحويل لـ `StatefulWidget`
+9. Login fields on failure: قرار عدم المسح
+
+---
+
+## 20. Session Summary — هذا الشات (401 SnackBar Debug + Notifications Trigger Cleanup) — RESOLVED
+
+1. **شخّصنا السبب الحقيقي للـ SnackBar مش بتظهر:** ليس `pendingSnackBarMessage` timing كما افترضنا أول مرة — السبب الفعلي: `onGenerateRoute` كانت بتعمل `MaterialPageRoute` من غير `settings: settings`، فـ `ModalRoute.of(context)?.settings.arguments` كانت ترجع `null` دايمًا لكل route، مش بس `LoginView`
+2. **اتشال `pendingSnackBarMessage` global بالكامل من `main.dart`** — الرسالة بقت تتبعت كـ route `arguments` فقط
+3. **`ApiService` 401 interceptor:** بقى يبعت الرسالة في `arguments` مباشرة بدون global variable
+4. **`LoginViewBody`:** بقت تقرأ من `ModalRoute.of(context)?.settings.arguments as String?` بس — مفيش حاجة تتمسح بعد القراءة
+5. **`on_generate_routes.dart`:** كل الـ cases بقت بتمرر `settings: settings` — fix شامل، مش بس لصفحة اللوجن
+6. **بعد الفيكس، السناك بار ظهرت "أول ما يفتح التطبيق"** — تم التأكد إنه سلوك صحيح (مش leftover bug): `NotificationsCubit.getNotifications()` كانت بتتنادى تلقائيًا في `main.dart` بتوكن expired فعلي من جلسة سابقة → 401 حقيقي
+7. **اتشال نداء `getNotifications()` من `main.dart`/`MultiBlocProvider`** بالكامل
+8. **اتضاف نداء `getNotifications()` في `MainView.initState()`** — تحديث فوري بعد لوجن أو restart وهو logged in
+9. **اكتُشف تكرار `Success` (مرتين/تلاتة) عبر اللوج** — تم تتبعه وتأكيده كسلوك مقصود:
+   - تكرار على مستوى `MainView`: `initState` + `didPopNext` (LoginView بتتعمل لها pop) — **قرار: سيبهم زي ما هم**، حالات استخدام مختلفة
+   - تكرار داخلي في `getNotifications()` نفسها: `_emitSuccess()` بعد الليست + emit تاني بعد `_fetchUnreadCount()` لو العدد اتغير — **قرار: سيبها**، مفهومين مختلفين منطقيًا
+10. **`didPopNext()` و `_onTabChanged()` في `MainView`:** قرار نهائي بالحفاظ على نداء `getNotifications()` في الاتنين — اليوزر عايز الإشعارات "متحدثة دايمًا" مهما كانت نقطة الدخول لـ `MainView`
+
+**النتيجة:** كل الـ debugging thread ده مقفول بالكامل ومؤكد إنه شغال. مفيش open items من هذا الشات.
