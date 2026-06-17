@@ -47,6 +47,7 @@ class CustomTextFormField extends StatelessWidget {
             return null;
           },
       keyboardType: keyboardType,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         hintText: hintText,
@@ -66,11 +67,10 @@ class CustomTextFormField extends StatelessWidget {
           borderColor ?? AppColors.primaryColor.withOpacity(.1),
         ),
         isDense: true,
-        errorStyle: const TextStyle(fontSize: 0, height: 0),
-        errorBorder: buildBorder(borderColor),
-        focusedErrorBorder: buildFocusedBorder(
-          borderColor ?? AppColors.primaryColor.withOpacity(.1),
-        ),
+        // errorStyle: const TextStyle(fontSize: 0, height: 0),
+        errorStyle: TextStyles.regular12.copyWith(color: AppColors.red),
+        errorBorder: buildBorder(borderColor ?? AppColors.red),
+        focusedErrorBorder: buildFocusedBorder(borderColor ?? AppColors.red),
       ),
     );
   }
