@@ -16,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.borderColor,
+    this.enabled = true,
   });
 
   final Widget? suffixIcon;
@@ -31,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? Function(String?)? validator;
   final Color? borderColor;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,15 @@ class CustomTextFormField extends StatelessWidget {
         offset: const Offset(14, 0),
         child: Text(
           errorText,
-          style: TextStyles.regular12.copyWith(color: AppColors.red,fontFamily:'IBMPlexSansArabic'),
+          style: TextStyles.regular12.copyWith(
+            color: AppColors.red,
+            fontFamily: 'IBMPlexSansArabic',
+          ),
         ),
       ),
       obscureText: obscureText,
       controller: controller,
+      enabled: enabled,
       onSaved: onSaved,
       onChanged: onChanged,
       textAlign: textAlign,
@@ -63,7 +69,7 @@ class CustomTextFormField extends StatelessWidget {
         ),
         prefixIcon: prefixIcon,
         filled: true,
-        fillColor: const Color(0xFFF9FAFA),
+        fillColor: enabled ? const Color(0xFFF9FAFA) : const Color(0xFFEFF1F1),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
