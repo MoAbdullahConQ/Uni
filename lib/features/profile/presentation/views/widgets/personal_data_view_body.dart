@@ -38,8 +38,26 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       bloc: getIt<ProfileCubit>(),
+      listenWhen: (previous, current) =>
+          current is StudentInfoSaved ||
+          current is SaveStudentInfoFailure ||
+          (current is ProfileSuccess),
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is StudentInfoSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم حفظ التعديلات بنجاح'),
+              backgroundColor: AppColors.primaryColor,
+            ),
+          );
+        } else if (state is SaveStudentInfoFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errMessage),
+              backgroundColor: AppColors.red,
+            ),
+          );
+        } else if (state is ProfileSuccess) {}
       },
       builder: (context, state) {
         return Padding(
