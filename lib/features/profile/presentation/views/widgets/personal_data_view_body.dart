@@ -23,6 +23,8 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
   final _formKey = GlobalKey<FormState>();
 
   int? selectedGovernorateId;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _percentageController = TextEditingController();
   final _ageController = TextEditingController();
 
@@ -61,10 +63,12 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const AvatarProfile(),
                     const SizedBox(height: 30),
 
-                    // ── Name ──
+                    // ── Name (read-only — no update-profile endpoint yet) ──
                     const FieldLabel(label: 'الاسم بالكامل'),
                     const SizedBox(height: 8),
                     CustomTextFormField(
+                      controller: _nameController,
+                      enabled: false,
                       hintText: 'مجدي عبدالغني',
                       prefixIcon: Icon(
                         Icons.person_outline,
@@ -76,10 +80,12 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Email──
+                    // ── Email (read-only — no update-profile endpoint yet) ──
                     const FieldLabel(label: 'البريد الإلكتروني'),
                     const SizedBox(height: 8),
                     CustomTextFormField(
+                      controller: _emailController,
+                      enabled: false,
                       hintText: 'ahmed.m@example.com',
                       prefixIcon: Icon(
                         Icons.email_outlined,
