@@ -15,6 +15,25 @@ import 'package:uni/core/widgets/study_type_selector.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/stats_Section.dart';
 
+// maps between the Arabic labels shown in the UI and the values the backend expects.
+const Map<String, String> kStudySectionMap = {'علمي': 'science', 'أدبي': 'literature'};
+const Map<String, String> kStudySectionMapReversed = {
+  'science': 'علمي',
+  'علمي': 'علمي',
+  'literature': 'أدبي',
+  'أدبي': 'أدبي',
+};
+
+const Map<String, String> kScientificDepartmentMap = {
+  'علوم': 'scientific',
+  'رياضة': 'Mathematics',
+};
+const Map<String, String> kScientificDepartmentMapReversed = {
+  'scientific': 'علوم',
+  'علوم': 'علوم',
+  'Mathematics': 'رياضة',
+  'رياضة': 'رياضة',
+};
 class PersonalDataViewBody extends StatefulWidget {
   const PersonalDataViewBody({super.key});
 
@@ -36,6 +55,26 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
 
   String studyCategory = 'علمي';
   String studyTrack = 'رياضة';
+
+  void _submit() {
+    if (!_confirmedAccurate) return;
+    if (selectedGovernorateId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('من فضلك اختر المحافظة')));
+      return;
+    }
+    if (_formKey.currentState!.validate()) {
+      getIt<ProfileCubit>().saveStudentInfo(
+        studySection: kStudySectionMap[studyCategory] ?? 'science',
+        scientificDepartment:
+            kScientificDepartmentMap[studyTrack] ?? 'scientific',
+        governorateId: selectedGovernorateId!,
+        percentage: double.tryParse(_percentageController.text) ?? 0,
+        age: int.tryParse(_ageController.text) ?? 0,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +102,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
         } else if (state is ProfileSuccess) {}
       },
       builder: (context, state) {
+        final isSaving = state is SavingStudentInfo;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: kHorizontalPadding),
           child: Column(
@@ -174,21 +214,28 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                         ),
                         const SizedBox(height: 16),
 
-                        const SizedBox(height: 16),
-
                         // ── حفظ التعديلات ──
                         CustomButton(
-                          backgroundColor: AppColors.secondaryColor,
+                          backgroundColor: _confirmedAccurate
+                              ? AppColors.secondaryColor
+                              : AppColors.secondaryColor.withOpacity(.4),
                           style: TextStyles.bold16.copyWith(
                             color: AppColors.primaryColor,
                           ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              // TODO: dispatch save event
-                            }
-                          },
-                          text: 'حفظ التعديلات',
+                          onPressed: (_confirmedAccurate && !isSaving)
+                              ? _submit
+                              : () {},
+                          text: isSaving ? '' : 'حفظ التعديلات',
+                          prefixIcon: isSaving
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 24),
                       ],
