@@ -3,8 +3,8 @@ import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class SetupGovernorateDropdown extends StatelessWidget {
-  const SetupGovernorateDropdown({
+class GovernorateDropdown extends StatelessWidget {
+  const GovernorateDropdown({
     super.key,
     required this.selectedId,
     required this.onChanged,
@@ -17,6 +17,7 @@ class SetupGovernorateDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: AppColors.borderColor.withOpacity(.1),
         borderRadius: BorderRadius.circular(12),
@@ -25,9 +26,6 @@ class SetupGovernorateDropdown extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
           menuMaxHeight: 600,
-          menuWidth: 250,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          borderRadius: BorderRadius.circular(12),
           value: selectedId,
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down, size: 20),
