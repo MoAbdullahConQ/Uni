@@ -25,11 +25,14 @@ class PersonalDataViewBody extends StatefulWidget {
 class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
   final _formKey = GlobalKey<FormState>();
 
-  int? selectedGovernorateId;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+
+  int? selectedGovernorateId;
   final _percentageController = TextEditingController();
   final _ageController = TextEditingController();
+
+  bool _confirmedAccurate = false;
 
   String studyCategory = 'علمي';
   String studyTrack = 'رياضة';
@@ -154,15 +157,24 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                         ),
                         const SizedBox(height: 16),
 
-                        // ── مجالات الاهتمام ──
+                        // ── مجالات الاهتمام (UI only — no backend endpoint) ──
                         const FieldLabel(label: 'مجالات الاهتمام'),
                         const SizedBox(height: 6),
                         const PersonalDataInterestsSelector(),
                         const SizedBox(height: 24),
 
-                        // ── مستندات مهمة ──
-                        const DocumentsSection(),
-                        const SizedBox(height: 32),
+                        // ── مستندات مهمة (UI only — no backend endpoint) ──
+                        DocumentsSection(
+                          confirmedAccurate: _confirmedAccurate,
+                          onChanged: (value) {
+                            setState(() {
+                              _confirmedAccurate = value ?? false;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        const SizedBox(height: 16),
 
                         // ── حفظ التعديلات ──
                         CustomButton(
