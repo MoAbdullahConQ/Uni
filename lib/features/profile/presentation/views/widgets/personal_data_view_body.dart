@@ -7,6 +7,7 @@ import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_button.dart';
 import 'package:uni/core/widgets/custom_text_form_field.dart';
 import 'package:uni/core/widgets/field_label.dart';
+import 'package:uni/features/auth/domain/entities/user_entity.dart';
 import 'package:uni/features/profile/presentation/manager/profile_cubit/profile_cubit.dart';
 import 'package:uni/features/profile/presentation/views/widgets/avatar_profile.dart';
 import 'package:uni/features/profile/presentation/views/widgets/documents_section.dart';
@@ -16,7 +17,10 @@ import 'package:uni/features/profile/presentation/views/widgets/profile_header.d
 import 'package:uni/features/profile/presentation/views/widgets/stats_Section.dart';
 
 // maps between the Arabic labels shown in the UI and the values the backend expects.
-const Map<String, String> kStudySectionMap = {'علمي': 'science', 'أدبي': 'literature'};
+const Map<String, String> kStudySectionMap = {
+  'علمي': 'science',
+  'أدبي': 'literature',
+};
 const Map<String, String> kStudySectionMapReversed = {
   'science': 'علمي',
   'علمي': 'علمي',
@@ -34,6 +38,7 @@ const Map<String, String> kScientificDepartmentMapReversed = {
   'Mathematics': 'رياضة',
   'رياضة': 'رياضة',
 };
+
 class PersonalDataViewBody extends StatefulWidget {
   const PersonalDataViewBody({super.key});
 
@@ -55,6 +60,39 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
 
   String studyCategory = 'علمي';
   String studyTrack = 'رياضة';
+
+  bool _populatedFromUser = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final state = getIt<ProfileCubit>().state;
+    if (state is ProfileSuccess) _populateFromUser(state.user);
+  }
+
+  void _populateFromUser(UserEntity user) {
+    _nameController.text = user.name;
+    _emailController.text = user.email;
+    final info = user.studentInfo;
+    if (info != null) {
+      studyCategory = kStudySectionMapReversed[info.studySection] ?? 'علمي';
+      studyTrack =
+          kScientificDepartmentMapReversed[info.scientificDepartment] ?? 'علوم';
+      selectedGovernorateId = info.governorateId;
+      _percentageController.text = info.percentage.toString();
+      _ageController.text = info.age.toString();
+    }
+    _populatedFromUser = true;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _percentageController.dispose();
+    _ageController.dispose();
+    super.dispose();
+  }
 
   void _submit() {
     if (!_confirmedAccurate) return;
@@ -83,7 +121,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
       listenWhen: (previous, current) =>
           current is StudentInfoSaved ||
           current is SaveStudentInfoFailure ||
-          (current is ProfileSuccess),
+          (current is ProfileSuccess && !_populatedFromUser),
       listener: (context, state) {
         if (state is StudentInfoSaved) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -99,7 +137,9 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
               backgroundColor: AppColors.red,
             ),
           );
-        } else if (state is ProfileSuccess) {}
+        } else if (state is ProfileSuccess && !_populatedFromUser) {
+          setState(() => _populateFromUser(state.user));
+        }
       },
       builder: (context, state) {
         final isSaving = state is SavingStudentInfo;
@@ -224,7 +264,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                           ),
                           onPressed: (_confirmedAccurate && !isSaving)
                               ? _submit
-                              : () {},
+                              : () {},// TODO
                           text: isSaving ? '' : 'حفظ التعديلات',
                           prefixIcon: isSaving
                               ? const SizedBox(
