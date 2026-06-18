@@ -9,6 +9,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_fonts.dart';
 import 'package:uni/features/fav/presentation/manager/fav_cubit/fav_cubit.dart';
 import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
+import 'package:uni/features/profile/presentation/manager/profile_cubit/profile_cubit.dart';
 import 'package:uni/features/splash/presentation/views/splash_view.dart';
 import 'package:uni/generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: getIt<FavCubit>()),
         BlocProvider.value(value: getIt<NotificationsCubit>()),
+        BlocProvider.value(value: getIt<ProfileCubit>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
