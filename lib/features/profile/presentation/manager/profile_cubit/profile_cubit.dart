@@ -17,6 +17,10 @@ class ProfileCubit extends Cubit<ProfileState> {
   // so screens relying on ProfileSuccess don't lose the displayed data.
   UserEntity? _currentUser;
 
+  // exposed so ProfileViewBody can read the last known user during
+  // intermediate states (SavingStudentInfo, UpdatingPassword, etc.)
+  UserEntity? get currentUser => _currentUser;
+
   ProfileCubit({
     required this.getMeUseCase,
     required this.saveStudentInfoUseCase,
