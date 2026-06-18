@@ -22,6 +22,10 @@ class PersonalDataViewBody extends StatefulWidget {
 class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
   final _formKey = GlobalKey<FormState>();
 
+  int? selectedGovernorateId;
+  final _percentageController = TextEditingController();
+  final _ageController = TextEditingController();
+
   String studyCategory = 'علمي';
   String studyTrack = 'رياضة';
 
@@ -108,7 +112,13 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                     const SizedBox(height: 16),
 
                     // ── Row: عمر / نسبة / محافظة ──
-                    const StatsSection(),
+                    StatsSection(
+                      selectedGovernorateId: selectedGovernorateId,
+                      onGovernorateChanged: (id) =>
+                          setState(() => selectedGovernorateId = id),
+                      percentageController: _percentageController,
+                      ageController: _ageController,
+                    ),
                     const SizedBox(height: 16),
 
                     // ── مجالات الاهتمام ──

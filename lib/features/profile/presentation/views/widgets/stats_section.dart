@@ -1,47 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:uni/core/widgets/custom_text_form_field.dart';
+import 'package:uni/core/widgets/age_field.dart';
 import 'package:uni/core/widgets/field_label.dart';
+import 'package:uni/core/widgets/governorate_dropdown.dart';
 import 'package:uni/core/widgets/percentage_field.dart';
-import 'package:uni/features/profile/presentation/views/widgets/governorate_dropdown.dart';
 
 class StatsSection extends StatelessWidget {
-  const StatsSection({super.key});
+  const StatsSection({
+    super.key,
+    required this.selectedGovernorateId,
+    required this.onGovernorateChanged,
+    required this.percentageController,
+    required this.ageController,
+  });
+
+  final int? selectedGovernorateId;
+  final ValueChanged<int?> onGovernorateChanged;
+  final TextEditingController percentageController;
+  final TextEditingController ageController;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
         Expanded(
           child: Column(
             children: [
-              FieldLabel(label: 'المحافظة'),
-              SizedBox(height: 8),
-              GovernorateDropdown(),
+              const FieldLabel(label: 'المحافظة'),
+              const SizedBox(height: 8),
+              GovernorateDropdown(
+                selectedId: selectedGovernorateId,
+                onChanged: onGovernorateChanged,
+              ),
             ],
           ),
         ),
-        SizedBox(width: 28),
+        const SizedBox(width: 28),
         Expanded(
           child: Column(
             children: [
-              FieldLabel(label: 'النسبة المئوية'),
-              SizedBox(height: 8),
-              PercentageField(),
+              const FieldLabel(label: 'النسبة المئوية'),
+              const SizedBox(height: 8),
+              PercentageField(controller: percentageController),
             ],
           ),
         ),
-        SizedBox(width: 28),
+        const SizedBox(width: 28),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              FieldLabel(label: 'عمرك'),
-              SizedBox(height: 8),
-              CustomTextFormField(
-                hintText: '23 سنة',
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.right,
-              ),
+              const FieldLabel(label: 'عمرك'),
+              const SizedBox(height: 8),
+              AgeField(controller: ageController),
             ],
           ),
         ),
