@@ -40,6 +40,7 @@ import 'package:uni/features/notifications/domain/use_cases/get_unread_notificat
 import 'package:uni/features/notifications/domain/use_cases/mark_all_notifications_as_read_use_case.dart';
 import 'package:uni/features/notifications/domain/use_cases/mark_notification_as_read_use_case.dart';
 import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
+import 'package:uni/features/profile/presentation/manager/profile_cubit/profile_cubit.dart';
 import 'package:uni/features/search/data/data_sources/search_remote_data_source.dart';
 import 'package:uni/features/search/data/repos/search_repo_impl.dart';
 import 'package:uni/features/search/domain/repos/search_repo.dart';
@@ -192,4 +193,14 @@ Future<void> setupGetIt() async {
     UpdatePasswordUseCase(getIt<AuthRepo>()),
   );
   getIt.registerSingleton<GetMeUseCase>(GetMeUseCase(getIt<AuthRepo>()));
+
+  // ===== PROFILE =====
+  // reuses the same auth use cases registered above (getMe, saveStudentInfo, updatePassword)
+  getIt.registerSingleton<ProfileCubit>(
+    ProfileCubit(
+      getMeUseCase: getIt<GetMeUseCase>(),
+      saveStudentInfoUseCase: getIt<SaveStudentInfoUseCase>(),
+      updatePasswordUseCase: getIt<UpdatePasswordUseCase>(),
+    ),
+  );
 }
