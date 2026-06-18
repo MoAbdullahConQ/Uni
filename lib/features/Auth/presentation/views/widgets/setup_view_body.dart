@@ -9,7 +9,7 @@ import 'package:uni/core/widgets/percentage_field.dart';
 import 'package:uni/features/auth/presentation/manager/auth_cubit/auth_cubit.dart';
 import 'package:uni/features/auth/presentation/views/widgets/auth_header.dart';
 import 'package:uni/core/widgets/study_type_selector.dart';
-import 'package:uni/features/auth/presentation/views/widgets/setup_age_field.dart';
+import 'package:uni/core/widgets/age_field.dart';
 import 'package:uni/features/auth/presentation/views/widgets/setup_governorate_dropdown.dart';
 import 'package:uni/features/home/presentation/views/main_view.dart';
 import 'package:uni/features/profile/presentation/views/widgets/personal_data_interests_selector.dart';
@@ -151,7 +151,7 @@ class _SetupViewBodyState extends State<SetupViewBody> {
                         children: [
                           const FieldLabel(label: 'السن'),
                           const SizedBox(height: 8),
-                          SetupAgeField(controller: _ageController),
+                          AgeField(controller: _ageController),
                         ],
                       ),
                     ),

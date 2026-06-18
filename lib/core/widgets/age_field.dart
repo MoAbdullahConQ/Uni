@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
-class SetupAgeField extends StatelessWidget {
-  const SetupAgeField({super.key, required this.controller});
+class AgeField extends StatelessWidget {
+  const AgeField({super.key, required this.controller});
 
   final TextEditingController controller;
 
