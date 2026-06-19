@@ -62,6 +62,10 @@ class Assets {
   /// assets/images/notification.svg
   static const String imagesNotification = "assets/images/notification.svg";
 
+  /// Assets for imagesOutRobot
+  /// assets/images/out_robot.svg
+  static const String imagesOutRobot = "assets/images/out_robot.svg";
+
   /// Assets for imagesOutlineNavDalil
   /// assets/images/outline/nav_dalil.svg
   static const String imagesOutlineNavDalil = "assets/images/outline/nav_dalil.svg";

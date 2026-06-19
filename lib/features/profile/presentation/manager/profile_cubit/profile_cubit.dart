@@ -1,8 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/features/auth/domain/entities/user_entity.dart';
 import 'package:uni/features/auth/domain/use_cases/get_me_use_case.dart';
 import 'package:uni/features/auth/domain/use_cases/save_student_info_use_case.dart';
 import 'package:uni/features/auth/domain/use_cases/update_password_use_case.dart';
+import 'package:uni/features/auth/presentation/views/login_view.dart';
+import 'package:uni/main.dart';
 
 part 'profile_state.dart';
 
@@ -72,6 +75,19 @@ class ProfileCubit extends Cubit<ProfileState> {
     result.fold(
       (failure) => emit(UpdatePasswordFailure(failure.message)),
       (_) => emit(PasswordUpdated()),
+    );
+  }
+
+  // clears tokens and redirects to LoginView — lives here because ProfileCubit
+  // is the only GetIt singleton that owns user-session state, and AuthCubit
+  // is not a singleton (created per-view in auth screens only).
+  Future<void> logout() async {
+    await Prefs.remove('token');
+    await Prefs.remove('refresh_token');
+    _currentUser = null;
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      LoginView.routeName,
+      (route) => false,
     );
   }
 }

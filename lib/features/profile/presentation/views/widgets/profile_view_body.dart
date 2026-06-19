@@ -6,6 +6,7 @@ import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 import 'package:uni/core/widgets/custom_error_widget.dart';
 import 'package:uni/features/profile/presentation/manager/profile_cubit/profile_cubit.dart';
+import 'package:uni/features/profile/presentation/views/widgets/logout_confirmation_sheet.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_avatar_section.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_header.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_logout_button.dart';
@@ -115,7 +116,12 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
           const SizedBox(height: 24),
           const ProfileMenuSection(),
           const SizedBox(height: 24),
-          const ProfileLogoutButton(),
+          ProfileLogoutButton(
+            onPressed: () => LogoutConfirmationSheet.show(
+              context,
+              onConfirm: () => getIt<ProfileCubit>().logout(),
+            ),
+          ),
           const SizedBox(height: 24),
           const VersionInfo(),
           const SizedBox(height: 32),
