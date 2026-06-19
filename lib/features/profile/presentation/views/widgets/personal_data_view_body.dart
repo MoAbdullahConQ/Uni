@@ -102,14 +102,22 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
       ).showSnackBar(const SnackBar(content: Text('من فضلك اختر المحافظة')));
       return;
     }
+    final age = int.tryParse(_ageController.text);
+    if (age == null || age < 14 || age > 30) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('من فضلك اختر عمر مناسب (من 14 إلى 30)')),
+      );
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       getIt<ProfileCubit>().saveStudentInfo(
         studySection: kStudySectionMap[studyCategory] ?? 'science',
-        scientificDepartment:
-            kScientificDepartmentMap[studyTrack] ?? 'scientific',
+        scientificDepartment: studyCategory == 'علمي'
+            ? (kScientificDepartmentMap[studyTrack] ?? 'scientific')
+            : '',
         governorateId: selectedGovernorateId!,
         percentage: double.tryParse(_percentageController.text) ?? 0,
-        age: int.tryParse(_ageController.text) ?? 0,
+        age: age,
       );
     }
   }
@@ -231,7 +239,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                         ],
 
                         // ── Row: عمر / نسبة / محافظة ──
-                        StatsSection(//TODO طبعا في فالديشن للعمر انه يكون بين ال14 وال30 بس عايزين بس نظهر سناك بار مثلا لما اليوزر يختار عمر غير مناسب  ويضغط علي الزارا يقوله يختار حاجه مناسبه
+                        StatsSection(
                           selectedGovernorateId: selectedGovernorateId,
                           onGovernorateChanged: (id) =>
                               setState(() => selectedGovernorateId = id),
