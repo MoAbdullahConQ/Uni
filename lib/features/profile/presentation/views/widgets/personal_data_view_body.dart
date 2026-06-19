@@ -63,6 +63,13 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
 
   bool _populatedFromUser = false;
 
+  // snapshot of the original values loaded from the server — used for no-op guard
+  String? _originalStudyCategory;
+  String? _originalStudyTrack;
+  int? _originalGovernorateId;
+  String? _originalPercentage;
+  String? _originalAge;
+
   @override
   void initState() {
     super.initState();
@@ -82,7 +89,23 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
       _percentageController.text = info.percentage.toString();
       _ageController.text = info.age.toString();
     }
+
+    // save snapshot for no-op guard
+    _originalStudyCategory = studyCategory;
+    _originalStudyTrack = studyTrack;
+    _originalGovernorateId = selectedGovernorateId;
+    _originalPercentage = _percentageController.text;
+    _originalAge = _ageController.text;
+
     _populatedFromUser = true;
+  }
+
+  bool _hasChanges() {
+    return _originalStudyCategory != studyCategory ||
+        _originalStudyTrack != studyTrack ||
+        _originalGovernorateId != selectedGovernorateId ||
+        _originalPercentage != _percentageController.text ||
+        _originalAge != _ageController.text;
   }
 
   @override
@@ -96,6 +119,15 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
 
   void _submit() {
     if (!_confirmedAccurate) return;
+
+    // no-op guard — skip request if nothing changed
+    if (!_hasChanges()) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('لم تقم بتغيير أي بيانات')));
+      return;
+    }
+
     if (selectedGovernorateId == null) {
       ScaffoldMessenger.of(
         context,
@@ -277,7 +309,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                           ),
                           onPressed: (_confirmedAccurate && !isSaving)
                               ? _submit
-                              : () {}, // TODO لو اليوزر معدلش اصلا اي حاجه في البيانات مش يبعت ريكويست
+                              : () {},
                           text: isSaving ? '' : 'حفظ التعديلات',
                           prefixIcon: isSaving
                               ? const SizedBox(
