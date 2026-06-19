@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: 401 SnackBar debug + onGenerateRoute settings fix + NotificationsCubit trigger cleanup)
+> Last updated: June 2026 (session: Profile API Integration — kickoff + first batch of screens)
 
 ---
 
@@ -7,8 +7,8 @@
 
 ```
 lib/
-├── constants.dart              (kHorizontalPadding=16, kTopPadding=16, kIsOnBoardingViewSeenKey)
-├── main.dart                   (routeObserver, navigatorKey defined here — pendingSnackBarMessage REMOVED this session)
+├── constants.dart              (kHorizontalPadding=16, kTopPadding=16, kIsOnBoardingViewSeenKey, kGovernorates ✅ NEW this session — 26 governorates, single shared source for auth + profile)
+├── main.dart                   (routeObserver, navigatorKey — MultiBlocProvider now includes ProfileCubit ✅ this session)
 ├── core/
 │   ├── entities/
 │   │   ├── uni_entity.dart
@@ -21,12 +21,12 @@ lib/
 │   ├── helper_functions/
 │   │   ├── get_unis_list.dart
 │   │   ├── getDummyEntities.dart
-│   │   ├── on_generate_routes.dart     ✅ updated this session — every case now passes settings: settings
+│   │   ├── on_generate_routes.dart     (every case passes settings: settings — resolved prior session)
 │   │   ├── recent_searches_helper.dart
 │   │   ├── calc_strength.dart
 │   │   └── build_error_bar.dart
 │   ├── services/
-│   │   ├── get_it_service.dart
+│   │   ├── get_it_service.dart         ✅ updated this session — ProfileCubit registered as singleton
 │   │   ├── shared_preferences_singleton.dart
 │   │   ├── custom_bloc_observer.dart
 │   │   └── database_service.dart      (abstract — unused)
@@ -43,7 +43,7 @@ lib/
 │   │   ├── app_text_style.dart
 │   │   ├── app_images.dart
 │   │   ├── app_fonts.dart
-│   │   ├── api_service.dart            ✅ updated this session — 401 interceptor now uses route arguments only, no global variable
+│   │   ├── api_service.dart            ✅ updated this session — 401 interceptor now has _isHandlingUnauthorized guard against concurrent double-redirect
 │   │   └── backend_endpoints.dart
 │   └── widgets/
 │       ├── uni_card.dart
@@ -63,7 +63,8 @@ lib/
 │       ├── no_internet_widget.dart
 │       ├── empty_state_widget.dart
 │       ├── custom_progress_hud.dart
-│       ├── custom_text_form_field.dart  ✅ errorStyle + errorBuilder + errorBorder fixed (prior session)
+│       ├── custom_text_form_field.dart  ✅ updated this session — added `enabled` (bool, default true) param with dimmed fill when disabled, used for read-only name/email in personal_data
+│       ├── age_field.dart               ✅ NEW this session — moved here from auth's setup_age_field.dart (now shared between auth/setup and profile/personal_data), class renamed SetupAgeField → AgeField
 │       ├── password_field.dart
 │       ├── rating.dart
 │       ├── type_badge_widget.dart
@@ -81,22 +82,42 @@ lib/
     ├── search/ ... (done — debounce still pending)
     ├── fav/ ... (done)
     ├── guide/ ... (done)
-    ├── notifications/ ... (done)
-    │   └── presentation/manager/notifications_cubit/
-    │       └── notifications_cubit.dart  — confirmed this session: double-emit per call (list + unread count) is intentional
-    ├── home/ ... (done)
-    │   └── presentation/views/main_view.dart  ✅ updated this session — added getNotifications() call in initState; didPopNext/_onTabChanged calls confirmed intentional (kept)
+    ├── notifications/ ... (done, stable)
+    ├── home/ ... (done, but see profile cross-reference below)
+    │   └── presentation/views/widgets/custom_home_app_bar.dart  🔶 still hardcoded 'محمد مجدي عبدالغني' + static Image.asset avatar — confirmed via code read this session, needs ProfileCubit wiring — OPEN ITEM, see claude.md §5
     ├── auth/ ... (done — see §Auth Feature)
     │   └── presentation/views/widgets/
-    │       ├── login_view_body.dart     ✅ updated this session — reads session-expired message from ModalRoute arguments, no global variable, debug prints removed
-    │       ├── sign_up_form.dart        (validator fix from prior session — match check in _submit())
-    │       └── ...
+    │       ├── login_view_body.dart     (reads session-expired message from ModalRoute arguments — unchanged, still correct)
+    │       ├── sign_up_form.dart
+    │       ├── setup_view_body.dart      ✅ updated this session — now imports AgeField from core/widgets instead of local setup_age_field.dart
+    │       ├── setup_governorate_dropdown.dart  ✅ updated this session — now imports kGovernorates from root constants.dart instead of a local duplicate list
+    │       └── (setup_age_field.dart DELETED this session — superseded by core/widgets/age_field.dart)
     ├── splash/
     │   └── presentation/views/widgets/splash_view_body.dart
     ├── on_boarding/
     │   └── presentation/views/on_boarding_view.dart
     ├── uni_detail/ ... (done)
-    ├── profile/ → presentation/views/ (4 screens UI only — API integration pending — NEXT UP)
+    ├── profile/  🔶 IN PROGRESS — see §9 below for full breakdown
+    │   ├── domain/ — reuses auth's GetMeUseCase, SaveStudentInfoUseCase, UpdatePasswordUseCase (no separate profile use cases — confirmed correct, they already lived in auth domain)
+    │   └── presentation/
+    │       ├── manager/profile_cubit/
+    │       │   ├── profile_cubit.dart  ✅ NEW this session
+    │       │   └── profile_state.dart  ✅ NEW this session
+    │       └── views/widgets/
+    │           ├── profile_view_body.dart            ✅ rebuilt this session — connects to ProfileCubit.getMe()
+    │           ├── personal_data_view_body.dart       ✅ rebuilt this session — see §9 for full detail
+    │           ├── security_view_body.dart            ✅ rebuilt this session — current-password field removed, updatePassword wired
+    │           ├── password_section.dart              ✅ updated this session — current-password field removed
+    │           ├── governorate_dropdown.dart          ✅ rebuilt this session — real dropdown, was 3 hardcoded fake options
+    │           ├── stats_section.dart                 ✅ updated this session — now accepts governorate/percentage/age state from parent instead of being static
+    │           ├── documents_section.dart              ✅ rebuilt this session — image_picker integration, internal checkbox now functional
+    │           ├── personal_data_document_upload_card.dart  ✅ rebuilt this session — image_picker tap-to-pick/preview/clear
+    │           ├── profile_avatar_section.dart        (unchanged — receives name/email/role from parent now)
+    │           ├── profile_logout_button.dart         (unchanged widget — accepts onPressed, but nothing wires it yet — OPEN ITEM)
+    │           ├── personal_data_interests_selector.dart  (unchanged — confirmed UI-only, no backend endpoint, static selected-set is fine as-is)
+    │           ├── avatar_profile.dart                 (unchanged — avatar tap interaction still undefined, OPEN ITEM)
+    │           ├── role_badge.dart, profile_header.dart, profile_menu_item.dart, profile_menu_section.dart  (unchanged)
+    │           └── contact_us_view_body.dart (or similar — not yet touched, OPEN ITEM, needs UX spec from user)
     └── faheem/ → domain/entities/ + presentation/views/ (UI only — waiting on backend)
 ```
 
@@ -161,7 +182,7 @@ class NotificationEntity {
 }
 ```
 
-### UserEntity (auth)
+### UserEntity (auth) — ✅ UPDATED this session
 ```dart
 class UserEntity {
   final int id;
@@ -169,6 +190,18 @@ class UserEntity {
   final String email;
   final String? avatar;
   final String type;
+  final StudentInfoEntity? studentInfo; // NEW — null until user completes student info
+}
+```
+
+### StudentInfoEntity — ✅ NEW this session
+```dart
+class StudentInfoEntity {
+  final String studySection;          // raw value as returned by API — may be Arabic ("علمي") from GetMe or English ("science") if echoed back; presentation layer handles mapping both ways
+  final String scientificDepartment;  // same caveat as above
+  final int governorateId;
+  final double percentage;
+  final int age;
 }
 ```
 > No `AuthEntity` — tokens never reach UI, handled as plain `String` via Prefs.
@@ -219,6 +252,7 @@ class BackendEndpoints {
 ```dart
 class ApiService {
   final Dio dio;
+  bool _isHandlingUnauthorized = false; // ✅ NEW this session
 
   ApiService(this.dio) {
     dio.interceptors.add(InterceptorsWrapper(
@@ -236,13 +270,20 @@ class ApiService {
       },
       onError: (error, handler) {
         if (error.response?.statusCode == 401) {
-          Prefs.remove('token');
-          // message passed as route arguments only — no global state.
-          navigatorKey.currentState?.pushNamedAndRemoveUntil(
-            LoginView.routeName,
-            (route) => false,
-            arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
-          );
+          // guard against multiple concurrent requests (e.g. notifications list +
+          // unread count) each triggering their own redirect when the token expires.
+          if (!_isHandlingUnauthorized) {
+            _isHandlingUnauthorized = true;
+            Prefs.remove('token');
+            navigatorKey.currentState
+                ?.pushNamedAndRemoveUntil(
+                  LoginView.routeName,
+                  (route) => false,
+                  arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
+                )
+                .then((_) => _isHandlingUnauthorized = false);
+          }
+          return handler.next(error);
         }
         return handler.next(error);
       },
@@ -264,7 +305,9 @@ class ApiService {
 }
 ```
 
-> ✅ **RESOLVED this session:** session-expired SnackBar now confirmed working reliably. Root cause was `onGenerateRoute` not forwarding `settings: settings` to `MaterialPageRoute` (see §8 Known Bugs — moved here as resolved). `pendingSnackBarMessage` global variable fully removed.
+> ✅ **RESOLVED this session:** double session-expired SnackBar (appeared twice when entering Notifications with an expired token) — root cause confirmed via repeated `print` log trace: two concurrent API calls inside `NotificationsCubit.getNotifications()` (list fetch + `_fetchUnreadCount()`) both received 401 nearly simultaneously, each independently triggering the interceptor's `pushNamedAndRemoveUntil`. Fixed with `_isHandlingUnauthorized` guard flag, reset after navigation completes via `.then()`.
+>
+> 🔶 **NEW, NOT YET RESOLVED this session:** a *different* SnackBar-ordering issue was flagged during Profile work — when a `personal_data` save request hits 401, the cubit's own `SaveStudentInfoFailure` SnackBar appears (showing a generic error) seemingly before/instead of the proper 401-redirect-and-message flow. This is a distinct bug from the one above. **Needs step-by-step log diagnosis next session before any fix is attempted** — do not assume the same root cause or the same fix applies.
 
 ---
 
@@ -283,10 +326,15 @@ class ApiService {
 **Login flow:**
 1. `LoginView` → login ✅ → `pushNamedAndRemoveUntil` → `MainView` — no SnackBar
 
-**401 / session expired flow (finalized this session):**
-1. Any API call returns 401 → interceptor → `Prefs.remove('token')` → `pushNamedAndRemoveUntil(LoginView.routeName, arguments: message)`
+**401 / session expired flow:**
+1. Any API call returns 401 → interceptor → guard check → `Prefs.remove('token')` → `pushNamedAndRemoveUntil(LoginView.routeName, arguments: message)`
 2. `LoginViewBody.initState` → reads `ModalRoute.of(context)?.settings.arguments as String?` → shows SnackBar if non-null
 3. No cleanup needed — each navigation's arguments are scoped to that route instance only
+4. ✅ Guard flag added this session prevents double-redirect from concurrent 401s (see §4)
+
+**Logout flow — NOT YET WIRED (open item):**
+- `AuthCubit.logout()` exists (`Prefs.remove('token')` + `Prefs.remove('refresh_token')`) but `AuthCubit` is not a GetIt singleton (created per-view in auth screens only) — unreachable from `ProfileViewBody`
+- Claude's proposed approach (awaiting user confirmation): add a `logout()` method to `ProfileCubit` instead, since it's already a singleton and logically owns user-session state — avoids promoting `AuthCubit` to singleton and risking state bleed across login/register/forgot-password screens
 
 ---
 
@@ -311,7 +359,7 @@ class ApiService {
   "data": { "otp": 619870, "user": { "name": "...", "email": "...", "id": 31 } }
 }
 ```
-> ⚠️ Known backend quirk: user record created before OTP verification — duplicate email returns generic error. Needs sayed conversation. (Still open — unrelated to this session's work.)
+> ⚠️ Known backend quirk: user record created before OTP verification — duplicate email returns generic error. Needs sayed conversation. (Still open.)
 
 **POST /verify-Otp**
 ```json
@@ -333,19 +381,70 @@ class ApiService {
 { "status": 200, "data": { "otp": 455398 } }
 ```
 
-**GET /auth/me**
+**GET /auth/me** — ✅ confirmed full shape this session (includes nested `student_info` and `favorite_universities`, the latter NOT mapped into `UserEntity` — decided unnecessary since fav has its own dedicated feature/endpoint already)
 ```json
-{ "status": 200, "data": { "user": { "id": 28, "name": "...", "email": "...", "avatar": null, "type": "user" } } }
+{
+  "status": 200,
+  "message": "User retrieved successfully",
+  "data": {
+    "user": {
+      "id": 77,
+      "name": "dd",
+      "email": "mohamed553231@gmail.com",
+      "email_verified_at": "2026-06-17T11:06:04.000000Z",
+      "avatar": null,
+      "created_at": "...",
+      "updated_at": "...",
+      "type": "user",
+      "student_info": {
+        "id": 5,
+        "study_section": "علمي",
+        "scientific_department": "علوم",
+        "governorate_id": 1,
+        "user_id": 77,
+        "percentage": 60,
+        "age": 20,
+        "created_at": "...",
+        "updated_at": "...",
+        "governorate": { "id": 1, "name_ar": "القاهرة", "name_en": "Cairo", "created_at": null, "updated_at": null }
+      },
+      "favorite_universities": [ /* NOT mapped into UserEntity — fav feature owns this data already */ ]
+    }
+  }
+}
 ```
+> ⚠️ Note: `study_section`/`scientific_department` come back **in Arabic** from this endpoint ("علمي"، "علوم") but `POST /student_info` expects **English** values ("science"، "scientific"). `StudentInfoModel` stores the raw value as-is; the presentation layer (`personal_data_view_body.dart`, `profile_view_body.dart`) does the Arabic↔English mapping in both directions, same pattern as the existing `SetupViewBody`.
 
-**POST /student_info** request body:
+**POST /auth/update-Password** — ✅ confirmed this session
 ```json
-{ "study_section": "science", "scientific_department": "scientific", "governorate_id": 1, "percentage": 60, "age": 20 }
+{ "status": 200, "message": "Password Updated Successfully" }
 ```
+> No `current_password` param in current endpoint — the "current password" field was removed from `security_view_body.dart`/`password_section.dart` UI this session since it had no backend support and wasn't even wired to a controller. **Open question to sayed: can `current_password` be added?**
+
+**POST /student_info** — ✅ confirmed this session
+```json
+{
+  "status": 200,
+  "message": "تم إضافة معلوماتك بنحاج! ",
+  "data": {
+    "id": 5,
+    "study_section": "علمي",
+    "scientific_department": "علوم",
+    "governorate_id": 1,
+    "user_id": 77,
+    "percentage": 60,
+    "age": 20,
+    "created_at": "...",
+    "updated_at": "...",
+    "governorate": { "id": 1, "name_ar": "القاهرة", "name_en": "Cairo", "created_at": null, "updated_at": null }
+  }
+}
+```
+> ⚠️ Open question to sayed (this session): when `study_section` is "أدبي" (literature), what should `scientific_department` be sent as? Frontend currently sends `''` (empty string) — needs confirmation this is acceptable, or whether `null` is required (would need a signature change: `SaveStudentInfoUseCase`/`AuthRepo.saveStudentInfo`/data source would need `scientificDepartment` to become nullable).
 
 ---
 
-## 7. GetIt Service — Full Registration Order
+## 7. GetIt Service — Full Registration Order (updated this session)
 
 ```
 Dio → ApiService
@@ -360,65 +459,16 @@ Dio → ApiService
 → AuthRemoteDataSource → AuthRepo → LoginUseCase → RegisterUseCase → VerifyOtpUseCase
   → ForgetPasswordUseCase → ResendOtpUseCase → ResetPasswordUseCase
   → SaveStudentInfoUseCase → UpdatePasswordUseCase → GetMeUseCase
+→ ProfileCubit ✅ NEW this session — reuses GetMeUseCase, SaveStudentInfoUseCase, UpdatePasswordUseCase already registered above
 ```
 
-> `AuthCubit` / `OtpCubit` are NOT registered in GetIt — created per-view via `BlocProvider(create: ...)`.
-> `NotificationsCubit` IS a GetIt singleton, but `getNotifications()` is no longer auto-called at registration/startup time — see §9 MainView trigger points.
+> `AuthCubit` / `OtpCubit` are NOT registered in GetIt — created per-view via `BlocProvider(create: ...)`. This is now relevant to the open logout-wiring question (see §5 above).
+> `NotificationsCubit` IS a GetIt singleton, `getNotifications()` called from `MainView` only (not at app startup) — unchanged.
+> `ProfileCubit` IS a GetIt singleton — accessed directly via `getIt<ProfileCubit>()` from view bodies, no `BlocProvider` needed in the three profile views (`ProfileView`, `PersonalDataView`, `SecurityView` all confirmed to correctly omit `BlocProvider` this session, consistent with the singleton pattern).
 
 ---
 
-## 8. on_generate_routes.dart — All Routes
-
-```
-SplashView, OnBoardingView,
-LoginView, SignUpView, ForgotPasswordView,
-OtpView (arguments: OtpArgs),
-ResetPasswordView (arguments: String tempToken),
-SetupView,
-MainView, HomeView (dead), FavView,
-ProfileView, PersonalDataView, SecurityView, ContactUsView,
-GuideView, GuideVideosView, GuidePodcastsView, GuideArticlesView,
-GuideArticleDetailView (arguments: GuideArticleEntity),
-BrowseView, NotificationsView,
-FaheemChatView, FaheemHistoryView,
-UniDetailView (arguments: int id),
-SearchView
-```
-
-> ✅ **Fixed this session:** every case now passes `settings: settings` to its `MaterialPageRoute` constructor. Previously omitted everywhere — meant `ModalRoute.of(context)?.settings.arguments` always returned `null` regardless of what was passed to `pushNamed`/`pushNamedAndRemoveUntil`. This was the actual root cause of the session-expired SnackBar not appearing (see §14).
-
----
-
-## 9. MainView — NotificationsCubit Trigger Points (finalized this session)
-
-```dart
-@override
-void initState() {
-  super.initState();
-  // ...other init calls...
-  getIt<NotificationsCubit>().getNotifications(); // added this session
-}
-
-@override
-void didPopNext() {
-  getIt<NotificationsCubit>().getNotifications(); // kept — refresh on returning from a pushed screen
-  // ...other failure-state reload checks unchanged...
-}
-
-void _onTabChanged(int index) {
-  if (index == 0 && currentIndex != 0) {
-    getIt<NotificationsCubit>().getNotifications(); // kept — refresh when returning to home tab
-    // ...
-  }
-  setState(() => currentIndex = index);
-}
-```
-
-All three trigger points are intentional and confirmed — covers "just logged in," "app restarted while logged in," "returned from a pushed screen," and "switched back to home tab." `main.dart`/`MultiBlocProvider` no longer calls `getNotifications()` at all (removed — was firing on a possibly-expired token at cold start, causing an unwanted/confusing 401 redirect immediately on app open).
-
----
-
-## 10. NotificationsCubit — Internal Emit Behavior (confirmed this session, not a bug)
+## 8. NotificationsCubit — Internal Emit Behavior (confirmed, not a bug)
 
 `getNotifications()` body (relevant part):
 ```dart
@@ -438,7 +488,101 @@ Future<void> getNotifications() async {
 }
 ```
 
-`_fetchUnreadCount()` emits a second `NotificationsSuccess` (with updated `unreadCount`) only if the count actually changed from before. This means a single `getNotifications()` call can legitimately produce two `Success` states in the log — confirmed as intentional (list and unread-count are independent concerns), left unchanged by explicit decision.
+This makes two **independent Dio calls** per `getNotifications()` invocation — relevant context for the 401-guard fix in §4, since both calls can fail with 401 close together in time. Double-emit behavior itself confirmed intentional, unchanged.
+
+---
+
+## 9. ProfileCubit — Full Design (NEW this session)
+
+```dart
+class ProfileCubit extends Cubit<ProfileState> {
+  final GetMeUseCase getMeUseCase;
+  final SaveStudentInfoUseCase saveStudentInfoUseCase;
+  final UpdatePasswordUseCase updatePasswordUseCase;
+
+  UserEntity? _currentUser;
+  UserEntity? get currentUser => _currentUser; // exposed for intermediate states
+
+  Future<void> getMe() async {
+    emit(ProfileLoading());
+    final result = await getMeUseCase.call();
+    result.fold((failure) => emit(ProfileFailure(failure.message)), (user) {
+      _currentUser = user;
+      emit(ProfileSuccess(user));
+    });
+  }
+
+  Future<void> saveStudentInfo({...}) async {
+    emit(SavingStudentInfo());
+    final result = await saveStudentInfoUseCase.call(...);
+    result.fold(
+      (failure) => emit(SaveStudentInfoFailure(failure.message)),
+      (_) async {
+        emit(StudentInfoSaved());
+        await getMe(); // refresh local user so ProfileSuccess reflects saved values
+      },
+    );
+  }
+
+  Future<void> updatePassword({...}) async {
+    emit(UpdatingPassword());
+    final result = await updatePasswordUseCase.call(...);
+    result.fold(
+      (failure) => emit(UpdatePasswordFailure(failure.message)),
+      (_) => emit(PasswordUpdated()),
+    );
+  }
+}
+```
+
+**States:** `ProfileInitial`, `ProfileLoading`, `ProfileSuccess(UserEntity)`, `ProfileFailure(String)` for fetch; `SavingStudentInfo`, `StudentInfoSaved`, `SaveStudentInfoFailure(String)` for the student-info save; `UpdatingPassword`, `PasswordUpdated`, `UpdatePasswordFailure(String)` for password update. Save/update states kept deliberately separate from fetch states so a failed write doesn't blow away currently-displayed user data — screens read `currentUser` getter during intermediate/failure states of the write actions.
+
+**Used by:** `profile_view_body.dart` (getMe only), `personal_data_view_body.dart` (getMe + saveStudentInfo), `security_view_body.dart` (updatePassword only) — single cubit, all three screens, per the "Cubit-per-feature not per-screen" architecture rule. Confirmed as correct design via explicit expert-opinion question this session (user asked Claude to "act as flutter expert" on cubit-splitting decision).
+
+---
+
+## 10. PersonalDataViewBody — Arabic↔Backend Mapping (NEW this session)
+
+```dart
+const Map<String, String> kStudySectionMap = {'علمي': 'science', 'أدبي': 'literature'};
+const Map<String, String> kStudySectionMapReversed = {
+  'science': 'علمي', 'علمي': 'علمي', 'literature': 'أدبي', 'أدبي': 'أدبي',
+};
+const Map<String, String> kScientificDepartmentMap = {'علوم': 'scientific', 'رياضة': 'Mathematics'};
+const Map<String, String> kScientificDepartmentMapReversed = {
+  'scientific': 'علوم', 'علوم': 'علوم', 'Mathematics': 'رياضة', 'رياضة': 'رياضة',
+};
+```
+Same pattern as existing `SetupViewBody` — reversed maps handle the fact that `GetMe` returns Arabic values while `SaveStudentInfo` expects English ones, and both maps include identity entries (Arabic→Arabic) as a defensive fallback in case raw values vary.
+
+**Conditional field visibility (resolved this session, was a TODO):** "الشعبة العلمية" selector only renders when `studyCategory == 'علمي'`:
+```dart
+if (studyCategory == 'علمي') ...[
+  const FieldLabel(label: 'الشعبة العلمية'),
+  const SizedBox(height: 6),
+  StudyTypeSelector(options: const ['علوم', 'رياضة'], selected: studyTrack, onSelected: (v) => setState(() => studyTrack = v)),
+  const SizedBox(height: 16),
+],
+```
+
+**Submit payload when "أدبي" (resolved this session, was a TODO):**
+```dart
+scientificDepartment: studyCategory == 'علمي'
+    ? (kScientificDepartmentMap[studyTrack] ?? 'scientific')
+    : '',
+```
+🔶 Sends `''` currently — **unconfirmed with backend, see §6 open question.**
+
+**Manual age validation before submit (resolved this session, was a TODO)** — in addition to the existing inline `Form`/`AgeField` validator:
+```dart
+final age = int.tryParse(_ageController.text);
+if (age == null || age < 14 || age > 30) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('من فضلك اختر عمر مناسب (من 14 إلى 30)')),
+  );
+  return;
+}
+```
 
 ---
 
@@ -462,6 +606,8 @@ Future<void> getNotifications() async {
 | السن | `age` | int |
 | مجالات الاهتمام | — | UI-only, no backend endpoint |
 
+> Same field mapping now reused in `PersonalDataViewBody` (profile) — see §10 above.
+
 ---
 
 ## 13. Error Handling Pattern
@@ -484,6 +630,7 @@ DioException → propagates from data source → caught in repo → left(ServerF
 | Pagination failure | `CustomErrorWidget` inline أسفل اللست مع `onRetry: loadMore` |
 | Empty list | `EmptyStateWidget` |
 | Transient success message | `SnackBar` (not Toast) |
+| Profile fetch failure | `CustomErrorWidget` with `onRetry: () => getIt<ProfileCubit>().getMe()` — confirmed this session |
 
 ---
 
@@ -506,20 +653,24 @@ abstract class AppColors {
 
 ---
 
-## 16. Known Bugs & Pending Issues (current — resolved items moved to §17)
+## 16. Known Bugs & Pending Issues (current)
 
 - **Backend Bug — Fav Pagination:** same items regardless of cursor → deduplication in `FavCubit.loadMore()`
 - **`HomeView` dead code:** exists but never navigated to
 - **`SearchResultsWidget` dead code:** unused
-- **Search Debounce:** not implemented — every keystroke triggers search — **next up**
+- **Search Debounce:** not implemented — every keystroke triggers search — still pending
 - **`withOpacity` deprecated:** works but newer Flutter suggests `.withValues(alpha:...)`
 - **`is_fav_for_me`:** in API response but commented out in `UniEntity`
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
-- **"قدم الآن" button:** placeholder — needs profile API integration
 - **`custom_exceptions.dart`:** exists but unused
-- **Auth — "مجالات الاهتمام":** UI-only, no backend endpoint yet
+- **Auth — "مجالات الاهتمام":** UI-only, no backend endpoint — same status confirmed for profile's copy of this widget
 - **Backend — duplicate-email-unverified edge case:** needs sayed conversation
 - **Faheem `/aiChat/send`:** waiting on backend — sayed's current status unconfirmed, ask next session
+- **NEW this session — session-expired SnackBar ordering bug in personal_data save flow:** see §4 above, not yet diagnosed
+- **NEW this session — "قدم الآن" button still placeholder:** unchanged status, profile API integration now underway should eventually unblock this
+- **NEW this session — Home page name/avatar hardcoded:** see §1 (`custom_home_app_bar.dart`), open item
+- **NEW this session — Logout button not wired:** see §5, open item awaiting user confirmation on approach
+- **NEW this session — Contact Us screen UX:** needs concrete mechanism spec from user before any code
 
 ---
 
@@ -544,8 +695,8 @@ abstract class AppColors {
 | **Interceptor: case-insensitive Authorization check** | Dio lowercases header keys |
 | **`updatePassword` and `getMe` in `auth` feature** | Endpoints under `/auth/` |
 | **2 Cubits for auth only** | `OtpCubit` for timer/resend; everything else in `AuthCubit` |
-| **`AuthCubit`/`OtpCubit` NOT GetIt singletons** | Transient flow |
-| **"مجالات الاهتمام" static/UI-only** | No backend endpoint |
+| **`AuthCubit`/`OtpCubit` NOT GetIt singletons** | Transient flow — now directly relevant to the open logout-wiring question |
+| **"مجالات الاهتمام" static/UI-only** | No backend endpoint (confirmed again this session for profile's copy) |
 | **`pinput` package for OTP** | Standard keyboard, no custom numpad |
 | **SnackBar over Toast** | Cleaner UX |
 | **Register flow: OTP → SetupView** | Simpler flow |
@@ -564,18 +715,32 @@ abstract class AppColors {
 | **Confirm-password match check moved to `_submit()`** | Removes reserved blank error-line space, validator only checks "required" |
 | **`SecurityStrengthIndicator` shows when `_passwordController.text.isNotEmpty`** | Smooth UX, no sudden appear/disappear |
 | **Splash → LoginView (not OnBoarding) when token missing but onboarding seen** | Correct flow |
-| **OnBoarding → LoginView (not MainView)** | Was a bug — fixed in a prior session |
-| **Login fields not cleared on failed login** | User may have typo in password only — clearing all fields forces re-typing email |
-| **`pendingSnackBarMessage` global REMOVED — message travels via route `arguments` only** | Global mutable state caused a "leftover message" bug across unrelated navigations; route arguments are scoped per-navigation, no cleanup needed |
-| **Every `onGenerateRoute` case must pass `settings: settings`** | Root cause of the SnackBar arguments always being `null` — omission silently breaks any future use of route arguments too |
-| **`NotificationsCubit.getNotifications()` removed from `main.dart`/`MultiBlocProvider` startup call** | Was firing with a possibly-expired token at cold start, causing a confusing immediate 401 redirect on app open |
+| **OnBoarding → LoginView (not MainView)** | Was a bug — fixed prior session |
+| **Login fields not cleared on failed login** | User may have typo in password only — re-confirmed this session as deliberate, not a bug, after user asked Claude to evaluate it explicitly |
+| **`pendingSnackBarMessage` global REMOVED — message travels via route `arguments` only** | Global mutable state caused a "leftover message" bug across unrelated navigations |
+| **Every `onGenerateRoute` case must pass `settings: settings`** | Root cause of the SnackBar arguments always being `null` |
+| **`NotificationsCubit.getNotifications()` removed from `main.dart`/`MultiBlocProvider` startup call** | Was firing with a possibly-expired token at cold start |
 | **`NotificationsCubit.getNotifications()` added to `MainView.initState()`** | Ensures fresh notifications right after login or app restart while logged in |
-| **`didPopNext()` and `_onTabChanged()` notification refresh calls kept (not deduplicated)** | User wants notifications "always fresh" across all re-entry points to MainView — intentional, not a bug |
-| **`getNotifications()` double-emit (list + unread count) left as-is** | Two independent concerns updating separately is intentional, not a bug to merge |
+| **`didPopNext()` and `_onTabChanged()` notification refresh calls kept (not deduplicated)** | User wants notifications "always fresh" |
+| **`getNotifications()` double-emit (list + unread count) left as-is** | Two independent concerns updating separately is intentional |
+| **`_isHandlingUnauthorized` guard flag added to `ApiService` 401 interceptor** | Confirmed via log trace this session: concurrent 401s (list + unread-count calls both failing) were each independently triggering the redirect, causing a double SnackBar |
+| **Single `ProfileCubit` for profile/personal_data/security (not 3 separate cubits)** | Same "object" of work (current user's data) — consistent with `AuthCubit` covering 5 auth screens; confirmed via explicit "act as Flutter expert" question this session |
+| **`kGovernorates` moved to root `lib/constants.dart`** | User's explicit instruction — single shared source instead of duplicated in auth and profile separately |
+| **`SetupAgeField` renamed to `AgeField` and moved to `core/widgets/`** | Now used by both auth (setup) and profile (personal_data) — per architecture rule 4 |
+| **`CustomTextFormField` gained an `enabled` param** | Needed to show name/email as read-only in personal_data (no update-profile endpoint exists) — backward-compatible, default `true` |
+| **Name/email fields in `personal_data` are read-only, not submitted** | No `update-profile` endpoint exists — only `student_info` fields are submitted; flagged as UI-only display rather than silently dropped or invented |
+| **`favorite_universities` from `GetMe` response NOT mapped into `UserEntity`** | Fav feature already has its own dedicated endpoint/state — redundant to duplicate here, confirmed with user this session |
+| **Current-password field removed from `security_view_body.dart`/`password_section.dart`** | User is already authenticated via bearer token; `update-Password` endpoint has no `current_password` param; field was previously unconnected to any controller anyway |
+| **`image_picker` added as a new dependency** | For `DocumentsSection`/`PersonalDataDocumentUploadCard` — explicitly approved by user this session for better UX on the UI-only document upload cards (no backend endpoint, but tap-to-pick/preview/clear feels more complete than static placeholders) |
+| **Avatar upload to backend explicitly deferred** | No endpoint exists yet; opening that scope now would expand this round significantly; tracked as a separate future task per user's "خلينا نأجلها" |
+| **"الشعبة العلمية" selector conditionally rendered only when "علمي" selected** | Doesn't make sense to show a science-track sub-selector for the literature track — user-flagged TODO, resolved this session |
+| **`scientificDepartment` sent as `''` (not omitted) when study section is "أدبي"** | Best guess pending sayed's confirmation on what the backend actually expects (`null` vs `''`) — flagged as open/unconfirmed, not a final decision |
+| **Manual 14–30 age check with SnackBar added before submit, in addition to inline Form validator** | User wanted an explicit SnackBar nudge on top of the existing silent inline validation error |
+| **Logout method proposed for `ProfileCubit` rather than promoting `AuthCubit` to a GetIt singleton** | Avoids state-bleed risk across auth's 5 screens sharing one `AuthState` enum; `ProfileCubit` already owns user-session-shaped state — proposed by Claude, **awaiting explicit user confirmation, not yet implemented** |
 
 ---
 
-## 18. CustomTextFormField — Validation & Error Style (final state)
+## 18. CustomTextFormField — Validation & Error Style (final state, updated this session)
 
 - `errorStyle: TextStyles.regular12.copyWith(color: AppColors.red)` — matches strength indicator style
 - `errorBuilder` used to align error text right: `Align(alignment: Alignment.centerRight, child: Text(errorText, style: ...))`
@@ -583,6 +748,7 @@ abstract class AppColors {
 - `focusedErrorBorder: buildFocusedBorder(borderColor ?? AppColors.red)`
 - `autovalidateMode: AutovalidateMode.onUserInteraction`
 - Confirm-password `validator` → "required" only; match check in `_submit()` via explicit equality check
+- ✅ NEW this session: `enabled` (bool, default `true`) param — when `false`, field is non-interactive and fill color dims to `Color(0xFFEFF1F1)` instead of the default `Color(0xFFF9FAFA)`
 
 ---
 
@@ -607,25 +773,40 @@ abstract class AppColors {
 4. `errorBorder` fix
 5. Splash feature: `executeNavigation()` — تم بناؤها
 6. OnBoarding bug fix: كانت بتروح `MainView` بدل `LoginView`
-7. أول نسخة من 401 interceptor: `GlobalKey<NavigatorState>` + `pendingSnackBarMessage` global — **هذه النسخة استُبدلت بالكامل في الجلسة التالية (انظر §20)**
+7. أول نسخة من 401 interceptor: `GlobalKey<NavigatorState>` + `pendingSnackBarMessage` global — استُبدلت بالكامل لاحقًا
 8. `LoginViewBody`: تحويل لـ `StatefulWidget`
 9. Login fields on failure: قرار عدم المسح
 
----
+**جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup (RESOLVED)**
+1. شخّصنا السبب الحقيقي للـ SnackBar مش بتظهر: `onGenerateRoute` كانت بتعمل `MaterialPageRoute` من غير `settings: settings`
+2. اتشال `pendingSnackBarMessage` global بالكامل، الرسالة بقت تتبعت كـ route `arguments` فقط
+3. كل الـ cases في `on_generate_routes.dart` بقت بتمرر `settings: settings`
+4. اتشال نداء `getNotifications()` من `main.dart`، اتضاف في `MainView.initState()`
+5. تكرار الـ `Success` state (مرتين/تلاتة) — تم تأكيده كسلوك مقصود مش bug
+6. `didPopNext`/`_onTabChanged` notification refresh — قرار نهائي بالحفاظ عليهم
 
-## 20. Session Summary — هذا الشات (401 SnackBar Debug + Notifications Trigger Cleanup) — RESOLVED
+**جلسة: Login Fields Bug Review (RESOLVED, no actual bug found)**
+1. اليوزر سأل عن سبب مسح فيلدز اللوجن بعد فشل المحاولة — Claude فحص `login_form.dart` و `login_view_body.dart` كاملين، اتأكد إن مفيش أي كود بيمسح الفيلدز فعليًا — القرار الأصلي (عدم المسح) لسه قائم وصحيح، مفيش تناقض في الكود
 
-1. **شخّصنا السبب الحقيقي للـ SnackBar مش بتظهر:** ليس `pendingSnackBarMessage` timing كما افترضنا أول مرة — السبب الفعلي: `onGenerateRoute` كانت بتعمل `MaterialPageRoute` من غير `settings: settings`، فـ `ModalRoute.of(context)?.settings.arguments` كانت ترجع `null` دايمًا لكل route، مش بس `LoginView`
-2. **اتشال `pendingSnackBarMessage` global بالكامل من `main.dart`** — الرسالة بقت تتبعت كـ route `arguments` فقط
-3. **`ApiService` 401 interceptor:** بقى يبعت الرسالة في `arguments` مباشرة بدون global variable
-4. **`LoginViewBody`:** بقت تقرأ من `ModalRoute.of(context)?.settings.arguments as String?` بس — مفيش حاجة تتمسح بعد القراءة
-5. **`on_generate_routes.dart`:** كل الـ cases بقت بتمرر `settings: settings` — fix شامل، مش بس لصفحة اللوجن
-6. **بعد الفيكس، السناك بار ظهرت "أول ما يفتح التطبيق"** — تم التأكد إنه سلوك صحيح (مش leftover bug): `NotificationsCubit.getNotifications()` كانت بتتنادى تلقائيًا في `main.dart` بتوكن expired فعلي من جلسة سابقة → 401 حقيقي
-7. **اتشال نداء `getNotifications()` من `main.dart`/`MultiBlocProvider`** بالكامل
-8. **اتضاف نداء `getNotifications()` في `MainView.initState()`** — تحديث فوري بعد لوجن أو restart وهو logged in
-9. **اكتُشف تكرار `Success` (مرتين/تلاتة) عبر اللوج** — تم تتبعه وتأكيده كسلوك مقصود:
-   - تكرار على مستوى `MainView`: `initState` + `didPopNext` (LoginView بتتعمل لها pop) — **قرار: سيبهم زي ما هم**، حالات استخدام مختلفة
-   - تكرار داخلي في `getNotifications()` نفسها: `_emitSuccess()` بعد الليست + emit تاني بعد `_fetchUnreadCount()` لو العدد اتغير — **قرار: سيبها**، مفهومين مختلفين منطقيًا
-10. **`didPopNext()` و `_onTabChanged()` في `MainView`:** قرار نهائي بالحفاظ على نداء `getNotifications()` في الاتنين — اليوزر عايز الإشعارات "متحدثة دايمًا" مهما كانت نقطة الدخول لـ `MainView`
+**جلسة: 401 Double-SnackBar Diagnosis + Fix (RESOLVED)**
+1. اليوزر لاحظ السناك بار بتظهر مرتين عند دخول صفحة الإشعارات بتوكن منتهي
+2. تم تتبعه بـ `print` logs — اتأكد إن النداء بيحصل مرتين فعليًا (مش افتراض)
+3. السبب: `getNotifications()` بتعمل نداءين API مستقلين (list + unread count)، الاتنين بيفشلوا بـ 401 في نفس الوقت تقريبًا
+4. الفيكس: `_isHandlingUnauthorized` guard flag في `ApiService`، بيتصفّر بعد ما الـ navigation تخلص
 
-**النتيجة:** كل الـ debugging thread ده مقفول بالكامل ومؤكد إنه شغال. مفيش open items من هذا الشات.
+**جلسة: Profile API Integration — هذا الشات (IN PROGRESS، مش مقفولة بالكامل)**
+انظر §9 و §10 أعلاه للتفاصيل التقنية الكاملة. ملخص سريع:
+1. خطة كاملة اتعملت ومُتفق عليها: `GetMe` + `SaveStudentInfo` + `UpdatePassword` فقط، الـ avatar upload مؤجل
+2. `kGovernorates` اتنقلت لـ `constants.dart` المشترك بدل تكرارها — بناءً على طلب صريح من اليوزر
+3. `ProfileCubit` واحدة اتعملت للتلاتة شاشات (مش 3 منفصلة) — قرار اتأكد بسؤال "act as flutter expert"
+4. `StudentInfoEntity`/`StudentInfoModel` جداد، `UserEntity` اتحدثت
+5. الشاشات التلاتة (`profile`, `personal_data`, `security`) اتربطت بالكيوبت
+6. `image_picker` اتضافت للمستندات بموافقة صريحة من اليوزر
+7. حقل "كلمة المرور الحالية" اتشال (مفيش endpoint param وكان مش متربط بحاجة أصلاً)
+8. اليوزر بعت كود فيه TODOs جوا الكومنتات، اتحلت اتنين منهم (إظهار الشعبة العلمية شرطيًا، إرسال scientificDepartment فاضي لما أدبي) — رد فعل صحيح من Claude على نمط "TODO comments" اللي اليوزر بيستخدمه
+9. تم اكتشاف bug جديد (مش نفس الـ 401 القديم): ترتيب غلط للسناك بار وقت فشل حفظ بسبب 401 في `personal_data` — **لسه مش متشخّص**
+10. اليوزر صحح Claude مرة وحدة لما بدأ يقرا/يلمس كود `profile_view_body.dart` وسط نقاش لسه مفتوح عن طريقة عمل الـ logout — درس اتسجل في التفضيلات
+11. **العناصر المفتوحة الستة** (بالترتيب اللي طلبه اليوزر): تشخيص 401 ordering bug → مراجعة كود الـ no-op-save بتاع اليوزر → ربط اسم/صورة الهوم بيدج → ربط زرار اللوج آوت (مستني تأكيد على الـ approach) → تحديد شكل صفحة "تواصل مع الدعم" → توضيح المقصود بـ "avatar dialog"
+12. **سؤالين مفتوحين لسايد**: قيمة `scientific_department` لما أدبي (`null` ولا `''`)، وإمكانية إضافة `current_password` لـ `update-Password` endpoint
+
+**النتيجة:** الجلسة دي **لسه مفتوحة** — فيه شغل قائم ومفيش إغلاق نهائي زي الجلسات اللي فاتت. الـ session summary هنا بيوثق كل اللي اتعمل لحد دلوقتي عشان أي شات جديد يكمل من نفس النقطة.
