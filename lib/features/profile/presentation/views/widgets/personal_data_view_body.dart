@@ -139,11 +139,13 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
             ),
           );
         } else if (state is SaveStudentInfoFailure) {
+          // if 401, the ApiService interceptor will redirect to LoginView — skip the snackbar
+          if (state.errMessage.toLowerCase().contains('unauthenticated'))
+            return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errMessage),
-              backgroundColor: AppColors
-                  .subtitleColor, //TODO لو صلاحية الجلسه انتهت وانا بضغط علي زرار حفظ البيانات طبعا الكيوبت هيدي فيلر وبطلع السناك بار دا قبل السناك بار اللي اللي احنا كنا عاملينه في احاله دي
+              backgroundColor: AppColors.subtitleColor,
             ),
           );
         } else if (state is ProfileSuccess && !_populatedFromUser) {

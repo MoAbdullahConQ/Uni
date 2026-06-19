@@ -55,6 +55,9 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
             ),
           );
         } else if (state is UpdatePasswordFailure) {
+          // if 401, the ApiService interceptor will redirect to LoginView — skip the snackbar
+          if (state.errMessage.toLowerCase().contains('unauthenticated'))
+            return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errMessage),
