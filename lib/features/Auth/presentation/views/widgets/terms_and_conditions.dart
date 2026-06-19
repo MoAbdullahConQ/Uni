@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/core/widgets/terms_and_conditions_sheet.dart';
+import 'package:uni/core/widgets/legal_sheet.dart';
 
 class TermsAndConditions extends StatelessWidget {
   const TermsAndConditions({super.key, this.value, this.onChanged});
@@ -26,7 +27,11 @@ class TermsAndConditions extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         GestureDetector(
-          onTap: () => TermsAndConditionsSheet.show(context),
+          onTap: () => LegalSheet.show(
+            context,
+            title: 'الشروط والأحكام',
+            sections: kTermsSections,
+          ),
           child: Text(
             'الشروط والأحكام',
             style: TextStyles.regular14.copyWith(
