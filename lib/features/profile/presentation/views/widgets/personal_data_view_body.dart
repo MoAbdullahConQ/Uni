@@ -134,7 +134,8 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errMessage),
-              backgroundColor: AppColors.subtitleColor, //TODO لو صلاحية الجلسه انتهت وانا بضغط علي زرار حفظ البيانات طبعا الكيوبت هيدي فيلر وبطلع السناك بار دا قبل السناك بار اللي اللي احنا كنا عاملينه في احاله دي 
+              backgroundColor: AppColors
+                  .subtitleColor, //TODO لو صلاحية الجلسه انتهت وانا بضغط علي زرار حفظ البيانات طبعا الكيوبت هيدي فيلر وبطلع السناك بار دا قبل السناك بار اللي اللي احنا كنا عاملينه في احاله دي
             ),
           );
         } else if (state is ProfileSuccess && !_populatedFromUser) {
@@ -217,18 +218,20 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                         ),
                         const SizedBox(height: 16),
 
-                        // ── الشعبة العلمية ──
-                        const FieldLabel(label: 'الشعبة العلمية'), // TODO المفروض تظهر بس لو اليوزر اختار علمي 
-                        const SizedBox(height: 6),
-                        StudyTypeSelector(
-                          options: const ['علوم', 'رياضة'],
-                          selected: studyTrack,
-                          onSelected: (v) => setState(() => studyTrack = v),
-                        ),
-                        const SizedBox(height: 16),
+                        // ── الشعبة العلمية (visible only when study section is علمي) ──
+                        if (studyCategory == 'علمي') ...[
+                          const FieldLabel(label: 'الشعبة العلمية'),
+                          const SizedBox(height: 6),
+                          StudyTypeSelector(
+                            options: const ['علوم', 'رياضة'],
+                            selected: studyTrack,
+                            onSelected: (v) => setState(() => studyTrack = v),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
 
                         // ── Row: عمر / نسبة / محافظة ──
-                        StatsSection( //TODO طبعا في فالديشن للعمر انه يكون بين ال14 وال30 بس عايزين بس نظهر سناك بار مثلا لما اليوزر يختار عمر غير مناسب  ويضغط علي الزارا يقوله يختار حاجه مناسبه
+                        StatsSection(//TODO طبعا في فالديشن للعمر انه يكون بين ال14 وال30 بس عايزين بس نظهر سناك بار مثلا لما اليوزر يختار عمر غير مناسب  ويضغط علي الزارا يقوله يختار حاجه مناسبه
                           selectedGovernorateId: selectedGovernorateId,
                           onGovernorateChanged: (id) =>
                               setState(() => selectedGovernorateId = id),
@@ -264,7 +267,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
                           ),
                           onPressed: (_confirmedAccurate && !isSaving)
                               ? _submit
-                              : () {},// TODO لو اليوزر معدلش اصلا اي حاجه في البيانات مش يبعت ريكويست 
+                              : () {}, // TODO لو اليوزر معدلش اصلا اي حاجه في البيانات مش يبعت ريكويست
                           text: isSaving ? '' : 'حفظ التعديلات',
                           prefixIcon: isSaving
                               ? const SizedBox(
