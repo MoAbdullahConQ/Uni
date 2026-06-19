@@ -65,7 +65,6 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
       },
       builder: (context, state) {
         final isUpdating = state is UpdatingPassword;
-
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: kHorizontalPadding),
           child: Column(
@@ -94,6 +93,8 @@ class _SecurityViewBodyState extends State<SecurityViewBody> {
                         // ── Shield icon + description ──
                         const TopSectionSecurity(),
                         const SizedBox(height: 40),
+                        // current-password field removed: user is already
+                        // authenticated via the bearer token, no endpoint param for it.
                         PasswordSection(
                           newPasswordController: newPasswordController,
                           confirmPasswordController: confirmPasswordController,

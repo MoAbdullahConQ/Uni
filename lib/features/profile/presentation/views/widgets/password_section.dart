@@ -21,59 +21,46 @@ class PasswordSection extends StatefulWidget {
 }
 
 class _PasswordSectionState extends State<PasswordSection> {
-  double passwordStrength = 0.5; // 0.0 → 1.0
+  double passwordStrength = 0; // 0.0 → 1.0
   bool? passwordsMatch;
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── nowPasswordController──
-        const FieldLabel(label: 'كلمة المرور الحالية'),
-        const SizedBox(height: 8),
-        PasswordField(
-          hintText: '••••••••',
-          textAlign: TextAlign.start,
-          keyboardType: TextInputType.visiblePassword,
-          prefixIcon: const Icon(Icons.lock_outline, size: 24),
-          borderColor: AppColors.primaryColor.withOpacity(.1),
-        ),
-        const SizedBox(height: 4),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Text(
-              'نسيت كلمة المرور؟',
-              style: TextStyles.regular12.copyWith(
-                color: AppColors.subtitleColor,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 30),
+        // current-password field removed: user is already authenticated via
+        // the bearer token, and the update-password endpoint has no
+        // current_password param. Ask sayed before reintroducing this.
 
         // ── newPasswordController ──
         const FieldLabel(label: 'كلمة المرور الجديدة'),
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',
-          prefixIcon: const Icon(Icons.lock_outline, size: 24),
-
+          prefixIcon: Icon(
+            Icons.lock_outline,
+            size: 20,
+            color: AppColors.primaryColor.withOpacity(.6),
+          ),
           controller: widget.newPasswordController,
-          borderColor: AppColors.primaryColor.withOpacity(.1),
           onChanged: (value) {
             setState(() {
               passwordStrength = calcStrength(value);
+              // re-validate match against the (possibly already filled) confirm field
+              passwordsMatch = widget.confirmPasswordController.text.isEmpty
+                  ? null
+                  : value == widget.confirmPasswordController.text;
             });
           },
           textAlign: TextAlign.start,
           keyboardType: TextInputType.visiblePassword,
+          validator: (value) {
+            if (value == null || value.length < 8) {
+              return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 8),
 
@@ -86,15 +73,17 @@ class _PasswordSectionState extends State<PasswordSection> {
         const SizedBox(height: 8),
         PasswordField(
           hintText: '••••••••',
-          prefixIcon: const Icon(Icons.lock_outline, size: 24),
+          prefixIcon: Icon(
+            Icons.lock_outline,
+            size: 20,
+            color: AppColors.primaryColor.withOpacity(.6),
+          ),
           controller: widget.confirmPasswordController,
           onChanged: (value) {
             setState(() {
-              if (value.isEmpty) {
-                passwordsMatch = null;
-              } else {
-                passwordsMatch = value == widget.newPasswordController.text;
-              }
+              passwordsMatch = value.isEmpty
+                  ? null
+                  : value == widget.newPasswordController.text;
             });
           },
           borderColor: passwordsMatch == null
@@ -102,18 +91,18 @@ class _PasswordSectionState extends State<PasswordSection> {
               : passwordsMatch!
               ? AppColors.secondaryColor
               : AppColors.red,
+          // validator only checks required — match is enforced in _submit()
           validator: (value) {
-            if (value != widget.newPasswordController.text) {
-              return '';
-            }
+            if (value == null || value.isEmpty) return 'هذا الحقل مطلوب';
             return null;
           },
           textAlign: TextAlign.start,
           keyboardType: TextInputType.visiblePassword,
         ),
-        if (passwordsMatch != null)
-          Align(
-            alignment: Alignment.centerRight,
+        if (passwordsMatch != null) ...[
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(right: 6),
             child: Text(
               passwordsMatch!
                   ? 'كلمتا المرور متطابقتان ✓'
@@ -125,6 +114,7 @@ class _PasswordSectionState extends State<PasswordSection> {
               ),
             ),
           ),
+        ],
         const SizedBox(height: 24),
       ],
     );
