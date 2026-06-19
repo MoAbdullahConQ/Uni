@@ -12,6 +12,7 @@ import 'package:uni/features/home/presentation/manager/recommended_cubit/recomme
 import 'package:uni/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
 import 'package:uni/features/home/presentation/views/widgets/home_view_body.dart';
 import 'package:uni/features/notifications/presentation/manager/notifications_cubit/notifications_cubit.dart';
+import 'package:uni/features/profile/presentation/manager/profile_cubit/profile_cubit.dart';
 import 'package:uni/features/profile/presentation/views/widgets/profile_view_body.dart';
 import 'package:uni/main.dart';
 
@@ -46,6 +47,9 @@ class _MainViewState extends State<MainView> with RouteAware {
     getIt<FavCubit>().getFavs();
     getIt<GuideCubit>().getArticles();
     getIt<NotificationsCubit>().getNotifications();
+    // load profile once on app start so Home AppBar shows name/avatar
+    // immediately without requiring a visit to the profile screen first
+    getIt<ProfileCubit>().getMe();
   }
 
   @override
