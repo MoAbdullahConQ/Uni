@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
 class DetailsField extends StatelessWidget {
-  const DetailsField({super.key});
+  const DetailsField({super.key, this.controller});
+
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       maxLines: 4,
       textAlign: TextAlign.right,
       validator: (v) {

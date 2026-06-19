@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uni/constants.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/core/widgets/legal_sheet.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -18,7 +20,11 @@ class Footer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () {},
+              onPressed: () => LegalSheet.show(
+                context,
+                title: 'الشروط والأحكام',
+                sections: kTermsSections,
+              ),
               child: Text(
                 'الشروط والأحكام',
                 style: TextStyles.semiBold11.copyWith(
@@ -33,7 +39,11 @@ class Footer extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => LegalSheet.show(
+                context,
+                title: 'سياسة الخصوصية',
+                sections: kPrivacySections,
+              ),
               child: Text(
                 'سياسة الخصوصية',
                 style: TextStyles.semiBold11.copyWith(

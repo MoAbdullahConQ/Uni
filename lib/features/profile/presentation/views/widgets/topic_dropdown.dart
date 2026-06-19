@@ -2,21 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
 class TopicDropdown extends StatefulWidget {
-  const TopicDropdown({super.key, required this.topics});
+  const TopicDropdown({
+    super.key,
+    required this.topics,
+    this.onChanged,
+    this.selectedTopic,
+  });
+
+  final void Function(String?)? onChanged;
 
   final List<String> topics;
+
+  final String? selectedTopic;
 
   @override
   State<TopicDropdown> createState() => _TopicDropdownState();
 }
 
 class _TopicDropdownState extends State<TopicDropdown> {
-  String? selectedTopic;
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: selectedTopic,
+      value: widget.selectedTopic,
       hint: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -49,7 +56,7 @@ class _TopicDropdownState extends State<TopicDropdown> {
       items: widget.topics
           .map((t) => DropdownMenuItem(value: t, child: Text(t)))
           .toList(),
-      onChanged: (v) => setState(() => selectedTopic = v),
+      onChanged: widget.onChanged,
       validator: (v) => v == null ? 'الرجاء اختيار الموضوع' : null,
     );
   }
