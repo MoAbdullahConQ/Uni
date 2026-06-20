@@ -108,4 +108,18 @@ class ApiService {
     );
     return response.data;
   }
+
+  // Used for file uploads (e.g. avatar) — sends multipart/form-data
+  // instead of JSON, required by the backend for any endpoint that
+  // accepts a file.
+  Future<Map<String, dynamic>> postFormData({
+    required String endpoint,
+    required FormData data,
+  }) async {
+    var response = await dio.post(
+      '${BackendEndpoints.baseUrl}$endpoint',
+      data: data,
+    );
+    return response.data;
+  }
 }

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:uni/core/services/shared_preferences_singleton.dart';
 import 'package:uni/core/utils/api_service.dart';
 import 'package:uni/core/utils/backend_endpoints.dart';
@@ -31,6 +34,7 @@ abstract class AuthRemoteDataSource {
     required String password,
     required String passwordConfirmation,
   });
+  Future<void> uploadAvatar(File image);
   Future<UserEntity> getMe();
 }
 
@@ -146,6 +150,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'password': password,
         'password_confirmation': passwordConfirmation,
       },
+    );
+  }
+
+  @override
+  Future<void> uploadAvatar(File image) async {
+    final formData = FormData.fromMap({
+      'avatar': await MultipartFile.fromFile(image.path),
+    });
+    await apiService.postFormData(
+      endpoint: BackendEndpoints.addAvatar,
+      data: formData,
     );
   }
 

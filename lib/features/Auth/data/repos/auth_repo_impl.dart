@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:uni/core/errors/failures.dart';
@@ -126,6 +128,16 @@ class AuthRepoImpl implements AuthRepo {
         password: password,
         passwordConfirmation: passwordConfirmation,
       );
+      return right(null);
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> uploadAvatar(File image) async {
+    try {
+      await remoteDataSource.uploadAvatar(image);
       return right(null);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioError(e));

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:uni/core/errors/failures.dart';
 import 'package:uni/features/auth/domain/entities/user_entity.dart';
@@ -43,6 +45,9 @@ abstract class AuthRepo {
     required String password,
     required String passwordConfirmation,
   });
+
+  // Used in profile feature (avatar dialog)
+  Future<Either<Failure, void>> uploadAvatar(File image);
 
   // Used in profile feature
   Future<Either<Failure, UserEntity>> getMe();

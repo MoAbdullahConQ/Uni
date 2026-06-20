@@ -34,31 +34,26 @@ class _AvatarProfileState extends State<AvatarProfile> {
       _isUploading = true;
     });
 
-    final success = await _uploadAvatar(newImage);
+    // getMe() inside ProfileCubit.uploadAvatar() refreshes currentUser with
+    // the new server avatar URL, so once it's done we drop the local file
+    // and let the network image take over (single source of truth).
+    final success = await getIt<ProfileCubit>().uploadAvatar(newImage);
 
     if (!mounted) return;
-    setState(() => _isUploading = false);
+    setState(() {
+      _isUploading = false;
+      _localImage = null;
+    });
 
     if (success) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('تم تغيير الصورة الشخصية')));
     } else {
-      // revert to previous (server) avatar on failure
-      setState(() => _localImage = null);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('فشل تغيير الصورة، حاول مرة أخرى')),
       );
     }
-  }
-
-  // TODO: replace with real upload call once sayed adds the avatar field
-  // to POST /student_info (or a dedicated endpoint). Should call
-  // getIt<ProfileCubit>() so the new avatar reflects across the app
-  // (Home AppBar, etc.) once the server confirms the upload.
-  Future<bool> _uploadAvatar(File image) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return false;
   }
 
   @override
@@ -135,8 +130,9 @@ class _AvatarProfileState extends State<AvatarProfile> {
   }
 
   Widget _buildImage(String? avatarUrl) {
-    // local pick takes priority (covers both the uploading state and a
-    // successful upload, until the next getMe() refresh replaces it)
+    // local pick takes priority only while uploading is in progress —
+    // cleared right after uploadAvatar() resolves (success or failure),
+    // so the network image (or fallback icon) becomes the source of truth.
     if (_localImage != null) {
       return Image.file(_localImage!, fit: BoxFit.cover);
     }

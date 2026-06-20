@@ -49,6 +49,7 @@ class BackendEndpoints {
   static const String updatePassword = '/auth/update-Password';
   static const String getMe = '/auth/me';
   static const String refreshToken = '/auth/refresh';
+  static const String addAvatar = '/auth/addAvatar';
 
   // Faheem AI Chat
   static const String sendMessage = '/aiChat/send';
