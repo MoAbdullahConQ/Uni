@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:uni/core/services/get_it_service.dart';
 import 'package:uni/core/utils/app_colors.dart';
+import 'package:uni/core/utils/app_images.dart';
 import 'package:uni/core/utils/app_text_style.dart';
+import 'package:uni/features/profile/presentation/manager/profile_cubit/profile_cubit.dart';
 
 class UserMessageBubble extends StatelessWidget {
   final String text;
@@ -9,21 +12,28 @@ class UserMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final avatarUrl = getIt<ProfileCubit>().currentUser?.avatar;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // Avatar placeholder
-        Container(
-          width: 32,
-          height: 32,
-          margin: const EdgeInsets.only(right: 8),
-          decoration: const BoxDecoration(
-            color: AppColors.borderColor,
-            shape: BoxShape.circle,
+        // User avatar
+        ClipOval(
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: avatarUrl != null
+                ? Image.network(
+                    avatarUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        Image.asset(Assets.imagesPageViewItem1Image),
+                  )
+                : Image.asset(Assets.imagesPageViewItem1Image),
           ),
         ),
-        const SizedBox(width: 5),
+        const SizedBox(width: 8),
         // Bubble
         Flexible(
           child: Container(

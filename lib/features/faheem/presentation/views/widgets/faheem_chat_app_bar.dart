@@ -14,10 +14,11 @@ class FaheemChatAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Back button
         const CustomBackButton(),
+        const SizedBox(width: 8),
 
         // Center: title or empty
         if (showTitle)
@@ -69,6 +70,7 @@ class FaheemChatAppBar extends StatelessWidget {
             ],
           ),
 
+        const Spacer(),
         // History button
         InkWell(
           customBorder: const CircleBorder(),

@@ -14,16 +14,24 @@ class FaheemTypingBubble extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.only(left: 20, right: 20,bottom: 6),
           decoration: BoxDecoration(
             color: AppColors.borderColor.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(4),
+              bottomRight: Radius.circular(20),
+            ),
+            // borderRadius: BorderRadius.circular(20),
           ),
-          child: Text(
-            '...',
-            style: TextStyles.bold18.copyWith(
-              color: AppColors.subtitleColor,
-              letterSpacing: 3,
+          child: Center(
+            child: Text(
+              '...',
+              style: TextStyles.bold18.copyWith(
+                color: AppColors.subtitleColor,
+                letterSpacing: 3,
+              ),
             ),
           ),
         ),
