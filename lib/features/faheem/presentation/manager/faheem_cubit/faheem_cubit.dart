@@ -17,10 +17,9 @@ class FaheemCubit extends Cubit<FaheemState> {
     _messages.add(ChatMessageEntity(text: text, sender: MessageSender.user));
 
     // Add typing indicator
-    _messages.add(const ChatMessageEntity(
-      sender: MessageSender.faheem,
-      isTyping: true,
-    ));
+    _messages.add(
+      const ChatMessageEntity(sender: MessageSender.faheem, isTyping: true),
+    );
 
     emit(FaheemSending(List.from(_messages)));
 
@@ -31,10 +30,12 @@ class FaheemCubit extends Cubit<FaheemState> {
 
     result.fold(
       (failure) {
-        emit(FaheemSendFailure(
-          messages: List.from(_messages),
-          errMessage: failure.message,
-        ));
+        emit(
+          FaheemSendFailure(
+            messages: List.from(_messages),
+            errMessage: failure.message,
+          ),
+        );
       },
       (faheemMessage) {
         _messages.add(faheemMessage);
