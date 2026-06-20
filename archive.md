@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: Profile Feature — all open items closed except avatar dialog)
+> Last updated: June 2026 (session: Faheem Feature — full integration done)
 
 ---
 
@@ -26,7 +26,7 @@ lib/
 │   │   ├── calc_strength.dart
 │   │   └── build_error_bar.dart
 │   ├── services/
-│   │   ├── get_it_service.dart
+│   │   ├── get_it_service.dart         ✅ updated this session — Faheem chain added
 │   │   ├── shared_preferences_singleton.dart
 │   │   ├── custom_bloc_observer.dart
 │   │   └── database_service.dart      (abstract — unused)
@@ -44,7 +44,7 @@ lib/
 │   │   ├── app_images.dart
 │   │   ├── app_fonts.dart
 │   │   ├── api_service.dart            (401 interceptor with _isHandlingUnauthorized guard)
-│   │   └── backend_endpoints.dart
+│   │   └── backend_endpoints.dart      ✅ updated this session — added sendMessage
 │   └── widgets/
 │       ├── uni_card.dart
 │       ├── uni_card_image.dart
@@ -63,8 +63,8 @@ lib/
 │       ├── no_internet_widget.dart
 │       ├── empty_state_widget.dart
 │       ├── custom_progress_hud.dart
-│       ├── custom_text_form_field.dart  (added `enabled` param for read-only fields)
-│       ├── age_field.dart               (moved from auth — shared between auth/setup and profile/personal_data)
+│       ├── custom_text_form_field.dart
+│       ├── age_field.dart
 │       ├── password_field.dart
 │       ├── rating.dart
 │       ├── type_badge_widget.dart
@@ -76,76 +76,58 @@ lib/
 │       ├── guide_video_player_info.dart
 │       ├── featured_guide_podcasts_section.dart
 │       ├── study_type_selector.dart
-│       ├── terms_and_conditions_sheet.dart  ✅ now a thin wrapper over LegalSheet — auth flow unchanged
-│       └── legal_sheet.dart                 ✅ NEW — shared DraggableScrollableSheet for Terms + Privacy Policy
+│       ├── terms_and_conditions_sheet.dart  (thin wrapper over LegalSheet)
+│       └── legal_sheet.dart                 (shared DraggableScrollableSheet for Terms + Privacy)
 └── features/
     ├── browse/ ... (done)
-    ├── search/ ... (done — debounce still pending)
+    ├── search/ ... (done — debounce pending)
     ├── fav/ ... (done)
     ├── guide/ ... (done)
-    ├── notifications/ ... (done, stable)
+    ├── notifications/ ... (done)
     ├── home/
-    │   └── presentation/views/widgets/custom_home_app_bar.dart  ✅ wired to ProfileCubit this session
+    │   └── presentation/views/widgets/custom_home_app_bar.dart  (wired to ProfileCubit)
     ├── auth/ ... (done)
-    │   └── presentation/views/widgets/
-    │       ├── login_view_body.dart     (reads session-expired message from ModalRoute arguments)
-    │       ├── setup_view_body.dart     (uses AgeField from core/widgets)
-    │       ├── setup_governorate_dropdown.dart  (imports kGovernorates from constants.dart)
-    │       └── terms_and_conditions.dart  (calls TermsAndConditionsSheet.show() — unchanged, works via wrapper)
     ├── splash/ ... (done)
     ├── on_boarding/ ... (done)
     ├── uni_detail/ ... (done)
-    ├── profile/  ✅ MOSTLY DONE — one open item: avatar dialog
-    │   ├── domain/ — reuses auth's GetMeUseCase, SaveStudentInfoUseCase, UpdatePasswordUseCase
-    │   └── presentation/
-    │       ├── manager/profile_cubit/
-    │       │   ├── profile_cubit.dart  (added logout() this session)
-    │       │   └── profile_state.dart
-    │       └── views/widgets/
-    │           ├── profile_view_body.dart            (wired LogoutConfirmationSheet this session)
-    │           ├── personal_data_view_body.dart       (401 fix + no-op guard this session)
-    │           ├── security_view_body.dart            (401 fix this session)
-    │           ├── password_section.dart
-    │           ├── governorate_dropdown.dart
-    │           ├── stats_section.dart
-    │           ├── documents_section.dart
-    │           ├── personal_data_document_upload_card.dart
-    │           ├── profile_avatar_section.dart
-    │           ├── profile_logout_button.dart         (accepts onPressed — wired this session)
-    │           ├── personal_data_interests_selector.dart  (UI-only)
-    │           ├── avatar_profile.dart                (tap interaction still undefined — OPEN ITEM)
-    │           ├── logout_confirmation_sheet.dart      ✅ NEW this session
-    │           ├── contact_us_view_body.dart           ✅ fully interactive this session
-    │           ├── quick_contact.dart                  ✅ url_launcher wired (dummy data)
-    │           ├── message_form_section.dart           ✅ StatefulWidget + clear-on-submit
-    │           ├── footer.dart                         ✅ both buttons open LegalSheet
-    │           ├── topic_dropdown.dart                 (fixed generic type T → String)
-    │           ├── details_field.dart                  (accepts external controller)
-    │           ├── robot_section.dart
-    │           ├── contact_us_channel_card.dart
-    │           ├── role_badge.dart, profile_header.dart, profile_menu_item.dart,
-    │           │   profile_menu_section.dart, version_info.dart  (unchanged)
-    └── faheem/ → domain/entities/ + presentation/views/ (UI only — waiting on backend)
+    ├── profile/  (MOSTLY DONE — avatar dialog open)
+    │   └── presentation/views/widgets/
+    │       ├── avatar_profile.dart            (tap interaction still undefined — OPEN ITEM)
+    │       └── ... (all other widgets done)
+    └── faheem/  ✅ DONE this session
+        ├── domain/
+        │   ├── entities/
+        │   │   ├── chat_message_entity.dart   (MessageSender enum, isTyping flag, uniCards support)
+        │   │   ├── chat_history_entity.dart
+        │   │   └── suggestion_item_entity.dart
+        │   ├── repos/
+        │   │   └── faheem_repo.dart            ✅ NEW
+        │   └── use_cases/
+        │       └── send_message_use_case.dart  ✅ NEW
+        ├── data/
+        │   ├── models/
+        │   │   └── faheem_message_model.dart   ✅ NEW — fromJson maps 'content' field
+        │   ├── data_sources/
+        │   │   └── faheem_remote_data_source.dart  ✅ NEW — uses apiService.dio.post + FormData
+        │   └── repos/
+        │       └── faheem_repo_impl.dart       ✅ NEW
+        └── presentation/
+            ├── manager/faheem_cubit/
+            │   ├── faheem_cubit.dart           ✅ NEW
+            │   └── faheem_state.dart           ✅ NEW
+            └── views/widgets/
+                ├── faheem_chat_view_body.dart  ✅ UPDATED — BlocConsumer + reverse scroll
+                ├── chat_messages_list.dart     ✅ UPDATED — reverse: true + reversed list
+                ├── user_message_bubble.dart    ✅ UPDATED — avatar from ProfileCubit via GetIt
+                ├── faheem_history_view_body.dart  (UI-only — no backend endpoint yet)
+                └── ... (all other widgets unchanged)
 ```
 
 ---
 
 ## 2. Core Entities
 
-### UniEntity
-```dart
-class UniEntity {
-  final int id;
-  final String name;
-  final String location;
-  final String imagePath;
-  final String type;
-  final double rating;
-  final int worldRanking;
-}
-```
-
-### UserEntity (updated prior session)
+### UserEntity
 ```dart
 class UserEntity {
   final int id;
@@ -157,14 +139,28 @@ class UserEntity {
 }
 ```
 
-### StudentInfoEntity (new prior session)
+### StudentInfoEntity
 ```dart
 class StudentInfoEntity {
-  final String studySection;          // Arabic from GetMe, English expected by SaveStudentInfo
+  final String studySection;
   final String scientificDepartment;
   final int governorateId;
   final double percentage;
   final int age;
+}
+```
+
+### ChatMessageEntity
+```dart
+enum MessageSender { user, faheem }
+enum MessageContentType { text, uniCards }
+
+class ChatMessageEntity {
+  final String? text;
+  final MessageSender sender;
+  final MessageContentType contentType;
+  final List<FaheemUniCardEntity>? uniCards;
+  final bool isTyping;
 }
 ```
 
@@ -175,32 +171,9 @@ class StudentInfoEntity {
 ```dart
 class BackendEndpoints {
   static const String baseUrl = 'https://back.laraveladvancedsayed101.cloud/api';
-  static const String getUniversities = '/universities';
-  static const String getTrendingUnis = '/universities/trendy';
-  static String getUniDetail(int id) => '/universities/$id';
-  static const String getColleges = '/colleges';
-  static String getCollegesByUni(int universityId) => '/colleges/$universityId';
-  static String getGraduatesByUni(int universityId) => '/graduates/$universityId';
-  static String getUniLife(int universityId) => '/university_life/$universityId';
-  static const String addToFav = '/university_fav/add';
-  static const String removeFromFav = '/university_fav/remove';
-  static const String getFavs = '/university_fav';
-  static const String getNotifications = '/notifications';
-  static const String getUnreadNotificationsCount = '/notifications/count-unread';
-  static String markNotificationAsRead(int id) => '/notifications/mark-as-read/$id';
-  static const String markAllNotificationsAsRead = '/notifications/markall';
-  static const String getArticles = '/articles';
-  static const String search = '/search-univ';
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String verifyOtp = '/verify-Otp';
-  static const String forgetPassword = '/forget-Password';
-  static const String resendOtp = '/resendOtp';
-  static const String resetPassword = '/auth/reset-Password';
-  static const String saveStudentInfo = '/student_info';
-  static const String updatePassword = '/auth/update-Password';
-  static const String getMe = '/auth/me';
-  static const String refreshToken = '/auth/refresh';
+  // ... (all existing endpoints)
+  // Faheem AI Chat
+  static const String sendMessage = '/aiChat/send';
 }
 ```
 
@@ -212,101 +185,96 @@ class BackendEndpoints {
 class ApiService {
   final Dio dio;
   bool _isHandlingUnauthorized = false;
+  // interceptor adds Accept, Api-Key, Authorization headers
+  // 401 → guard check → Prefs.remove('token') → pushNamedAndRemoveUntil(LoginView, arguments: message)
+}
+```
 
-  ApiService(this.dio) {
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        options.headers['Accept'] = 'application/json';
-        options.headers['Api-Key'] = dotenv.env['API_KEY'] ?? '';
-        if (!options.headers.keys.any((k) => k.toLowerCase() == 'authorization')) {
-          final token = Prefs.getString('token');
-          if (token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-        }
-        return handler.next(options);
-      },
-      onError: (error, handler) {
-        if (error.response?.statusCode == 401) {
-          if (!_isHandlingUnauthorized) {
-            _isHandlingUnauthorized = true;
-            Prefs.remove('token');
-            navigatorKey.currentState
-                ?.pushNamedAndRemoveUntil(
-                  LoginView.routeName,
-                  (route) => false,
-                  arguments: 'انتهت صلاحية جلستك، يرجى تسجيل الدخول مجدداً',
-                )
-                .then((_) => _isHandlingUnauthorized = false);
-          }
-          return handler.next(error);
-        }
-        return handler.next(error);
-      },
-    ));
+**Note:** `apiService.post()` accepts only `Map<String, dynamic>`. For `FormData` (e.g. Faheem), use `apiService.dio.post()` directly — the interceptor still fires because it's on the `dio` instance.
+
+---
+
+## 5. FaheemCubit — Full Design
+
+```dart
+class FaheemCubit extends Cubit<FaheemState> {
+  final SendMessageUseCase sendMessageUseCase;
+  final List<ChatMessageEntity> _messages = [];
+  List<ChatMessageEntity> get messages => List.unmodifiable(_messages);
+
+  Future<void> sendMessage(String text) async {
+    // 1. add user message
+    // 2. add typing indicator (isTyping: true)
+    // 3. emit FaheemSending(List.from(_messages))
+    // 4. await API
+    // 5. remove typing indicator
+    // 6. fold: success → add faheem message → emit FaheemMessageReceived
+    //          failure → emit FaheemSendFailure(messages, errMessage)
   }
 }
 ```
 
-**401 SnackBar ordering rule (finalized this session):** any cubit failure listener that shows a SnackBar must first check:
-```dart
-if (state.errMessage.toLowerCase().contains('unauthenticated')) return;
+**States:**
+- `FaheemInitial`
+- `FaheemSending(List<ChatMessageEntity> messages)`
+- `FaheemMessageReceived(List<ChatMessageEntity> messages)`
+- `FaheemSendFailure({List<ChatMessageEntity> messages, String errMessage})`
+
+---
+
+## 6. Faheem Scroll Pattern (finalized this session)
+
+`ChatMessagesList` uses `reverse: true` + `messages.reversed.toList()` — the latest message is always at the bottom without any scroll-on-open code.
+
+For new messages (listener): `_scrollController.jumpTo(minScrollExtent)` — because with `reverse: true`, bottom = `minScrollExtent`.
+
+`FaheemCubit` is NOT in `MultiBlocProvider` in `main.dart` — taken from GetIt directly in `FaheemChatViewBody` via `getIt<FaheemCubit>()`.
+
+---
+
+## 7. GetIt Registration Order (full)
+
 ```
-Applied to `SaveStudentInfoFailure` and `UpdatePasswordFailure`. Root cause: the repo's `try/catch` catches the `DioException` before the interceptor redirects — cubit emits `Failure` state first, then interceptor fires. The early return prevents the wrong SnackBar from showing.
+Dio → ApiService
+→ TrendingRemoteDataSource → TrendingCubit
+→ RecommendedRemoteDataSource
+→ BrowseRemoteDataSource → BrowseRepo → GetUnisUseCase
+→ FavRemoteDataSource → FavRepo → 3 use cases → FavCubit
+→ SearchRemoteDataSource → SearchRepo → SearchUnisUseCase → GetSpecialtiesUseCase
+→ NotificationsRemoteDataSource → NotificationsRepo → 4 use cases → NotificationsCubit
+→ GuideRemoteDataSource → GuideRepo → GetArticlesUseCase → GuideCubit
+→ UniDetailRemoteDataSource → UniDetailRepo → GetUniDetailUseCase
+→ AuthRemoteDataSource → AuthRepo → 9 use cases (Login/Register/VerifyOtp/ForgetPassword/ResendOtp/ResetPassword/SaveStudentInfo/UpdatePassword/GetMe)
+→ ProfileCubit (singleton) — reuses GetMe + SaveStudentInfo + UpdatePassword
+→ FaheemRemoteDataSource → FaheemRepo → SendMessageUseCase → FaheemCubit ✅ NEW
+```
 
 ---
 
-## 5. Auth Flows (confirmed and working)
+## 8. Auth Flows
 
-**Register flow:** SignUpView → register → OtpView → verifyOtp → save token to Prefs → SetupView → saveStudentInfo → MainView
-
-**Forgot password flow:** ForgotPasswordView → forgetPassword → OtpView → verifyOtp (NOT saved to Prefs) → ResetPasswordView(tempToken) → resetPassword → LoginView
-
-**Login flow:** LoginView → login → MainView
-
-**401 / session expired flow:** interceptor → guard check → Prefs.remove('token') → pushNamedAndRemoveUntil(LoginView, arguments: message) → LoginViewBody reads via ModalRoute arguments
-
-**Logout flow (finalized this session):**
-1. User taps logout button → `LogoutConfirmationSheet.show()` appears
-2. User taps "أيوه" → `ProfileCubit.logout()` called
-3. `logout()` clears token + refresh_token + `_currentUser` → `navigatorKey.pushNamedAndRemoveUntil(LoginView)`
-4. No session-expired message shown (clean logout, not expired)
+**Register:** SignUpView → register → OtpView → verifyOtp → save token → SetupView → saveStudentInfo → MainView  
+**Forgot password:** ForgotPasswordView → forgetPassword → OtpView → verifyOtp (NOT saved) → ResetPasswordView(tempToken) → resetPassword → LoginView  
+**Login:** LoginView → login → MainView  
+**401:** interceptor → guard → Prefs.remove('token') → pushNamedAndRemoveUntil(LoginView, arguments: message)  
+**Logout:** LogoutConfirmationSheet → ProfileCubit.logout() → clear tokens + _currentUser → pushNamedAndRemoveUntil(LoginView)
 
 ---
 
-## 6. ProfileCubit — Full Design
+## 9. ProfileCubit Design
 
 ```dart
 class ProfileCubit extends Cubit<ProfileState> {
-  final GetMeUseCase getMeUseCase;
-  final SaveStudentInfoUseCase saveStudentInfoUseCase;
-  final UpdatePasswordUseCase updatePasswordUseCase;
-
   UserEntity? _currentUser;
   UserEntity? get currentUser => _currentUser;
-
   Future<void> getMe() async { ... }
-
-  Future<void> saveStudentInfo({...}) async {
-    emit(SavingStudentInfo());
-    // on success: emit StudentInfoSaved() then await getMe() to refresh
-  }
-
-  Future<void> updatePassword({...}) async {
-    emit(UpdatingPassword());
-    // on success: emit PasswordUpdated()
-  }
-
-  // added this session — lives here because ProfileCubit is the only
-  // GetIt singleton that owns user-session state
+  Future<void> saveStudentInfo({...}) async { ... }
+  Future<void> updatePassword({...}) async { ... }
   Future<void> logout() async {
     await Prefs.remove('token');
     await Prefs.remove('refresh_token');
     _currentUser = null;
-    navigatorKey.currentState?.pushNamedAndRemoveUntil(
-      LoginView.routeName,
-      (route) => false,
-    );
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(LoginView.routeName, (route) => false);
   }
 }
 ```
@@ -315,128 +283,60 @@ class ProfileCubit extends Cubit<ProfileState> {
 
 ---
 
-## 7. PersonalDataViewBody — No-op Guard (new this session)
+## 10. PersonalDataViewBody — No-op Guard
 
 ```dart
-// snapshot saved in _populateFromUser()
-String? _originalStudyCategory;
-String? _originalStudyTrack;
+String? _originalStudyCategory, _originalStudyTrack;
 int? _originalGovernorateId;
-String? _originalPercentage;
-String? _originalAge;
+String? _originalPercentage, _originalAge;
 
-bool _hasChanges() {
-  return _originalStudyCategory != studyCategory ||
-      _originalStudyTrack != studyTrack ||
-      _originalGovernorateId != selectedGovernorateId ||
-      _originalPercentage != _percentageController.text ||
-      _originalAge != _ageController.text;
-}
+bool _hasChanges() { /* compares current vs original */ }
 
-// in _submit(), before validation:
+// in _submit():
 if (!_hasChanges()) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('لم تقم بتغيير أي بيانات')),
-  );
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('لم تقم بتغيير أي بيانات')));
   return;
 }
 ```
 
 ---
 
-## 8. LegalSheet — Structure (new this session)
+## 11. LegalSheet
 
 ```dart
-// in core/widgets/legal_sheet.dart
 class LegalSheet extends StatelessWidget {
   static void show(BuildContext context, {required String title, required List<LegalSection> sections}) { ... }
 }
-
-class LegalSection {
-  const LegalSection({required this.title, required this.body});
-  final String title;
-  final String body;
-}
-
-// content constants (also in legal_sheet.dart):
-const kTermsSections = [ ... ];   // 7 sections
-const kPrivacySections = [ ... ]; // 7 sections — written this session
+// kTermsSections + kPrivacySections (7 sections each) defined in legal_sheet.dart
 ```
 
-`TermsAndConditionsSheet` in `core/widgets/` is now a thin static wrapper:
-```dart
-class TermsAndConditionsSheet {
-  static void show(BuildContext context) {
-    LegalSheet.show(context, title: 'الشروط والأحكام', sections: kTermsSections);
-  }
-}
-```
-Auth's `terms_and_conditions.dart` unchanged — still calls `TermsAndConditionsSheet.show()`.
+`TermsAndConditionsSheet` = thin static wrapper → backward compat with auth flow.
 
 ---
 
-## 9. QuickContact — Dummy Data (replace when sayed provides)
+## 12. QuickContact — Dummy Data
 
 ```dart
-// in quick_contact.dart
 const _kWhatsAppNumber = '201000000000';
 const _kPhoneNumber = '+201000000000';
 const _kEmail = 'support@gameaty.app';
 ```
-
-`mailto:` warning (`component name is null`) on real device = no default mail app set. Not a code bug.
-
----
-
-## 10. GetIt Service — Full Registration Order
-
-```
-Dio → ApiService
-→ TrendingRemoteDataSource → TrendingCubit
-→ RecommendedRemoteDataSource
-→ BrowseRemoteDataSource → BrowseRepo → GetUnisUseCase
-→ FavRemoteDataSource → FavRepo → GetFavsUseCase → AddToFavUseCase → RemoveFromFavUseCase → FavCubit
-→ SearchRemoteDataSource → SearchRepo → SearchUnisUseCase → GetSpecialtiesUseCase
-→ NotificationsRemoteDataSource → NotificationsRepo → 4 use cases → NotificationsCubit
-→ GuideRemoteDataSource → GuideRepo → GetArticlesUseCase → GuideCubit
-→ UniDetailRemoteDataSource → UniDetailRepo → GetUniDetailUseCase
-→ AuthRemoteDataSource → AuthRepo → LoginUseCase → RegisterUseCase → VerifyOtpUseCase
-  → ForgetPasswordUseCase → ResendOtpUseCase → ResetPasswordUseCase
-  → SaveStudentInfoUseCase → UpdatePasswordUseCase → GetMeUseCase
-→ ProfileCubit (singleton) — reuses GetMeUseCase, SaveStudentInfoUseCase, UpdatePasswordUseCase
-```
+Replace when sayed provides real info.
 
 ---
 
-## 11. PersonalDataViewBody — Arabic↔Backend Mapping
-
-```dart
-const Map<String, String> kStudySectionMap = {'علمي': 'science', 'أدبي': 'literature'};
-const Map<String, String> kStudySectionMapReversed = {
-  'science': 'علمي', 'علمي': 'علمي', 'literature': 'أدبي', 'أدبي': 'أدبي',
-};
-const Map<String, String> kScientificDepartmentMap = {'علوم': 'scientific', 'رياضة': 'Mathematics'};
-const Map<String, String> kScientificDepartmentMapReversed = {
-  'scientific': 'علوم', 'علوم': 'علوم', 'Mathematics': 'رياضة', 'رياضة': 'رياضة',
-};
-```
-
-`scientificDepartment` sent as `''` when study section is "أدبي" — pending sayed confirmation on whether `null` is required.
-
----
-
-## 12. Error Handling Pattern
+## 13. Error Handling Pattern
 
 ```
 DioException → propagates from data source → caught in repo → left(ServerFailure.fromDioError(e))
 → cubit: result.fold(failure → emit FailureState, ...)
-→ UI: if errMessage contains 'unauthenticated' → return early (interceptor handles it)
+→ UI: if errMessage contains 'unauthenticated' → return early
      else → show SnackBar or error widget
 ```
 
 ---
 
-## 13. Error UI Rules
+## 14. Error UI Rules
 
 | Situation | Widget |
 |---|---|
@@ -450,7 +350,7 @@ DioException → propagates from data source → caught in repo → left(ServerF
 
 ---
 
-## 14. AppColors
+## 15. AppColors
 
 ```dart
 abstract class AppColors {
@@ -469,78 +369,64 @@ abstract class AppColors {
 
 ---
 
-## 15. Known Bugs & Pending Issues (current)
+## 16. Known Bugs & Pending Issues
 
 - **Backend Bug — Fav Pagination:** same items regardless of cursor → deduplication in `FavCubit.loadMore()`
 - **Search Debounce:** not implemented — every keystroke triggers search
 - **`withOpacity` deprecated:** works but newer Flutter suggests `.withValues(alpha:...)`
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
 - **Auth — duplicate-email-unverified edge case:** needs sayed conversation
-- **Faheem `/aiChat/send`:** waiting on backend — ask sayed next session
+- **Faheem History:** no backend endpoint yet — screen is UI-only
 - **Avatar dialog:** tap interaction undefined — needs clarification before building
-- **`scientific_department` when "أدبي":** sends `''` — needs sayed confirmation on `null` vs `''`
-- **`current_password` for update-Password:** field removed from UI — needs sayed to add param
-- **Real contact info:** dummy data in `quick_contact.dart` — needs sayed to provide
-- **Avatar upload:** no endpoint yet — deferred
+- **`scientific_department` when "أدبي":** sends `''` — needs sayed confirmation
+- **`current_password` for update-Password:** field removed from UI
+- **Real contact info:** dummy data in `quick_contact.dart`
+- **Avatar upload:** no endpoint yet
 
 ---
 
-## 16. All Decisions Made
+## 17. All Decisions Made
 
 | Decision | Reason |
 |---|---|
+| `apiService.dio.post()` for Faheem | `apiService.post()` only accepts `Map`, not `FormData`. Interceptor still fires on `dio` instance. |
+| `reverse: true` in ChatMessagesList | Eliminates scroll-on-open complexity — list always starts at bottom |
+| `jumpTo(minScrollExtent)` for new messages | With `reverse: true`, bottom = minScrollExtent |
+| `uniCards` content type kept | Backend may return cards in the future |
+| `FaheemCubit` NOT in MultiBlocProvider | Taken from GetIt directly — no broadcast needed |
+| Faheem API is request/response (not streaming) | Backend returns full answer in one shot |
+| User avatar in `UserMessageBubble` from `ProfileCubit` via GetIt | Single source of truth — same pattern as `CustomHomeAppBar` |
 | `FavCubit` → `registerSingleton` | Single instance across app |
 | No try/catch in data sources | Repos handle errors |
 | `DioException` caught in repos directly | Removed `CustomExceptions` middle layer |
 | `NoInternetWidget` for full-screen failures | Better UX |
-| `url_launcher` for website | Lightweight, opens external browser |
-| No `AuthEntity` | Tokens never appear in UI |
-| `verifyOtp` returns `String` (token) | Same endpoint serves two flows |
-| `resetPassword` takes `tempToken` param | No active session during forgot-password flow |
-| `ApiService.postWithToken()` added | Override Authorization for one-off temp-token call |
-| 401 interceptor concurrent-redirect guard | Prevents double SnackBar from parallel failing requests |
-| **401 SnackBar ordering fix** | Failure listeners check for 'unauthenticated' and return early |
-| Single `ProfileCubit` for 3 screens | Same object of work — consistent with AuthCubit covering 5 screens |
-| `kGovernorates` in root `constants.dart` | Single shared source for auth + profile |
-| `AgeField` moved to `core/widgets/` | Used by both auth/setup and profile/personal_data |
-| `CustomTextFormField` `enabled` param | Read-only display for name/email (no update-profile endpoint) |
-| `favorite_universities` NOT mapped into `UserEntity` | Fav feature owns this data already |
-| Current-password field removed from security screen | No endpoint param, not connected to controller |
-| `image_picker` added | Real gallery pick/preview/clear for document cards |
-| Avatar upload deferred | No backend endpoint yet |
-| "الشعبة العلمية" shown conditionally | Only when study section is "علمي" |
-| `scientificDepartment` sent as `''` when "أدبي" | Pending sayed confirmation |
-| **No-op save guard via snapshot** | 5 `_original*` vars + `_hasChanges()` — no local DB needed |
-| **`logout()` in `ProfileCubit`** | Only GetIt singleton owning session state — avoids promoting AuthCubit to singleton |
-| **`LogoutConfirmationSheet` as bottom sheet** | More natural on mobile than center dialog; consistent with Terms & Conditions pattern |
-| **`LegalSheet` as shared widget in `core/widgets/`** | Terms + Privacy share identical structure — avoid duplication |
-| **`TermsAndConditionsSheet` as thin wrapper** | Backward compat with auth flow — no changes needed in auth screens |
-| **`MessageFormSection` validator removed from name field** | Manual check in `_submit()` prevents focus-jump after `formKey.reset()` |
-| **`formKey.reset()` before `controller.clear()`** | Correct order to fully clear form without re-triggering focus |
-| **No password no-op guard** | Current password not available in UI — backend handles duplicate-password rejection |
+| Single `ProfileCubit` for 3 screens | Same object of work |
+| `kGovernorates` in root `constants.dart` | Shared between auth + profile |
+| `AgeField` in `core/widgets/` | Used by auth/setup and profile/personal_data |
+| Logout → `LogoutConfirmationSheet` | Confirmation before execute |
+| `LegalSheet` as shared widget | Terms + Privacy share identical structure |
+| `TermsAndConditionsSheet` as thin wrapper | Backward compat with auth flow |
+| No-op save guard via snapshot | 5 `_original*` vars + `_hasChanges()` |
+| `logout()` in `ProfileCubit` | Only GetIt singleton owning session state |
 | Code comments English-only | Hard rule |
 | SnackBar over Toast | Cleaner UX |
-| Every `onGenerateRoute` case passes `settings: settings` | Prevents arguments from being dropped |
-| `pushNamedAndRemoveUntil` for logout/401 | Full stack clear — no back navigation to authenticated screens |
 
 ---
 
-## 17. Session Summaries — تاريخي
+## 18. Session Summaries — تاريخي
 
-**جلسة: Auth Polish + UX Fixes** — register/login flow, StudyTypeSelector, Terms sheet, validation fixes
+**جلسة: Auth Polish + UX Fixes**
+**جلسة: Splash + Onboarding + 401 Interceptor + Validator Fixes**
+**جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup**
+**جلسة: 401 Double-SnackBar Diagnosis + Fix**
+**جلسة: Profile API Integration — kickoff**
+**جلسة: Profile Feature — all open items** (401 ordering, no-op guard, home AppBar, logout, contact us, legal sheet)
 
-**جلسة: Splash + Onboarding + 401 Interceptor + Validator Fixes** — splash, onboarding, first 401 interceptor, OTP/password UX
-
-**جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup** — root cause: missing `settings: settings` in routes. Removed global `pendingSnackBarMessage`. Notifications trigger cleanup.
-
-**جلسة: 401 Double-SnackBar Diagnosis + Fix** — concurrent 401s from `getNotifications()` (list + unread count). Fixed with `_isHandlingUnauthorized` guard.
-
-**جلسة: Profile API Integration — kickoff** — `ProfileCubit`, `StudentInfoEntity`, `UserEntity` update, `kGovernorates` to constants, `AgeField` to core, personal_data/security/profile screens wired
-
-**جلسة: Profile Feature — all open items (this session)**
-1. **401 SnackBar ordering** — diagnosed via logs: repo catch fires before interceptor redirect. Fix: early return in listener if `'unauthenticated'` in errMessage. Applied to `SaveStudentInfoFailure` + `UpdatePasswordFailure`.
-2. **No-op save guard** — snapshot vars + `_hasChanges()`. Decided against local DB (overkill). Password screen doesn't need it (backend handles).
-3. **Home AppBar** — `CustomHomeAppBar` wired to `ProfileCubit` via `getIt`, `buildWhen` limits rebuilds.
-4. **Logout** — `ProfileCubit.logout()` + `LogoutConfirmationSheet` (bottom sheet, robot SVG, "أيوه"/"لا خلاص").
-5. **Contact Us** — fully interactive: `QuickContact` with `url_launcher`, `MessageFormSection` as StatefulWidget, `LegalSheet` shared widget, `TermsAndConditionsSheet` as wrapper, `Footer` wired, Privacy Policy written from scratch.
-6. **Avatar dialog** — still open, behavior not yet clarified.
+**جلسة: Faheem Feature — full integration (هذه الجلسة)**
+1. Confirmed `POST /aiChat/send` endpoint is live (form-data, returns `{role, content}`)
+2. Built full layer: domain → data → cubit → view
+3. Converted `FaheemChatViewBody` from setState → BlocConsumer
+4. Fixed scroll-to-bottom with `reverse: true` pattern
+5. Added user avatar in `UserMessageBubble` from ProfileCubit
+6. Registered full Faheem chain in GetIt
+7. Clarified: API is request/response not streaming; `apiService.dio.post()` correct for FormData

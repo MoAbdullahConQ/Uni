@@ -23,7 +23,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Multi-point messages** → parse each point separately, don't let new asks get lost.
 - **When I say "خليك فاكر"** → track it, resurface without being asked.
 - **When asked to re-order/triage a list** → group into buckets: ready-to-build / needs my input / needs diagnosis / waiting on third party.
-- **"متبعتش الفايل" / "ابعت الفايل كامل"** → send the full file as a downloadable output, not just a snippet. ✅ confirmed pattern this session.
+- **"متبعتش الفايل" / "ابعت الفايل كامل"** → send the full file as a downloadable output, not just a snippet.
+- **"فهمني سطر سطر"** → explain every line individually, don't skip or group lines together.
 
 ---
 
@@ -50,6 +51,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - When closing a session → update all 3 memory files for full continuity
 - I sometimes paste back a file you sent with `// TODO` comments → treat as current ground truth + task list
 - **"معاك كل حاجة"** when Claude asks for a file that's in the zip → use the zip, don't ask again
+- **I ask "هو ده صح ولا اي"** → give a direct yes/no with one-line reason, not a list of considerations
+- **I verify my own understanding by re-explaining things back** → confirm if correct or correct it directly
 
 ---
 
@@ -67,16 +70,16 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - Keep existing comments in code — don't remove them
 - Diagnose the real cause of errors directly — no extra questions
 - If you need to review code → ask for `lib.zip` or the specific file first
-- When a screen's UI shows a feature with no matching backend endpoint → make it static/UI-only and flag it. If I want it interactive despite no endpoint → build real local interactivity (e.g. clear on submit, local state), confirm any new package first.
+- When a screen's UI shows a feature with no matching backend endpoint → make it static/UI-only and flag it
 - When I upload reference images of screens → study them fully before describing the flow
 - When I upload a screenshot of a bug → diagnose root cause in framework/widget behavior
 - When asked "ايه رأيك" on UX/architecture → one clear recommendation with reasoning
 - When debugging → verify each link in the chain independently with logs/prints BEFORE proposing a fix
 - Avoid leaving commented-out dead code — delete cleanly, rely on git history
 - Before touching a shared/core widget used across multiple features → confirm with me first
-- When business logic exists but is unreachable from where it's needed → propose where it should live and why, wait for go-ahead
-- **In any cubit failure listener that shows a SnackBar → always check `errMessage.toLowerCase().contains('unauthenticated')` and return early if true.** The interceptor handles 401 redirects — the failure SnackBar should never show for session-expired cases.
-- **When I say "متبعتش الفايل" or ask for the full file** → always output a complete downloadable file, not an inline snippet with "change this line".
+- **In any cubit failure listener that shows a SnackBar → always check `errMessage.toLowerCase().contains('unauthenticated')` and return early if true.**
+- **When I say "متبعتش الفايل" or ask for the full file** → always output a complete downloadable file, not an inline snippet.
+- **When I ask "فهمني سطر سطر"** → explain every single line individually without grouping or skipping.
 
 **Never:**
 - Don't rewrite working code unless asked
@@ -86,18 +89,19 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - Don't suggest Firebase or any alternative backend
 - Don't give a list of options when a recommendation is asked for
 - Don't put logic in the Cubit if it can be done in the UI
-- Don't add new dependencies without asking — exception: if I've explicitly approved one earlier in the session
+- Don't add new dependencies without asking
 - Don't repeat a note I said I'd handle later
 - Don't add Arabic-only comments — all code comments in English
 - Don't put feature-specific code in `core/` — core is shared only
 - Don't add Repo/UseCase layers without clear business logic justification
 - Don't start writing code before the plan is approved
 - Don't add an Entity for data that never reaches the UI
-- **Don't write/edit code during a discussion turn** — wait for explicit go-ahead, even if solution seems obvious
+- **Don't write/edit code during a discussion turn** — wait for explicit go-ahead
 - **Don't re-litigate a decision closed with "سيبها"/"خليها كذا"** unless new evidence comes up
 - **Don't propose a root cause without first confirming via debug print or log trace**
-- **Don't assume a newly-reported bug is the same as a previously-fixed one** — fresh diagnosis even if symptom sounds similar
-- **Don't send a snippet saying "change line X"** when the user asked for the full file — always send complete file
+- **Don't assume a newly-reported bug is the same as a previously-fixed one** — fresh diagnosis
+- **Don't send a snippet saying "change line X"** when the user asked for the full file
+- **Don't group or summarize when "سطر سطر" is asked** — line by line means line by line
 
 ---
 
@@ -109,6 +113,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **401 in failure listeners:** check `errMessage.toLowerCase().contains('unauthenticated')` → return early
 - **Cubit pattern:** Initial → Loading → Success/Failure + PaginationLoading/PaginationFailure
 - **API calls:** `apiService.get()` + `response['data']` manually
+- **`apiService.post()` accepts `Map<String, dynamic>` only** — for `FormData` use `apiService.dio.post()` directly (interceptor still fires on `dio` instance)
 - **Entity vs Model:** `UniEntity` non-nullable/required, `UniModel` nullable → maps to super with `?? defaults`
 - **AppColors:** constants are `Color` objects — never wrap in `Color()` again
 - **GetIt:** all global cubits use `registerSingleton` (not lazy)
@@ -120,15 +125,15 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Multi-option selector widgets take `Map<String, IconData>` for per-option icons**
 - **Session-expired redirect message travels as route `arguments` ONLY** — no global mutable variable
 - **Every `case` in `onGenerateRoute` must pass `settings: settings`**
-- **`NotificationsCubit.getNotifications()` called from:** `MainView.initState`, `MainView.didPopNext`, `MainView._onTabChanged` — multiple intentional trigger points
-- **Shared widgets → `core/widgets/`** when used by 2+ features; rename if old name was feature-specific
+- **Shared widgets → `core/widgets/`** when used by 2+ features
 - **Shared constants → root `lib/constants.dart`**
 - **Reuse existing use cases across features** — don't duplicate
-- **Fields with no backend update support → shown read-only (`enabled: false`), not silently dropped**
-- **`formKey.reset()` before `controller.clear()`** — correct order to avoid focus-jump after form submit
-- **Form validator removal pattern:** when `formKey.reset()` causes focus-jump on a field, remove its `validator` and do a manual check in `_submit()` before calling `validate()`
-- **`LegalSheet` is the shared widget for all legal content** — Terms and Privacy Policy both use it. `TermsAndConditionsSheet` is a thin wrapper for backward compat with auth flow.
-- **Logout confirmation pattern:** `LogoutConfirmationSheet.show(context, onConfirm: ...)` — always show confirmation before executing logout
+- **Fields with no backend update support → shown read-only (`enabled: false`)**
+- **`formKey.reset()` before `controller.clear()`** — correct order to avoid focus-jump
+- **`LegalSheet` is the shared widget for all legal content** — Terms and Privacy both use it
+- **Logout confirmation pattern:** `LogoutConfirmationSheet.show(context, onConfirm: ...)` always first
+- **`reverse: true` ListView pattern for chat** — latest message always at bottom; scroll uses `jumpTo(minScrollExtent)`
+- **User avatar in chat bubbles** → from `ProfileCubit.currentUser?.avatar` via GetIt — same pattern as `CustomHomeAppBar`
 
 ---
 
@@ -149,23 +154,23 @@ NestedScrollView (ClampingScrollPhysics)
 └── TabBarView → 3x ListView(key: PageStorageKey(...))
 ```
 
-**Auth token refresh:** handled in Dio interceptor inside `ApiService` — current behavior is hard logout + redirect on 401 (no silent refresh-and-retry yet). Guarded with `_isHandlingUnauthorized` flag.
+**Auth token refresh:** hard logout + redirect on 401. Guarded with `_isHandlingUnauthorized` flag.
 
-**Forgot-password temporary token:** held in cubit state, passed as `tempToken` param — never written to Prefs.
+**Forgot-password temporary token:** held in cubit state, passed as `tempToken` — never written to Prefs.
 
 **Register-flow token persistence:** written to Prefs in `OtpViewBody` before navigating to `SetupView`.
 
 **OTP package:** `pinput`.
 
-**Terms & Conditions / Privacy Policy UX:** `LegalSheet` as `DraggableScrollableSheet` bottom sheet. Both accessible from `Footer` in contact-us screen and from auth registration via `TermsAndConditionsSheet` wrapper.
+**Terms & Conditions / Privacy Policy UX:** `LegalSheet` as `DraggableScrollableSheet`. Both accessible from `Footer` and from auth via `TermsAndConditionsSheet` wrapper.
 
-**Logout UX:** `LogoutConfirmationSheet` bottom sheet (robot SVG + "أيوه"/"لا خلاص") → `ProfileCubit.logout()` on confirm.
+**Logout UX:** `LogoutConfirmationSheet` → `ProfileCubit.logout()` on confirm.
 
-**Session-expired redirect:** 401 interceptor → `pushNamedAndRemoveUntil(LoginView, arguments: message)`. Guard flag prevents double-redirect. Failure listeners return early on `'unauthenticated'`.
+**Session-expired redirect:** 401 interceptor → `pushNamedAndRemoveUntil(LoginView, arguments: message)`. Failure listeners return early on `'unauthenticated'`.
 
-**NotificationsCubit trigger points:** `MainView.initState` + `didPopNext` + `_onTabChanged` — intentional, not to be deduplicated.
+**Cubit-per-feature:** screens sharing same object of work share one cubit.
 
-**Cubit-per-feature:** screens sharing same object of work share one cubit (e.g. profile/personal_data/security → `ProfileCubit`).
+**Faheem chat scroll:** `reverse: true` + `messages.reversed.toList()` in `ChatMessagesList`. `_scrollToBottom()` uses `jumpTo(minScrollExtent)`. `FaheemCubit` taken from GetIt directly — NOT in `MultiBlocProvider`.
 
 ---
 
@@ -185,30 +190,34 @@ NestedScrollView (ClampingScrollPhysics)
 
 ## 8. Current Focus
 
-**Features done:** browse, fav, search, home, notifications, guide, uni_detail, auth, splash, on_boarding, profile (minus avatar dialog), contact_us
+**Features done:** browse, fav, search, home, notifications, guide, uni_detail, auth, splash, on_boarding, profile (minus avatar dialog), contact_us, **faheem** ✅
 
-**One remaining profile item:** Avatar dialog — behavior not yet clarified (likely tap → camera/gallery picker, but needs confirmation before building; backend upload endpoint doesn't exist yet)
+**One remaining profile item:** Avatar dialog — behavior not clarified yet (tap → camera/gallery; backend upload endpoint doesn't exist yet)
 
-**Next up after avatar dialog:** Search Debounce → Faheem (waiting on backend) → Fav Pagination (waiting on backend fix)
+**Next up (in order):**
+1. Avatar dialog — needs behavior clarification first
+2. Search Debounce — 500ms, small task, ready to build
+3. Faheem History — waiting on sayed for endpoint
+4. Fav Pagination — waiting on sayed backend fix
+5. Replace dummy contact data — waiting on sayed
 
 ---
 
 ## 9. Session Summaries — تاريخي (مرجع)
 
-**جلسة: Auth Polish + UX Fixes** — register/login UX, StudyTypeSelector, Terms sheet, validation fixes
+**جلسة: Auth Polish + UX Fixes**
+**جلسة: Splash + Onboarding + 401 + Validator Fixes**
+**جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup**
+**جلسة: 401 Double-SnackBar Diagnosis + Fix**
+**جلسة: Profile API Integration — kickoff**
+**جلسة: Profile Feature — all open items** (401 ordering, no-op guard, home AppBar, logout, contact us, legal sheet)
 
-**جلسة: Splash + Onboarding + 401 + Validator Fixes** — splash, onboarding, first 401 interceptor, OTP/password UX
-
-**جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup** — root cause: missing `settings: settings`. Removed global `pendingSnackBarMessage`. Notifications trigger cleanup.
-
-**جلسة: 401 Double-SnackBar Diagnosis + Fix** — concurrent 401s from getNotifications(). Fixed with `_isHandlingUnauthorized` guard.
-
-**جلسة: Profile API Integration — kickoff** — ProfileCubit, StudentInfoEntity, UserEntity update, personal_data/security/profile screens wired.
-
-**جلسة: Profile Feature — all open items (هذه الجلسة)**
-1. **401 ordering bug** ✅ — early return in listeners for `'unauthenticated'`
-2. **No-op save guard** ✅ — snapshot vars + `_hasChanges()`
-3. **Home AppBar** ✅ — wired to ProfileCubit
-4. **Logout** ✅ — `ProfileCubit.logout()` + `LogoutConfirmationSheet`
-5. **Contact Us** ✅ — QuickContact (url_launcher) + MessageFormSection (clear on submit) + LegalSheet (shared) + Footer wired + Privacy Policy written
-6. **Avatar dialog** 🔶 — still open
+**جلسة: Faheem Feature — full integration ✅**
+1. Confirmed `POST /aiChat/send` live — form-data, returns `{role, content}`
+2. Built full layer: domain → data → cubit → view
+3. Converted `FaheemChatViewBody` from setState → BlocConsumer
+4. Fixed scroll with `reverse: true` pattern
+5. Added user avatar in `UserMessageBubble` from ProfileCubit via GetIt
+6. Registered full Faheem chain in GetIt
+7. API is request/response (not streaming) — confirmed
+8. `apiService.dio.post()` correct for FormData — interceptor still fires
