@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
-import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
+import 'package:uni/core/services/get_it_service.dart';
+import 'package:uni/features/faheem/presentation/manager/faheem_cubit/faheem_cubit.dart';
+import 'package:uni/features/faheem/presentation/manager/faheem_cubit/faheem_state.dart';
 import 'package:uni/features/faheem/presentation/views/faheem_history_view.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/chat_input_bar.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/chat_messages_list.dart';
@@ -17,35 +20,19 @@ class FaheemChatViewBody extends StatefulWidget {
 class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-
-  // TODO: replace with cubit
-  late List<ChatMessageEntity> messages;
-
-  @override
-  void initState() {
-    super.initState();
-    // messages = List.from(getDummyChatMessages());
-    messages = [];
-  }
-
-  bool get _hasMessages => messages.isNotEmpty;
+  final FaheemCubit _cubit = getIt<FaheemCubit>();
 
   void _sendMessage() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
+    _controller.clear();
+    _cubit.sendMessage(text);
+  }
 
-    setState(() {
-      messages.add(ChatMessageEntity(text: text, sender: MessageSender.user));
-      _controller.clear();
-    });
-
+  void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        _scrollController.jumpTo(_scrollController.position.minScrollExtent);
       }
     });
   }
@@ -59,40 +46,66 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kHorizontalPadding,
-        vertical: kTopPadding,
-      ),
-      child: Column(
-        children: [
-          // App bar
-          FaheemChatAppBar(
-            showTitle: false,
-            onHistoryTap: () {
-              Navigator.pushNamed(context, FaheemHistoryView.routeName);
-            },
-          ),
+    return BlocConsumer<FaheemCubit, FaheemState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is FaheemSending || state is FaheemMessageReceived) {
+          _scrollToBottom();
+        }
+        if (state is FaheemSendFailure) {
+          if (state.errMessage.toLowerCase().contains('unauthenticated'))
+            return;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errMessage)));
+        }
+      },
+      builder: (context, state) {
+        final messages = switch (state) {
+          FaheemSending s => s.messages,
+          FaheemMessageReceived s => s.messages,
+          FaheemSendFailure s => s.messages,
+          _ => _cubit.messages,
+        };
 
-          // Content
-          Expanded(
-            child: _hasMessages
-                ? ChatMessagesList(
-                    messages: messages,
-                    scrollController: _scrollController,
-                  )
-                : const SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kHorizontalPadding,
-                    ),
-                    child: FaheemWelcomeWidget(),
-                  ),
-          ),
+        final hasMessages = messages.isNotEmpty;
 
-          // Input
-          ChatInputBar(controller: _controller, onSend: _sendMessage),
-        ],
-      ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kHorizontalPadding,
+            vertical: kTopPadding,
+          ),
+          child: Column(
+            children: [
+              // App bar
+              FaheemChatAppBar(
+                showTitle: hasMessages,
+                onHistoryTap: () {
+                  Navigator.pushNamed(context, FaheemHistoryView.routeName);
+                },
+              ),
+
+              // Content
+              Expanded(
+                child: hasMessages
+                    ? ChatMessagesList(
+                        messages: messages,
+                        scrollController: _scrollController,
+                      )
+                    : const SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: kHorizontalPadding,
+                        ),
+                        child: FaheemWelcomeWidget(),
+                      ),
+              ),
+
+              // Input
+              ChatInputBar(controller: _controller, onSend: _sendMessage),
+            ],
+          ),
+        );
+      },
     );
   }
 }
