@@ -17,42 +17,51 @@ class AvatarProfile extends StatefulWidget {
 class _AvatarProfileState extends State<AvatarProfile> {
   File? _localImage;
   bool _isUploading = false;
+  // guards the gap between opening the sheet/picker and pickImage()
+  // resolving — without it, a fast double-tap throws a PlatformException
+  // (already_active) because image_picker doesn't allow concurrent calls.
+  bool _isPicking = false;
 
   Future<void> _onTap() async {
-    if (_isUploading) return;
+    if (_isUploading || _isPicking) return;
+    _isPicking = true;
 
-    final source = await AvatarUploadSheet.show(context);
-    if (source == null) return;
+    try {
+      final source = await AvatarUploadSheet.show(context);
+      if (source == null) return;
 
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: source, imageQuality: 85);
-    if (picked == null) return;
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: source, imageQuality: 85);
+      if (picked == null) return;
 
-    final newImage = File(picked.path);
-    setState(() {
-      _localImage = newImage;
-      _isUploading = true;
-    });
+      final newImage = File(picked.path);
+      setState(() {
+        _localImage = newImage;
+        _isUploading = true;
+      });
 
-    // getMe() inside ProfileCubit.uploadAvatar() refreshes currentUser with
-    // the new server avatar URL, so once it's done we drop the local file
-    // and let the network image take over (single source of truth).
-    final success = await getIt<ProfileCubit>().uploadAvatar(newImage);
+      // getMe() inside ProfileCubit.uploadAvatar() refreshes currentUser with
+      // the new server avatar URL, so once it's done we drop the local file
+      // and let the network image take over (single source of truth).
+      final success = await getIt<ProfileCubit>().uploadAvatar(newImage);
 
-    if (!mounted) return;
-    setState(() {
-      _isUploading = false;
-      _localImage = null;
-    });
+      if (!mounted) return;
+      setState(() {
+        _isUploading = false;
+        _localImage = null;
+      });
 
-    if (success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('تم تغيير الصورة الشخصية')));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('فشل تغيير الصورة، حاول مرة أخرى')),
-      );
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم تغيير الصورة الشخصية')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('فشل تغيير الصورة، حاول مرة أخرى')),
+        );
+      }
+    } finally {
+      _isPicking = false;
     }
   }
 
