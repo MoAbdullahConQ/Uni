@@ -61,7 +61,17 @@ final GetIt getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
   // Dio
-  getIt.registerSingleton<Dio>(Dio());
+  getIt.registerSingleton<Dio>(
+    Dio(
+      BaseOptions(
+        // generous send timeout since avatar/file uploads take longer
+        // than regular JSON requests, especially on slow connections
+        connectTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 15),
+      ),
+    ),
+  );
 
   // ApiService
   getIt.registerSingleton<ApiService>(ApiService(getIt<Dio>()));

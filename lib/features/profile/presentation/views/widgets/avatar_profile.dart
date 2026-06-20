@@ -31,7 +31,15 @@ class _AvatarProfileState extends State<AvatarProfile> {
       if (source == null) return;
 
       final picker = ImagePicker();
-      final picked = await picker.pickImage(source: source, imageQuality: 85);
+      // camera shots can be several MB at full resolution — caps here keep
+      // the upload well under the server's nginx body-size limit (was
+      // hitting 413 Request Entity Too Large / connection drops before)
+      final picked = await picker.pickImage(
+        source: source,
+        imageQuality: 85,
+        maxWidth: 1024,
+        maxHeight: 1024,
+      );
       if (picked == null) return;
 
       final newImage = File(picked.path);
