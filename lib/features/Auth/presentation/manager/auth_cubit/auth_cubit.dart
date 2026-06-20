@@ -23,10 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.saveStudentInfoUseCase,
   }) : super(AuthInitial());
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
     final result = await loginUseCase.call(email: email, password: password);
     result.fold(
@@ -82,7 +79,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> saveStudentInfo({
     required String studySection,
-    required String scientificDepartment,
+    required String? scientificDepartment,
     required int governorateId,
     required double percentage,
     required int age,

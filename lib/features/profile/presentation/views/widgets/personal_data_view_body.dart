@@ -146,7 +146,7 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
         studySection: kStudySectionMap[studyCategory] ?? 'science',
         scientificDepartment: studyCategory == 'علمي'
             ? (kScientificDepartmentMap[studyTrack] ?? 'scientific')
-            : '',
+            : null,
         governorateId: selectedGovernorateId!,
         percentage: double.tryParse(_percentageController.text) ?? 0,
         age: age,

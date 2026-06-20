@@ -97,7 +97,7 @@ class AuthRepoImpl implements AuthRepo {
   @override
   Future<Either<Failure, void>> saveStudentInfo({
     required String studySection,
-    required String scientificDepartment,
+    required String? scientificDepartment,
     required int governorateId,
     required double percentage,
     required int age,
@@ -141,5 +141,4 @@ class AuthRepoImpl implements AuthRepo {
       return left(ServerFailure.fromDioError(e));
     }
   }
-  
 }

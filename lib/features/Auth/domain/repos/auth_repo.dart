@@ -32,7 +32,7 @@ abstract class AuthRepo {
 
   Future<Either<Failure, void>> saveStudentInfo({
     required String studySection,
-    required String scientificDepartment,
+    required String? scientificDepartment,
     required int governorateId,
     required double percentage,
     required int age,

@@ -22,7 +22,7 @@ abstract class AuthRemoteDataSource {
   });
   Future<void> saveStudentInfo({
     required String studySection,
-    required String scientificDepartment,
+    required String? scientificDepartment,
     required int governorateId,
     required double percentage,
     required int age,
@@ -113,20 +113,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> saveStudentInfo({
     required String studySection,
-    required String scientificDepartment,
+    required String? scientificDepartment,
     required int governorateId,
     required double percentage,
     required int age,
   }) async {
+    final data = <String, dynamic>{
+      'study_section': studySection,
+      'governorate_id': governorateId,
+      'percentage': percentage,
+      'age': age,
+    };
+    // backend rejects null/"" with a validation error — the key must be
+    // omitted entirely when there's no scientific department (e.g. "أدبي")
+    if (scientificDepartment != null && scientificDepartment.isNotEmpty) {
+      data['scientific_department'] = scientificDepartment;
+    }
     await apiService.post(
       endpoint: BackendEndpoints.saveStudentInfo,
-      data: {
-        'study_section': studySection,
-        'scientific_department': scientificDepartment,
-        'governorate_id': governorateId,
-        'percentage': percentage,
-        'age': age,
-      },
+      data: data,
     );
   }
 
