@@ -20,6 +20,11 @@ import 'package:uni/features/browse/data/data_sources/browse_remote_data_source.
 import 'package:uni/features/browse/data/repos/browse_repo_impl.dart';
 import 'package:uni/features/browse/domain/repos/browse_repo.dart';
 import 'package:uni/features/browse/domain/use_cases/get_unis_use_case.dart';
+import 'package:uni/features/faheem/data/data_sources/faheem_remote_data_source.dart';
+import 'package:uni/features/faheem/data/repos/faheem_repo_impl.dart';
+import 'package:uni/features/faheem/domain/repos/faheem_repo.dart';
+import 'package:uni/features/faheem/domain/use_cases/send_message_use_case.dart';
+import 'package:uni/features/faheem/presentation/manager/faheem_cubit/faheem_cubit.dart';
 import 'package:uni/features/fav/data/data_sources/fav_remote_data_source.dart';
 import 'package:uni/features/fav/data/repos/fav_repo_impl.dart';
 import 'package:uni/features/fav/domain/repos/fav_repo.dart';
@@ -207,5 +212,19 @@ Future<void> setupGetIt() async {
       updatePasswordUseCase: getIt<UpdatePasswordUseCase>(),
       uploadAvatarUseCase: getIt<UploadAvatarUseCase>(),
     ),
+  );
+
+  // ===== FAHEEM =====
+  getIt.registerSingleton<FaheemRemoteDataSource>(
+    FaheemRemoteDataSourceImpl(getIt<ApiService>()),
+  );
+  getIt.registerSingleton<FaheemRepo>(
+    FaheemRepoImpl(getIt<FaheemRemoteDataSource>()),
+  );
+  getIt.registerSingleton<SendMessageUseCase>(
+    SendMessageUseCase(getIt<FaheemRepo>()),
+  );
+  getIt.registerSingleton<FaheemCubit>(
+    FaheemCubit(getIt<SendMessageUseCase>()),
   );
 }
