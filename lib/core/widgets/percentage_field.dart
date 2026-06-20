@@ -43,8 +43,10 @@ class PercentageField extends StatelessWidget {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) return '';
-                final v = double.tryParse(value);
-                if (v == null || v < 0 || v > 100) return '';
+                final percentage = double.tryParse(value);
+                if (percentage == null || percentage < 50 || percentage > 100) {
+                  return '';
+                }
                 return null;
               },
             ),

@@ -134,6 +134,15 @@ class _PersonalDataViewBodyState extends State<PersonalDataViewBody> {
       ).showSnackBar(const SnackBar(content: Text('من فضلك اختر المحافظة')));
       return;
     }
+    final percentage = double.tryParse(_percentageController.text);
+    if (percentage == null || percentage < 50 || percentage > 100) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('من فضلك اختر درجة مناسبة (من 50 إلى 100)'),
+        ),
+      );
+      return;
+    }
     final age = int.tryParse(_ageController.text);
     if (age == null || age < 14 || age > 30) {
       ScaffoldMessenger.of(context).showSnackBar(

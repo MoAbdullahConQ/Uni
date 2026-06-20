@@ -53,11 +53,29 @@ class _SetupViewBodyState extends State<SetupViewBody> {
       ).showSnackBar(const SnackBar(content: Text('من فضلك اختر المحافظة')));
       return;
     }
-    if (!_formKey.currentState!.validate()) return;
+    final percentage = double.tryParse(_percentageController.text);
+    if (percentage == null || percentage < 50 || percentage > 100) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('من فضلك اختر درجة مناسبة (من 50 إلى 100)'),
+        ),
+      );
+      return;
+    }
+    final age = int.tryParse(_ageController.text);
+    if (age == null || age < 14 || age > 30) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('من فضلك اختر عمر مناسب (من 14 إلى 30)')),
+      );
+      return;
+    }
 
+    if (!_formKey.currentState!.validate()) return;
     context.read<AuthCubit>().saveStudentInfo(
       studySection: _studySectionApiValue(),
-      scientificDepartment: _scientificDepartmentApiValue(),
+      scientificDepartment: _studySection == 'علمي'
+          ? _scientificDepartmentApiValue()
+          : null,
       governorateId: _governorateId!,
       percentage: double.parse(_percentageController.text),
       age: int.parse(_ageController.text),
