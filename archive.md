@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: mailto fix + Home AppBar fix + scientific_department bug fix + Avatar Upload full integration)
+> Last updated: June 2026 (session: APK release + search debounce + release debug fixes)
 
 ---
 
@@ -26,7 +26,7 @@ lib/
 │   │   ├── calc_strength.dart
 │   │   └── build_error_bar.dart
 │   ├── services/
-│   │   ├── get_it_service.dart         ✅ updated this session — Dio gets BaseOptions, UploadAvatarUseCase registered
+│   │   ├── get_it_service.dart         (Dio gets BaseOptions, UploadAvatarUseCase registered)
 │   │   ├── shared_preferences_singleton.dart
 │   │   ├── custom_bloc_observer.dart
 │   │   └── database_service.dart      (abstract — unused)
@@ -43,8 +43,8 @@ lib/
 │   │   ├── app_text_style.dart
 │   │   ├── app_images.dart
 │   │   ├── app_fonts.dart
-│   │   ├── api_service.dart            ✅ updated this session — added `postFormData()` for multipart uploads
-│   │   └── backend_endpoints.dart      ✅ updated this session — added `addAvatar`
+│   │   ├── api_service.dart            (postFormData() for multipart uploads)
+│   │   └── backend_endpoints.dart      (addAvatar endpoint)
 │   └── widgets/
 │       ├── uni_card.dart
 │       ├── uni_card_image.dart
@@ -80,53 +80,53 @@ lib/
 │       └── legal_sheet.dart                 (shared DraggableScrollableSheet for Terms + Privacy)
 └── features/
     ├── browse/ ... (done)
-    ├── search/ ... (done — debounce next up, not started)
-    ├── fav/ ... (done — pagination bug waiting on sayed)
+    ├── search/ ... (done — debounce ✅ done this session)
+    ├── fav/ ... (done — pagination code confirmed correct; backend bug resolved by sayed)
     ├── guide/ ... (done)
     ├── notifications/ ... (done, stable)
     ├── home/
-    │   └── presentation/views/widgets/custom_home_app_bar.dart  (wired to ProfileCubit; now populated on cold start via MainView.initState → getMe())
+    │   └── presentation/views/widgets/custom_home_app_bar.dart  (wired to ProfileCubit; populated on cold start via MainView.initState → getMe())
     ├── auth/ ... (done)
     │   └── presentation/views/widgets/
     │       ├── login_view_body.dart     (reads session-expired message from ModalRoute arguments)
-    │       ├── setup_view_body.dart     ✅ FIXED this session — scientificDepartment now sent as null when "أدبي" (was always sending a real value, bug)
+    │       ├── setup_view_body.dart     (scientificDepartment sent as null when "أدبي")
     │       ├── setup_governorate_dropdown.dart  (imports kGovernorates from constants.dart)
     │       └── terms_and_conditions.dart  (calls TermsAndConditionsSheet.show())
     ├── splash/ ... (done)
     ├── on_boarding/ ... (done)
     ├── uni_detail/ ... (done)
-    ├── profile/  ✅ FULLY DONE this session — no open items left
+    ├── profile/  ✅ FULLY DONE
     │   ├── domain/ — reuses auth's GetMeUseCase, SaveStudentInfoUseCase, UpdatePasswordUseCase, UploadAvatarUseCase
     │   └── presentation/
     │       ├── manager/profile_cubit/
-    │       │   ├── profile_cubit.dart  ✅ updated this session — uploadAvatar(File) added (no intermediate Loading emit, see §6)
+    │       │   ├── profile_cubit.dart  (uploadAvatar, logout, getMe, saveStudentInfo, updatePassword)
     │       │   └── profile_state.dart
     │       └── views/widgets/
     │           ├── profile_view_body.dart
-    │           ├── personal_data_view_body.dart       ✅ FIXED this session — scientificDepartment now sent as null when not "علمي" (was '')
+    │           ├── personal_data_view_body.dart
     │           ├── security_view_body.dart
     │           ├── password_section.dart
     │           ├── governorate_dropdown.dart
     │           ├── stats_section.dart
     │           ├── documents_section.dart
-    │           ├── personal_data_document_upload_card.dart  (reference pattern for image_picker, gallery-only)
+    │           ├── personal_data_document_upload_card.dart
     │           ├── profile_avatar_section.dart
     │           ├── profile_logout_button.dart
-    │           ├── personal_data_interests_selector.dart  (UI-only)
-    │           ├── avatar_profile.dart                ✅ REBUILT this session — full upload flow, see §6
-    │           ├── avatar_upload_sheet.dart            ✅ NEW this session — camera/gallery bottom sheet
+    │           ├── personal_data_interests_selector.dart
+    │           ├── avatar_profile.dart
+    │           ├── avatar_upload_sheet.dart
     │           ├── logout_confirmation_sheet.dart
     │           ├── contact_us_view_body.dart
-    │           ├── quick_contact.dart                  ✅ FIXED this session — AndroidManifest queries for mailto/tel (see §9)
+    │           ├── quick_contact.dart              (dummy data — replace when sayed provides)
     │           ├── message_form_section.dart
     │           ├── footer.dart
     │           ├── topic_dropdown.dart
     │           ├── details_field.dart
     │           ├── robot_section.dart
-    │           ├── contact_us_channel_card.dart
-    │           ├── role_badge.dart, profile_header.dart, profile_menu_item.dart,
-    │           │   profile_menu_section.dart, version_info.dart  (unchanged)
-    └── faheem/ ✅ DONE in a prior session (separate chat) — full integration: domain + data + cubit + view wired
+    │           └── role_badge.dart, profile_header.dart, profile_menu_item.dart,
+    │               profile_menu_section.dart, version_info.dart
+    └── faheem/ ✅ DONE (separate chat) — full integration: domain + data + cubit + view wired
+               history UI done — waiting on sayed for history endpoint
 ```
 
 ---
@@ -162,7 +162,7 @@ class UserEntity {
 ```dart
 class StudentInfoEntity {
   final String studySection;          // Arabic from GetMe, English expected by SaveStudentInfo
-  final String scientificDepartment;  // defaults to '' on parse if backend returns null (see §11)
+  final String scientificDepartment;  // defaults to '' on parse if backend returns null
   final int governorateId;
   final double percentage;
   final int age;
@@ -216,8 +216,8 @@ class BackendEndpoints {
   static const String updatePassword = '/auth/update-Password';
   static const String getMe = '/auth/me';
   static const String refreshToken = '/auth/refresh';
-  static const String addAvatar = '/auth/addAvatar';        // ✅ NEW this session
-  static const String sendMessage = '/aiChat/send';         // faheem (prior session)
+  static const String addAvatar = '/auth/addAvatar';
+  static const String sendMessage = '/aiChat/send';
 }
 ```
 
@@ -263,9 +263,8 @@ class ApiService {
     ));
   }
 
-  // get, post, getList, patch, postWithToken — all unchanged (Map<String, dynamic> JSON)
+  // get, post, getList, patch, postWithToken — all unchanged
 
-  // ✅ NEW this session — for multipart/form-data uploads (avatar, future file uploads)
   Future<Map<String, dynamic>> postFormData({
     required String endpoint,
     required FormData data,
@@ -276,211 +275,79 @@ class ApiService {
 }
 ```
 
-**Note:** `apiService.post()` accepts only `Map<String, dynamic>`. For `FormData` (file uploads), use `apiService.postFormData()` (added this session) — same pattern as Faheem's earlier direct-`dio.post()` workaround, but now formalized as a proper `ApiService` method.
+**Dio instance has explicit `BaseOptions`:** connectTimeout 15s, sendTimeout 30s, receiveTimeout 15s.
 
-**Dio instance (get_it_service.dart) — updated this session:**
-```dart
-getIt.registerSingleton<Dio>(
-  Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 15),
-    sendTimeout: const Duration(seconds: 30),   // generous for file uploads
-    receiveTimeout: const Duration(seconds: 15),
-  )),
-);
-```
-Was a bare `Dio()` with no timeouts before — added for clearer error diagnosis (`DioExceptionType.sendTimeout` etc. instead of `unknown`) after debugging the avatar upload `413`/`unknown` errors (see §6).
-
-**401 SnackBar ordering rule:** any cubit failure listener that shows a SnackBar must first check:
+**401 SnackBar ordering rule:** any cubit failure listener must check:
 ```dart
 if (state.errMessage.toLowerCase().contains('unauthenticated')) return;
 ```
-Root cause: the repo's `try/catch` catches the `DioException` before the interceptor redirects — cubit emits `Failure` state first, then interceptor fires. The early return prevents the wrong SnackBar from showing.
 
 ---
 
-## 5. Auth Flows (confirmed and working)
+## 5. Auth Flows
 
-**Register flow:** SignUpView → register → OtpView → verifyOtp → save token to Prefs → SetupView → saveStudentInfo → MainView
+**Register:** SignUpView → register → OtpView → verifyOtp → save token → SetupView → saveStudentInfo → MainView
 
-**Forgot password flow:** ForgotPasswordView → forgetPassword → OtpView → verifyOtp (NOT saved to Prefs) → ResetPasswordView(tempToken) → resetPassword → LoginView
+**Forgot password:** ForgotPasswordView → forgetPassword → OtpView → verifyOtp (NOT saved) → ResetPasswordView(tempToken) → resetPassword → LoginView
 
-**Login flow:** LoginView → login → MainView
+**Login:** LoginView → login → MainView
 
-**401 / session expired flow:** interceptor → guard check → Prefs.remove('token') → pushNamedAndRemoveUntil(LoginView, arguments: message) → LoginViewBody reads via ModalRoute arguments
+**401/session expired:** interceptor → guard → Prefs.remove('token') → pushNamedAndRemoveUntil(LoginView, arguments: message)
 
-**Logout flow:**
-1. User taps logout button → `LogoutConfirmationSheet.show()` appears
-2. User taps "أيوه" → `ProfileCubit.logout()` called
-3. `logout()` clears token + refresh_token + `_currentUser` → `navigatorKey.pushNamedAndRemoveUntil(LoginView)`
-4. No session-expired message shown (clean logout, not expired)
+**Logout:** LogoutConfirmationSheet → ProfileCubit.logout() → clears token + refresh_token → pushNamedAndRemoveUntil(LoginView)
 
 ---
 
-## 6. Avatar Upload Feature — Full Design (built this session)
+## 6. Avatar Upload Feature
 
-**Backend:** `POST /api/auth/addAvatar` — multipart/form-data, field `avatar` (File, required). Success response has no avatar URL (`{"status":200,"message":"Avatar Updated Successfully"}`) — new URL only available via follow-up `GET /auth/me`.
+**Backend:** `POST /api/auth/addAvatar` — multipart/form-data, field `avatar`. Success has no URL — follow-up `GET /auth/me` needed.
 
-### AvatarUploadSheet (new)
-Bottom sheet with two options (camera / gallery), returns the chosen `ImageSource` via `Navigator.pop`.
+**Pattern:** tap → `AvatarUploadSheet` (camera/gallery) → `pickImage(maxWidth: 1024, maxHeight: 1024)` → local preview + dim + spinner → `ProfileCubit.uploadAvatar(File)` (no global loading state) → on success, auto `getMe()` → SnackBar.
 
-### AvatarProfile (rebuilt — StatelessWidget → StatefulWidget)
-```dart
-class _AvatarProfileState extends State<AvatarProfile> {
-  File? _localImage;
-  bool _isUploading = false;
-  bool _isPicking = false; // guards the picker's own async gap — prevents
-                            // PlatformException(already_active) on fast double-tap
-
-  Future<void> _onTap() async {
-    if (_isUploading || _isPicking) return;
-    _isPicking = true;
-    try {
-      final source = await AvatarUploadSheet.show(context);
-      if (source == null) return;
-      final picked = await ImagePicker().pickImage(
-        source: source,
-        imageQuality: 85,
-        maxWidth: 1024,   // caps file size — fixes 413 / connection-drop errors
-        maxHeight: 1024,
-      );
-      if (picked == null) return;
-      setState(() { _localImage = File(picked.path); _isUploading = true; });
-      final success = await getIt<ProfileCubit>().uploadAvatar(_localImage!);
-      if (!mounted) return;
-      setState(() { _isUploading = false; _localImage = null; });
-      // SnackBar: success → 'تم تغيير الصورة الشخصية' | failure → 'فشل تغيير الصورة، حاول مرة أخرى'
-    } finally {
-      _isPicking = false;
-    }
-  }
-}
-```
-UI: `BlocBuilder<ProfileCubit, ProfileState>` reads `avatarUrl` from `currentUser`. While `_isUploading`: image opacity 0.5 + centered `CircularProgressIndicator` overlay (confirmed UX choice). `_localImage` (local file) takes priority over the network image only during the upload window; cleared immediately after `uploadAvatar()` resolves either way.
-
-### ProfileCubit.uploadAvatar (new)
-```dart
-// No intermediate ProfileLoading() emitted — would blank out CustomHomeAppBar
-// (same singleton cubit) while uploading. Returns plain bool.
-Future<bool> uploadAvatar(File image) async {
-  final result = await uploadAvatarUseCase.call(image);
-  var success = false;
-  result.fold((failure) => success = false, (_) => success = true);
-  if (success) await getMe(); // refreshes currentUser.avatar everywhere
-  return success;
-}
-```
-
-### Domain/data chain (new, mirrors existing auth use cases)
-`UploadAvatarUseCase(AuthRepo)` → `AuthRepo.uploadAvatar(File)` → `AuthRepoImpl` (try/catch DioException → ServerFailure) → `AuthRemoteDataSource.uploadAvatar(File)`:
-```dart
-Future<void> uploadAvatar(File image) async {
-  final formData = FormData.fromMap({'avatar': await MultipartFile.fromFile(image.path)});
-  await apiService.postFormData(endpoint: BackendEndpoints.addAvatar, data: formData);
-}
-```
-
-### Debugging history (resolved)
-- First error: `PlatformException(already_active)` on fast double-tap → fixed with `_isPicking` guard around the whole flow.
-- Second error: `413 Request Entity Too Large` (nginx) on camera photos → root cause: full-res camera images too large for server's upload limit.
-- Third error: `DioExceptionType.unknown`, null response, on a gallery image → same root cause (large file + connection drop), confirmed by same fix resolving it.
-- Fix for both: `maxWidth: 1024, maxHeight: 1024` added to `pickImage()`. Also added explicit `BaseOptions` timeouts to `Dio` for clearer future diagnostics.
-- Debug `print()` statements in `auth_repo_impl.dart`'s `uploadAvatar` catch block were used to extract the exact `DioExceptionType` and response — **removed by user** after confirming the fix worked.
-
-**Status: ✅ fully working, user-confirmed ("اشتغلت خلاص").**
+**Guards:** `_isPicking` + `_isUploading` locals in `AvatarProfile` state — prevents `PlatformException(already_active)`.
 
 ---
 
-## 7. scientific_department — Confirmed Backend Behavior (resolved this session)
-
-Tested directly via Postman by the user:
+## 7. scientific_department — Confirmed Backend Behavior
 
 | Sent | Result |
 |---|---|
-| Key omitted from body entirely | ✅ 200 — `scientific_department: null` in response |
-| `"scientific_department": ""` | ❌ 422 "The selected scientific department is invalid." |
-| `"scientific_department": null` (JSON null) | ❌ 422 same error |
-| Real value (`"scientific"` / `"Mathematics"`) | ✅ 200 |
+| Key omitted entirely | ✅ 200 |
+| `""` | ❌ 422 |
+| `null` (JSON) | ❌ 422 |
+| Real value | ✅ 200 |
 
-**Rule:** when there's no scientific department (study section = "أدبي"), the key must be omitted from the request map entirely — not sent as `null` or `''`.
-
-**Two bugs fixed (both call sites of `saveStudentInfo`):**
-1. `personal_data_view_body.dart` (profile edit) — was sending `''`.
-2. `setup_view_body.dart` (initial registration setup) — was sending a real value unconditionally regardless of study section selected (worse bug, found while tracing the fix for #1).
-
-`AuthRemoteDataSourceImpl.saveStudentInfo` now builds the request map conditionally:
-```dart
-final data = <String, dynamic>{
-  'study_section': studySection,
-  'governorate_id': governorateId,
-  'percentage': percentage,
-  'age': age,
-};
-if (scientificDepartment != null && scientificDepartment.isNotEmpty) {
-  data['scientific_department'] = scientificDepartment;
-}
-```
-`scientificDepartment` param is now `String?` end-to-end (data source → repo → use case → AuthCubit → ProfileCubit).
-
-**`StudentInfoModel.fromJson`** already defaulted `scientific_department` to `''` on parse — the receiving side was already safe; only the sending side had the bug.
+Key must be **omitted entirely** when not applicable. Fixed in both `personal_data_view_body.dart` and `setup_view_body.dart`.
 
 ---
 
-## 8. Home AppBar Cold-Start Fix (resolved this session)
+## 8. Home AppBar Cold-Start Fix
 
-**Symptom:** name/avatar in `CustomHomeAppBar` only populated after visiting Profile tab and returning; never loaded on a fresh app launch.
-
-**Root cause:** `ProfileCubit.getMe()` was never called on app start — only ever triggered as a side effect of visiting the Profile screen.
-
-**Fix:** added to `MainView.initState()`, alongside the other singleton cubit triggers:
-```dart
-getIt<TrendingCubit>().fetchTrendingUnis();
-getIt<FavCubit>().getFavs();
-getIt<GuideCubit>().getArticles();
-getIt<NotificationsCubit>().getNotifications();
-getIt<ProfileCubit>().getMe();  // ✅ added this session
-```
-Deliberately not added to `didPopNext`/`_onTabChanged` — profile data doesn't need refresh-on-tab-return like trending/fav/guide.
+`getIt<ProfileCubit>().getMe()` added to `MainView.initState()` — was never called on cold start before.
 
 ---
 
-## 9. mailto/tel Contact Fix (resolved this session)
+## 9. mailto/tel Contact Fix
 
-**Symptom:** tapping email button in `QuickContact` did nothing on a real device with Gmail installed.
-
-**Root cause:** Android 11+ (API 30+) package visibility restrictions — `canLaunchUrl()` returns `false` for `mailto:`/`tel:` unless declared in `AndroidManifest.xml`'s `<queries>`. Existing `<queries>` only had `PROCESS_TEXT` + generic `https` (why `wa.me` worked but `mailto:`/`tel:` silently failed).
-
-**Fix — added to `<queries>` in `AndroidManifest.xml`:**
-```xml
-<intent>
-    <action android:name="android.intent.action.VIEW" />
-    <data android:scheme="mailto" />
-</intent>
-<intent>
-    <action android:name="android.intent.action.DIAL" />
-    <data android:scheme="tel" />
-</intent>
-```
-**Required:** full uninstall + reinstall (not hot reload/restart) for manifest changes to apply.
-
-`mailto:` log warning (`component name is null`) seen before the fix was a red herring at first glance but turned out to correctly indicate the missing manifest declaration — not an unrelated info log.
+Android 11+ `<queries>` manifest entries added for `mailto` and `tel` schemes.
 
 ---
 
-## 10. QuickContact — Dummy Data (replace when sayed provides)
+## 10. QuickContact — Dummy Data
 
 ```dart
-// in quick_contact.dart
 const _kWhatsAppNumber = '201000000000';
 const _kPhoneNumber = '+201000000000';
 const _kEmail = 'support@gameaty.app';
 ```
+Replace when sayed provides real info.
 
 ---
 
 ## 11. GetIt Service — Full Registration Order
 
 ```
-Dio (with BaseOptions ✅) → ApiService
+Dio (with BaseOptions) → ApiService
 → TrendingRemoteDataSource → TrendingCubit
 → RecommendedRemoteDataSource
 → BrowseRemoteDataSource → BrowseRepo → GetUnisUseCase
@@ -491,9 +358,9 @@ Dio (with BaseOptions ✅) → ApiService
 → UniDetailRemoteDataSource → UniDetailRepo → GetUniDetailUseCase
 → AuthRemoteDataSource → AuthRepo → LoginUseCase → RegisterUseCase → VerifyOtpUseCase
   → ForgetPasswordUseCase → ResendOtpUseCase → ResetPasswordUseCase
-  → SaveStudentInfoUseCase → UpdatePasswordUseCase → GetMeUseCase → UploadAvatarUseCase ✅ NEW
-→ ProfileCubit (singleton) — reuses GetMeUseCase, SaveStudentInfoUseCase, UpdatePasswordUseCase, UploadAvatarUseCase ✅
-→ FaheemRemoteDataSource → FaheemRepo → SendMessageUseCase → FaheemCubit (from prior session)
+  → SaveStudentInfoUseCase → UpdatePasswordUseCase → GetMeUseCase → UploadAvatarUseCase
+→ ProfileCubit (singleton)
+→ FaheemRemoteDataSource → FaheemRepo → SendMessageUseCase → FaheemCubit
 ```
 
 ---
@@ -510,8 +377,6 @@ const Map<String, String> kScientificDepartmentMapReversed = {
   'scientific': 'علوم', 'علوم': 'علوم', 'Mathematics': 'رياضة', 'رياضة': 'رياضة',
 };
 ```
-
-`scientificDepartment` now sent as `null` (key omitted) when study section is "أدبي" — confirmed and fixed this session (see §7).
 
 ---
 
@@ -541,8 +406,6 @@ class LegalSheet extends StatelessWidget {
 }
 // kTermsSections + kPrivacySections (7 sections each) defined in legal_sheet.dart
 ```
-
-`TermsAndConditionsSheet` = thin static wrapper → backward compat with auth flow.
 
 ---
 
@@ -592,49 +455,86 @@ abstract class AppColors {
 
 ## 18. Known Bugs & Pending Issues (current)
 
-- **Backend Bug — Fav Pagination:** same items regardless of cursor → deduplication in `FavCubit.loadMore()` (waiting on sayed)
-- **Search Debounce:** not implemented — every keystroke triggers search (next up, in progress)
+- **Search Debounce:** ✅ DONE this session
+- **Fav Pagination backend bug:** ✅ code confirmed correct — was waiting on sayed, now resolved
+- **`current_password` for update-Password:** ✅ CLOSED — not needed (token = auth proof)
 - **`withOpacity` deprecated:** works but newer Flutter suggests `.withValues(alpha:...)`
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
 - **Auth — duplicate-email-unverified edge case:** needs sayed conversation
 - **Faheem History:** no backend endpoint yet — screen is UI-only
-- **`current_password` for update-Password:** field removed from UI — needs sayed to add param
 - **Real contact info:** dummy data in `quick_contact.dart` — needs sayed to provide
-
-**Resolved this session (moved out of pending):**
-- ~~Avatar dialog tap interaction~~ → ✅ fully built and working (see §6)
-- ~~Avatar upload endpoint~~ → ✅ done: `POST /api/auth/addAvatar`
-- ~~`scientific_department` null vs `''`~~ → ✅ confirmed: omit the key entirely (see §7)
-- ~~Home AppBar not loading on cold start~~ → ✅ fixed via `MainView.initState()` (see §8)
-- ~~mailto/tel not working on real device~~ → ✅ fixed via AndroidManifest `<queries>` (see §9)
 
 ---
 
-## 19. All Decisions Made
+## 19. Release Build — Fixes & Decisions (this session)
+
+### INTERNET Permission
+Flutter debug adds `INTERNET` permission automatically. Release does **not**. Must be explicit in `AndroidManifest.xml`:
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+Root cause was diagnosed via:
+1. `flutter build apk --release --verbose 2>&1 | findstr /i "\.env"` — confirmed `.env` included
+2. Unzipping APK manually (rename to .zip → open in 7-Zip) — confirmed `.env` in `assets/flutter_assets/`
+3. `isMinifyEnabled = false` test — ruled out R8/ProGuard
+4. Checking `AndroidManifest.xml` — found missing permission
+
+### `.env` in release
+`.env` IS included in release APK correctly without any `aaptOptions` workaround — `pubspec.yaml` assets declaration is sufficient. `aaptOptions` block is NOT needed.
+
+### `build.gradle.kts` — final clean state
+No `aaptOptions`, no `isMinifyEnabled`/`isShrinkResources` overrides. Only `signingConfig = debug` for now.
+
+### App icon & name
+- Icon: `flutter_launcher_icons` package, `dart run flutter_launcher_icons`, image at `assets/images/app_icon.png`
+- Name: `android:label="جامعتي"` in `AndroidManifest.xml`
+
+---
+
+## 20. Search Debounce — Implementation (this session)
+
+**File:** `search_view_body.dart`
+
+**Changes:**
+- Added `import 'dart:async'`
+- Added `Timer? _debounce` field
+- `_onSearchChanged` now cancels previous timer + starts 500ms new one before calling cubit
+- `dispose()` cancels timer
+
+```dart
+void _onSearchChanged(String query) {
+  _debounce?.cancel();
+  _debounce = Timer(const Duration(milliseconds: 500), () {
+    context.read<SearchCubit>().search(query: query, filter: searchFilterEntity);
+  });
+}
+```
+
+Note: `_onSearchSubmitted` still calls `_onSearchChanged` directly (intentional — submit should trigger search even if within 500ms window, but the debounce timer handles it anyway).
+
+---
+
+## 21. All Decisions Made
 
 | Decision | Reason |
 |---|---|
-| `apiService.postFormData()` for file uploads | New dedicated multipart method on ApiService — interceptor still fires (same `dio` instance) |
-| `Dio()` given explicit `BaseOptions` | Was unlimited/unclear timeouts — added for clearer error diagnosis on uploads |
-| `maxWidth`/`maxHeight: 1024` on avatar `pickImage()` | Fixes `413 Request Entity Too Large` from nginx + `DioExceptionType.unknown` connection drops on large camera/gallery photos |
-| `_isPicking` guard around full avatar tap→pick→upload flow | Fast double-tap during picker's own async gap threw `PlatformException(already_active)` |
-| `ProfileCubit.uploadAvatar()` emits no intermediate loading state | Avoids blanking `CustomHomeAppBar` (same singleton cubit) while avatar screen is mid-upload; local `_isUploading` bool in `AvatarProfile` handles UI instead |
-| Avatar upload auto-triggers on pick (no separate "save" button) | Single-purpose action, consistent with how document upload cards work |
-| Avatar upload failure reverts to last known server avatar | Confirmed UX with user — local preview cleared on both success and failure paths |
-| `getMe()` called automatically after successful avatar upload | Server response has no avatar URL — `getMe()` is the only way to get the new URL, and it refreshes everywhere (Home AppBar included) for free |
-| `scientific_department` key omitted (not `null`/`''`) when absent | Confirmed via direct Postman testing — backend 422s on both `null` and `''` |
-| `getIt<ProfileCubit>().getMe()` added to `MainView.initState()` | Was never called on cold start — only via Profile screen visit — Home AppBar name/avatar were blank until first Profile visit |
-| `<queries>` entries added for `mailto`/`tel` schemes | Android 11+ package visibility restrictions block `canLaunchUrl()` without explicit declaration |
-| `FavCubit` → `registerSingleton` | Single instance across app |
-| No try/catch in data sources | Repos handle errors |
-| `DioException` caught in repos directly | Removed `CustomExceptions` middle layer |
-| `NoInternetWidget` for full-screen failures | Better UX |
-| Single `ProfileCubit` for 3 screens (now 4 incl. avatar) | Same object of work |
-| `kGovernorates` in root `constants.dart` | Shared between auth + profile |
-| `AgeField` in `core/widgets/` | Used by auth/setup and profile/personal_data |
+| `current_password` not needed for update-Password | Token presence = user is authenticated — no extra verification needed |
+| `aaptOptions` NOT needed for `.env` in release | `pubspec.yaml` assets declaration is sufficient — Gradle doesn't strip it |
+| `INTERNET` permission must be explicit in release | Flutter debug adds it automatically; release does not |
+| Search debounce 500ms via `Timer` in view body | Simple, no cubit changes needed |
+| `flutter_launcher_icons` package for app icon | Generates all density variants automatically |
+| `android:label="جامعتي"` in AndroidManifest | Display name shown under icon on device |
+| `apiService.postFormData()` for file uploads | Dedicated multipart method — interceptor still fires |
+| `Dio()` given explicit `BaseOptions` | Clearer error diagnosis on uploads |
+| `maxWidth`/`maxHeight: 1024` on avatar `pickImage()` | Fixes 413 nginx limit |
+| `_isPicking` guard around full avatar tap flow | Prevents `PlatformException(already_active)` |
+| `ProfileCubit.uploadAvatar()` emits no intermediate loading | Avoids blanking `CustomHomeAppBar` |
+| `getMe()` auto-triggers after avatar upload | Server response has no URL — only way to get new URL |
+| `scientific_department` key omitted (not null/'') when absent | Confirmed via Postman — backend 422s on both |
+| `getIt<ProfileCubit>().getMe()` in `MainView.initState()` | Was never called on cold start |
+| `<queries>` entries for `mailto`/`tel` | Android 11+ package visibility restrictions |
 | Logout → `LogoutConfirmationSheet` | Confirmation before execute |
 | `LegalSheet` as shared widget | Terms + Privacy share identical structure |
-| `TermsAndConditionsSheet` as thin wrapper | Backward compat with auth flow |
 | No-op save guard via snapshot | 5 `_original*` vars + `_hasChanges()` |
 | `logout()` in `ProfileCubit` | Only GetIt singleton owning session state |
 | Code comments English-only | Hard rule |
@@ -642,19 +542,21 @@ abstract class AppColors {
 
 ---
 
-## 20. Session Summaries — تاريخي
+## 22. Session Summaries — تاريخي
 
 **جلسة: Auth Polish + UX Fixes**
 **جلسة: Splash + Onboarding + 401 Interceptor + Validator Fixes**
 **جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup**
 **جلسة: 401 Double-SnackBar Diagnosis + Fix**
 **جلسة: Profile API Integration — kickoff**
-**جلسة: Profile Feature — all open items** (401 ordering, no-op guard, home AppBar wiring, logout, contact us, legal sheet)
-**جلسة: Faheem Feature — full integration** (separate chat — domain/data/cubit/view, GetIt chain, scroll pattern)
-
-**جلسة: mailto fix + Home AppBar fix + scientific_department bug fix + Avatar Upload (هذه الجلسة)**
-1. **mailto/tel bug** — diagnosed as Android 11+ package visibility restriction, not a code/url_launcher bug. Fixed via `AndroidManifest.xml` `<queries>` additions for `mailto`/`tel` schemes.
-2. **Home AppBar cold-start bug** — `ProfileCubit.getMe()` was never called on app start. Added to `MainView.initState()`.
-3. **scientific_department bug (two instances)** — backend confirmed via Postman: key must be omitted entirely (not `null`/`''`) when no department applies. Fixed in `personal_data_view_body.dart` (was sending `''`) AND `setup_view_body.dart` (was sending a real value unconditionally — worse bug, found while tracing the first fix). 8 files updated end-to-end (`String` → `String?` for `scientificDepartment` param).
-4. **Avatar upload — full feature, built and confirmed working.** `POST /auth/addAvatar` multipart endpoint confirmed live by sayed. Built `AvatarUploadSheet`, rebuilt `AvatarProfile` as StatefulWidget, added `ApiService.postFormData()`, `UploadAvatarUseCase`, `ProfileCubit.uploadAvatar()`. Debugged through 3 real-device errors (`already_active` PlatformException, `413` nginx limit, `DioExceptionType.unknown`) down to root causes (concurrent picker calls; oversized images) and fixed both with `_isPicking` guard + `maxWidth`/`maxHeight` caps + explicit `Dio` `BaseOptions`. User confirmed working; debug prints removed.
-5. Next up: **Search Debounce** (500ms) — file requested from user, in progress at session's end.
+**جلسة: Profile Feature — all open items** (401 ordering, no-op guard, home AppBar, logout, contact us, legal sheet)
+**جلسة: Faheem Feature — full integration** (separate chat)
+**جلسة: mailto fix + Home AppBar fix + scientific_department fix + Avatar Upload**
+**جلسة: APK release + search debounce + release debug fixes (هذه الجلسة)**
+1. **App icon** — `flutter_launcher_icons` configured, `dart run flutter_launcher_icons` run successfully
+2. **App display name** — `android:label="جامعتي"` set in AndroidManifest
+3. **Search Debounce** — 500ms `Timer` added to `search_view_body.dart` — confirmed working
+4. **Fav pagination** — reviewed code, confirmed correct implementation, no changes needed
+5. **`current_password`** — closed: token presence = auth proof, not needed
+6. **Release APK "No Internet Connection" bug** — diagnosed and fixed: missing `INTERNET` permission in `AndroidManifest.xml`. Flutter debug adds it automatically; release does not. Ruled out: `.env` path, R8/ProGuard, API key issues.
+7. Next up: waiting on sayed for Faheem history + contact data + duplicate-email edge case.

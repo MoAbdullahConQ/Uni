@@ -26,6 +26,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **"متبعتش الفايل" / "ابعت الفايل كامل"** → send the full file as a downloadable output, not just a snippet.
 - **"فهمني سطر سطر"** → explain every line individually, don't skip or group lines together.
 - **If I correct your reading of a log/test result directly** (e.g. "ياد افهم...") → re-read carefully, own the misread plainly, and confirm the corrected understanding before proceeding. Don't just quietly adjust — say what was misread.
+- **When I close an item with clear reasoning ("مش محتاجينها عشان...")** → accept it, mark it closed, don't re-open or re-explain unless new evidence appears.
+- **When I say "بص عليه اتأكد"** → read the code, verify correctness against known patterns, give a direct yes/no verdict with one-line reasoning.
 
 ---
 
@@ -54,8 +56,10 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **"معاك كل حاجة"** when Claude asks for a file that's in the zip → use the zip, don't ask again
 - **I ask "هو ده صح ولا اي"** → give a direct yes/no with one-line reason, not a list of considerations
 - **I verify my own understanding by re-explaining things back** → confirm if correct or correct it directly
-- **I confirm a fix worked tersely** ("اشتغلت خلاص", "تمام اتحلت") — treat this as sufficient to close the item; don't ask for more detailed QA notes unless something looks off
-- **I clean up my own debug scaffolding** (e.g. removing print statements) once a fix is confirmed, without being asked — but still flag temporary debug code that should be removed before considering something shippable
+- **I confirm a fix worked tersely** ("اشتغلت خلاص", "تمام اتحلت") — treat this as sufficient to close the item
+- **I clean up my own debug scaffolding** once a fix is confirmed, without being asked
+- **When I verify pagination/feature code by reading it** (not live test) → if code matches known-correct pattern, confirm it's fine without asking for a live test
+- **When I say "قولي تفاصيل عن X"** → explain the feature/bug/item clearly in plain terms, no code yet
 
 ---
 
@@ -83,10 +87,12 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **In any cubit failure listener that shows a SnackBar → always check `errMessage.toLowerCase().contains('unauthenticated')` and return early if true.**
 - **When I say "متبعتش الفايل" or ask for the full file** → always output a complete downloadable file, not an inline snippet.
 - **When I ask "فهمني سطر سطر"** → explain every single line individually without grouping or skipping.
-- **When tracing a call chain to fix a reported bug, if you find a second related bug along the way (even unreported) → surface it and fix it too, don't silently skip it or only patch the originally reported instance.**
-- **When an "optional"/nullable field is rejected by the backend as `null` or `''`, test (or ask me to test in Postman) whether omitting the key entirely is the actual fix before assuming `null` is correct** — backends often only accept a fully-absent key, not a null value.
-- **For any single-action widget with its own loading/error state that also reads from a shared/global Cubit (e.g. avatar upload reading from the singleton ProfileCubit) → keep the loading/error state local to the widget, don't emit it through the global Cubit**, since that could disrupt unrelated UI listening to the same Cubit.
-- **For any `image_picker` entry point → guard the entire flow (sheet → pickImage → upload) with a single in-progress flag**, not just the network call, to prevent `PlatformException(already_active)` from rapid taps.
+- **When tracing a call chain to fix a reported bug, if you find a second related bug along the way → surface it and fix it too.**
+- **When an "optional"/nullable field is rejected by the backend as `null` or `''` → confirm (or ask me to test in Postman) whether omitting the key entirely is the fix.**
+- **For any single-action widget with its own loading/error state that also reads from a shared/global Cubit → keep the loading/error state local to the widget.**
+- **For any `image_picker` entry point → guard the entire flow with a single in-progress flag.**
+- **For release build issues → always check `AndroidManifest.xml` for missing permissions early.** Flutter debug adds `INTERNET` automatically; release does not.
+- **When asked "كان فاضلنا اي" or "اي اللي بعدو"** → list items grouped by: ready-to-build / waiting on sayed / needs clarification. Don't list closed items.
 
 **Never:**
 - Don't rewrite working code unless asked
@@ -109,7 +115,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Don't assume a newly-reported bug is the same as a previously-fixed one** — fresh diagnosis
 - **Don't send a snippet saying "change line X"** when the user asked for the full file
 - **Don't group or summarize when "سطر سطر" is asked** — line by line means line by line
-- **Don't leave debug `print()` statements in place once a bug is confirmed fixed** — flag for removal (the user may remove them himself, but call it out)
+- **Don't leave debug `print()` statements in place once a bug is confirmed fixed**
+- **Don't assume `INTERNET` permission exists in release** — always verify it's in `AndroidManifest.xml` explicitly when debugging release network issues
 
 ---
 
@@ -121,8 +128,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **401 in failure listeners:** check `errMessage.toLowerCase().contains('unauthenticated')` → return early
 - **Cubit pattern:** Initial → Loading → Success/Failure + PaginationLoading/PaginationFailure
 - **API calls:** `apiService.get()` + `response['data']` manually
-- **`apiService.post()` accepts `Map<String, dynamic>` only** — for `FormData` (file uploads) use `apiService.postFormData()` (added — formal multipart method on ApiService; interceptor still fires on `dio` instance)
-- **`Dio` instance has explicit `BaseOptions`** — connectTimeout 15s, sendTimeout 30s (generous for uploads), receiveTimeout 15s
+- **`apiService.post()` accepts `Map<String, dynamic>` only** — for `FormData` use `apiService.postFormData()`
+- **`Dio` instance has explicit `BaseOptions`** — connectTimeout 15s, sendTimeout 30s, receiveTimeout 15s
 - **Entity vs Model:** `UniEntity` non-nullable/required, `UniModel` nullable → maps to super with `?? defaults`
 - **AppColors:** constants are `Color` objects — never wrap in `Color()` again
 - **GetIt:** all global cubits use `registerSingleton` (not lazy)
@@ -132,23 +139,26 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Entity rule:** only create an Entity if its data is shown in UI or used in business logic
 - **Cubit scope per feature:** group screens sharing the same object of work
 - **Multi-option selector widgets take `Map<String, IconData>` for per-option icons**
-- **Session-expired redirect message travels as route `arguments` ONLY** — no global mutable variable
+- **Session-expired redirect message travels as route `arguments` ONLY**
 - **Every `case` in `onGenerateRoute` must pass `settings: settings`**
 - **Shared widgets → `core/widgets/`** when used by 2+ features
 - **Shared constants → root `lib/constants.dart`**
 - **Reuse existing use cases across features** — don't duplicate
 - **Fields with no backend update support → shown read-only (`enabled: false`)**
 - **`formKey.reset()` before `controller.clear()`** — correct order to avoid focus-jump
-- **`LegalSheet` is the shared widget for all legal content** — Terms and Privacy both use it
+- **`LegalSheet` is the shared widget for all legal content**
 - **Logout confirmation pattern:** `LogoutConfirmationSheet.show(context, onConfirm: ...)` always first
-- **`reverse: true` ListView pattern for chat** — latest message always at bottom; scroll uses `jumpTo(minScrollExtent)`
-- **User avatar in chat bubbles** → from `ProfileCubit.currentUser?.avatar` via GetIt — same pattern as `CustomHomeAppBar`
-- **NEW — Optional/nullable request fields:** if the backend rejects `null`/`""` for a field (422), the key must be omitted from the request map entirely. Don't assume `null` is the safe default — verify in Postman.
-- **NEW — `getIt<ProfileCubit>().getMe()` is called once in `MainView.initState()`** so Home AppBar name/avatar populate on cold start, not just after a Profile visit.
-- **NEW — `AndroidManifest.xml` `<queries>` must explicitly declare each `url_launcher` scheme used** (`mailto`, `tel`, etc.) — Android 11+ blocks `canLaunchUrl()` silently otherwise, even with the relevant app installed.
-- **NEW — Single-action widget upload pattern (e.g. avatar):** local `_isUploading`/`_isPicking` bools in the widget's State, not pushed through global Cubit state. Cubit method returns a plain `bool` (or similar) rather than emitting intermediate states, when that Cubit is a shared singleton with unrelated listeners.
-- **NEW — `image_picker` calls need a single in-flight guard** (`_isPicking`-style) around the full sheet→pick→upload sequence to avoid `PlatformException(already_active)`.
-- **NEW — Always cap `pickImage()` with `maxWidth`/`maxHeight`** (1024 used for avatar) to avoid `413`/connection-drop errors from large camera photos hitting server upload limits.
+- **`reverse: true` ListView pattern for chat** — latest message always at bottom
+- **User avatar in chat bubbles** → from `ProfileCubit.currentUser?.avatar` via GetIt
+- **Optional/nullable request fields:** if backend rejects `null`/`""`, omit the key entirely
+- **`getIt<ProfileCubit>().getMe()` called once in `MainView.initState()`**
+- **`AndroidManifest.xml` `<queries>` must explicitly declare each `url_launcher` scheme**
+- **Single-action widget upload pattern:** local `_isUploading`/`_isPicking` bools in widget State
+- **`image_picker` calls need `_isPicking` guard** around full sheet→pick→upload sequence
+- **Always cap `pickImage()` with `maxWidth`/`maxHeight: 1024`**
+- **`INTERNET` permission must be explicit in `AndroidManifest.xml`** — Flutter debug adds it automatically, release does not. Missing this = `connectionError` / "No Internet Connection" on all release API calls.
+- **Search debounce:** 500ms `Timer` in view body — cancel on each `onChanged`, fire cubit inside timer callback. Cancel in `dispose()`.
+- **`.env` in release APK:** `pubspec.yaml` assets declaration is sufficient — no `aaptOptions` needed in `build.gradle.kts`.
 
 ---
 
@@ -177,19 +187,21 @@ NestedScrollView (ClampingScrollPhysics)
 
 **OTP package:** `pinput`.
 
-**Terms & Conditions / Privacy Policy UX:** `LegalSheet` as `DraggableScrollableSheet`. Both accessible from `Footer` and from auth via `TermsAndConditionsSheet` wrapper.
+**Terms & Conditions / Privacy Policy UX:** `LegalSheet` as `DraggableScrollableSheet`.
 
 **Logout UX:** `LogoutConfirmationSheet` → `ProfileCubit.logout()` on confirm.
 
-**Session-expired redirect:** 401 interceptor → `pushNamedAndRemoveUntil(LoginView, arguments: message)`. Failure listeners return early on `'unauthenticated'`.
+**Session-expired redirect:** 401 interceptor → `pushNamedAndRemoveUntil(LoginView, arguments: message)`.
 
 **Cubit-per-feature:** screens sharing same object of work share one cubit.
 
-**Faheem chat scroll:** `reverse: true` + `messages.reversed.toList()` in `ChatMessagesList`. `_scrollToBottom()` uses `jumpTo(minScrollExtent)`. `FaheemCubit` taken from GetIt directly — NOT in `MultiBlocProvider`.
+**Faheem chat scroll:** `reverse: true` + `messages.reversed.toList()`. `FaheemCubit` taken from GetIt directly — NOT in `MultiBlocProvider`.
 
-**Avatar upload:** tap → `AvatarUploadSheet` (camera/gallery) → `pickImage(maxWidth: 1024, maxHeight: 1024)` → local preview + dim + spinner → `ProfileCubit.uploadAvatar(File)` (no global loading state emitted) → on success, auto `getMe()` refresh → SnackBar success/failure. `_isPicking` guard prevents concurrent picker calls.
+**Avatar upload:** tap → `AvatarUploadSheet` → `pickImage(maxWidth: 1024, maxHeight: 1024)` → local preview + dim + spinner → `ProfileCubit.uploadAvatar(File)` → on success, auto `getMe()` → SnackBar.
 
-**Optional/nullable backend fields:** when a field doesn't apply, omit the key from the request map entirely — don't send `null` or `''` unless confirmed safe via Postman.
+**Optional/nullable backend fields:** omit the key from the request map entirely when not applicable.
+
+**Search debounce:** `Timer? _debounce` in view body state. Cancel + restart on every `onChanged`. Cancel in `dispose()`.
 
 ---
 
@@ -209,17 +221,15 @@ NestedScrollView (ClampingScrollPhysics)
 
 ## 8. Current Focus
 
-**Features done:** browse, fav, search, home, notifications, guide, uni_detail, auth, splash, on_boarding, **profile (fully done — avatar dialog complete)**, contact_us (logic done, dummy data pending), faheem ✅
+**Features done:** browse, fav, search (+ debounce ✅), home, notifications, guide, uni_detail, auth, splash, on_boarding, profile (fully done), contact_us (logic done, dummy data pending), faheem ✅
 
-**No open profile items remaining.**
+**No open feature items.**
 
-**Next up (in order):**
-1. **Search Debounce** — 500ms, in progress now (file requested from user)
-2. Faheem History — waiting on sayed for endpoint
-3. Fav Pagination — waiting on sayed backend fix
-4. Replace dummy contact data — waiting on sayed
-5. `current_password` param for update-Password — waiting on sayed
-6. Duplicate-email-unverified edge case — waiting on sayed conversation
+**Next up (waiting on sayed):**
+1. Faheem History endpoint — `POST /aiChat/send` history
+2. Real contact data — واتساب + تليفون + إيميل
+3. Duplicate-email-unverified edge case
+4. Fav pagination backend bug (code is correct — backend side)
 
 ---
 
@@ -230,12 +240,15 @@ NestedScrollView (ClampingScrollPhysics)
 **جلسة: 401 SnackBar Debug + Notifications Trigger Cleanup**
 **جلسة: 401 Double-SnackBar Diagnosis + Fix**
 **جلسة: Profile API Integration — kickoff**
-**جلسة: Profile Feature — all open items** (401 ordering, no-op guard, home AppBar, logout, contact us, legal sheet)
+**جلسة: Profile Feature — all open items**
 **جلسة: Faheem Feature — full integration** (separate chat)
+**جلسة: mailto fix + Home AppBar fix + scientific_department fix + Avatar Upload ✅**
 
-**جلسة: mailto fix + Home AppBar fix + scientific_department fix + Avatar Upload (هذه الجلسة) ✅**
-1. Fixed `mailto:`/`tel:` not opening on real device — Android 11+ `<queries>` manifest fix
-2. Fixed Home AppBar name/avatar not loading on cold start — `getMe()` added to `MainView.initState()`
-3. Fixed `scientific_department` 422 bug in **two** places (`personal_data_view_body.dart` + `setup_view_body.dart`, the second found while tracing the first) — backend requires the key to be omitted entirely, not `null`/`''`
-4. Built and shipped the **entire avatar upload feature** end-to-end: bottom sheet, image picker with size caps, local preview with loading/error states, multipart upload via new `ApiService.postFormData()`, auto-refresh via `getMe()` on success — debugged through 3 real-device errors down to root cause and confirmed working by user
-5. Started **Search Debounce** — awaiting file from user at session close
+**جلسة: APK release + search debounce + release debug fixes (هذه الجلسة) ✅**
+1. App icon configured via `flutter_launcher_icons` — working
+2. Display name set to `جامعتي` in AndroidManifest
+3. Search debounce (500ms) — built and confirmed working
+4. Fav pagination — code reviewed, confirmed correct, no changes needed
+5. `current_password` — closed: not needed (token = auth proof)
+6. Release APK "No Internet Connection" — fixed: missing `INTERNET` permission in AndroidManifest. Debugging path: verbose build log → APK unzip check → R8 test → manifest check → found it.
+7. All remaining items waiting on sayed.
