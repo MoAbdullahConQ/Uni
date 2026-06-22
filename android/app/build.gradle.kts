@@ -30,6 +30,11 @@ android {
         versionName = flutter.versionName
     }
 
+    // aaptOptions {
+    //     noCompress(".env")
+    //     ignoreAssetsPattern = "!.env"
+    // }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
