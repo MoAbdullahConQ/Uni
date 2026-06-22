@@ -71,7 +71,10 @@ class _ChatInputBarState extends State<ChatInputBar>
       onStatus: (status) {
         // When speech engine stops on its own (e.g. silence timeout)
         if (status == 'done' || status == 'notListening') {
-          if (_isListening) _stopListening();
+          if (_isListening) {
+            _stopAnimations(); //stop animations
+            setState(() => _isListening = false); // stop listening
+          }
         }
       },
       onError: (error) {
@@ -106,12 +109,16 @@ class _ChatInputBarState extends State<ChatInputBar>
     );
   }
 
-  void _stopListening() {
-    _speech.stop();
+  void _stopAnimations() {
     _rippleController.stop();
     _rippleController.reset();
     _waveController.stop();
     _waveController.reset();
+  }
+
+  void _stopListening() {
+    _speech.stop();
+    _stopAnimations();
     setState(() => _isListening = false);
   }
 
