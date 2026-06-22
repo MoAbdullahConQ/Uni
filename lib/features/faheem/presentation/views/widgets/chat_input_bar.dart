@@ -134,6 +134,7 @@ class _ChatInputBarState extends State<ChatInputBar>
                     : const Color(0xFFF9FAFB),
               ),
               child: TextField(
+                maxLines: null,
                 controller: widget.controller,
                 decoration: InputDecoration(
                   hintText: _isListening
