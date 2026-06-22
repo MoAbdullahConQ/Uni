@@ -168,7 +168,7 @@ class _ChatInputBarState extends State<ChatInputBar>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(top: 12),
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(top: BorderSide(color: AppColors.borderColor)),
@@ -178,157 +178,159 @@ class _ChatInputBarState extends State<ChatInputBar>
         children: [
           // Text field
           Expanded(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: _isListening
-                      ? _activeBorderColor.withOpacity(0.5)
-                      : AppColors.borderColor,
-                  width: _isListening ? 1.5 : 1.0,
-                ),
-                color: _isListening ? _activeBgColor : const Color(0xFFF9FAFB),
-              ),
-              child: TextField(
-                maxLines: null,
-                controller: widget.controller,
-                decoration: InputDecoration(
-                  hintText: _isListening
-                      ? 'جاري الاستماع...'
-                      : 'اكتب رسالتك هنا...',
-                  hintStyle: TextStyles.regular14.copyWith(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
                     color: _isListening
-                        ? _activeBorderColor
-                        : AppColors.subtitleColor.withOpacity(0.5),
+                        ? _activeBorderColor.withOpacity(0.5)
+                        : AppColors.borderColor,
+                    width: _isListening ? 1.5 : 1.0,
                   ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  color: _isListening
+                      ? _activeBgColor
+                      : const Color(0xFFF9FAFB),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-
-          // Mic button with ripple + breathing + waveform
-          SizedBox(
-            width: 56,
-            height: 56,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // Ripple ring 1
-                if (_isListening)
-                  AnimatedBuilder(
-                    animation: _rippleAnimation1,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: (1.0 - (_rippleAnimation1.value - 1.0)).clamp(
-                          0.0,
-                          0.3,
-                        ),
-                        child: Container(
-                          width: 44 * _rippleAnimation1.value,
-                          height: 44 * _rippleAnimation1.value,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              14 * _rippleAnimation1.value,
-                            ),
-                            color: _activeColor,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                // Ripple ring 2
-                if (_isListening)
-                  AnimatedBuilder(
-                    animation: _rippleAnimation2,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: (1.0 - (_rippleAnimation2.value - 1.0)).clamp(
-                          0.0,
-                          0.2,
-                        ),
-                        child: Container(
-                          width: 44 * _rippleAnimation2.value,
-                          height: 44 * _rippleAnimation2.value,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              14 * _rippleAnimation2.value,
-                            ),
-                            color: _activeColor,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                // mic button
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: _isListening ? _activeColor : Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
+                child: TextField(
+                  maxLines: null,
+                  controller: widget.controller,
+                  decoration: InputDecoration(
+                    hintText: _isListening
+                        ? 'جاري الاستماع...'
+                        : 'اكتب رسالتك هنا...',
+                    hintStyle: TextStyles.regular14.copyWith(
                       color: _isListening
-                          ? _activeColor
-                          : AppColors.borderColor,
+                          ? _activeBorderColor
+                          : AppColors.subtitleColor.withOpacity(0.5),
                     ),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(14),
-                      onTap: _speechAvailable ? _toggleMic : null,
-                      // Waveform inside button when listening, mic icon when idle
-                      child: _isListening
-                          ? Center(child: _buildWaveform())
-                          : const Icon(
-                              Icons.mic_none_rounded,
-                              color: AppColors.primaryColor,
-                              size: 22,
-                            ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-
-          // Send button
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(14),
-                overlayColor: WidgetStatePropertyAll(
-                  AppColors.primaryColor.withOpacity(0.06),
-                ),
-                onTap: widget.onSend,
-                child: Ink(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryColor,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Icons.send_rounded,
-                    color: AppColors.primaryColor,
-                    size: 20,
                   ),
                 ),
               ),
             ),
+          ),
+          const SizedBox(width: 4),
+
+          Row(
+            children: [
+              // Mic button with ripple + breathing + waveform
+              SizedBox(
+                width: 56,
+                height: 56,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Ripple ring 1
+                    if (_isListening)
+                      AnimatedBuilder(
+                        animation: _rippleAnimation1,
+                        builder: (context, child) {
+                          return Opacity(
+                            opacity: (1.0 - (_rippleAnimation1.value - 1.0))
+                                .clamp(0.0, 0.3),
+                            child: Container(
+                              width: 44 * _rippleAnimation1.value,
+                              height: 44 * _rippleAnimation1.value,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  14 * _rippleAnimation1.value,
+                                ),
+                                color: _activeColor,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                    // Ripple ring 2
+                    if (_isListening)
+                      AnimatedBuilder(
+                        animation: _rippleAnimation2,
+                        builder: (context, child) {
+                          return Opacity(
+                            opacity: (1.0 - (_rippleAnimation2.value - 1.0))
+                                .clamp(0.0, 0.2),
+                            child: Container(
+                              width: 44 * _rippleAnimation2.value,
+                              height: 44 * _rippleAnimation2.value,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  14 * _rippleAnimation2.value,
+                                ),
+                                color: _activeColor,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                    // mic button
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: _isListening ? _activeColor : Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: _isListening
+                              ? _activeColor
+                              : AppColors.borderColor,
+                        ),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(14),
+                          onTap: _speechAvailable ? _toggleMic : null,
+                          // Waveform inside button when listening, mic icon when idle
+                          child: _isListening
+                              ? Center(child: _buildWaveform())
+                              : const Icon(
+                                  Icons.mic_none_rounded,
+                                  color: AppColors.primaryColor,
+                                  size: 22,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // const SizedBox(width: 8),
+
+              // Send button
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  overlayColor: WidgetStatePropertyAll(
+                    AppColors.primaryColor.withOpacity(0.06),
+                  ),
+                  onTap: widget.onSend,
+                  child: Ink(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryColor,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.send_rounded,
+                      color: AppColors.primaryColor,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
