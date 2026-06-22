@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni/constants.dart';
@@ -23,6 +24,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
   final TextEditingController controller = TextEditingController();
   SearchFilterEntity searchFilterEntity = const SearchFilterEntity();
   List<String> recentSearches = [];
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -32,10 +34,13 @@ class _SearchViewBodyState extends State<SearchViewBody> {
   }
 
   void _onSearchChanged(String query) {
-    context.read<SearchCubit>().search(
-      query: query,
-      filter: searchFilterEntity,
-    );
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      context.read<SearchCubit>().search(
+        query: query,
+        filter: searchFilterEntity,
+      );
+    });
   }
 
   /// called when user submits search (from keyboard or recent item tap)
@@ -84,6 +89,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     controller.dispose();
     super.dispose();
   }
