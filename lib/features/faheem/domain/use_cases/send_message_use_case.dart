@@ -10,7 +10,11 @@ class SendMessageUseCase {
 
   Future<Either<Failure, ChatMessageEntity>> call({
     required String message,
+    int? conversationId,
   }) {
-    return faheemRepo.sendMessage(message: message);
+    return faheemRepo.sendMessage(
+      message: message,
+      conversationId: conversationId,
+    );
   }
 }
