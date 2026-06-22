@@ -27,6 +27,8 @@ class _ChatInputBarState extends State<ChatInputBar>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
+  String _textBeforeListening = '';
+
   @override
   void initState() {
     super.initState();
@@ -61,15 +63,17 @@ class _ChatInputBarState extends State<ChatInputBar>
 
   Future<void> _startListening() async {
     if (!_speechAvailable) return;
-    widget.controller.clear();
+    _textBeforeListening = widget.controller.text; // save before listening
     setState(() => _isListening = true);
     _pulseController.repeat(reverse: true);
 
     await _speech.listen(
       localeId: 'ar_EG',
       onResult: (result) {
-        widget.controller.text = result.recognizedWords;
-        // Move cursor to end
+        final newText = _textBeforeListening.isEmpty
+            ? result.recognizedWords
+            : '${_textBeforeListening} ${result.recognizedWords}';
+        widget.controller.text = newText;
         widget.controller.selection = TextSelection.fromPosition(
           TextPosition(offset: widget.controller.text.length),
         );
