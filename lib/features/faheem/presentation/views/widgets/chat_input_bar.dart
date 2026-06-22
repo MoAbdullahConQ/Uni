@@ -18,30 +18,50 @@ class ChatInputBar extends StatefulWidget {
 }
 
 class _ChatInputBarState extends State<ChatInputBar>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isListening = false;
   bool _speechAvailable = false;
 
-  // Pulse animation
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
+  // Ripple animation
+  late AnimationController _rippleController;
+  late Animation<double> _rippleAnimation1;
+  late Animation<double> _rippleAnimation2;
+
+  // Waveform animation
+  late AnimationController _waveController;
 
   String _textBeforeListening = '';
+
+  static const _activeColor = AppColors.secondaryColor;
+  static const _activeBgColor = AppColors.lightSecondaryColor;
+  static const _activeBorderColor = AppColors.lightPrimaryColor;
+
+  static const List<double> _barHeights = [10, 20, 30, 20, 10];
+  static const List<double> _barDelays = [0, 0.15, 0.3, 0.15, 0.0];
 
   @override
   void initState() {
     super.initState();
 
-    _pulseController = AnimationController(
+    _rippleController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 1400),
+    );
+    _rippleAnimation1 = Tween<double>(begin: 1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _rippleController, curve: Curves.easeOut),
+    );
+    _rippleAnimation2 = Tween<double>(begin: 1.0, end: 2.0).animate(
+      CurvedAnimation(
+        parent: _rippleController,
+        curve: const Interval(0.5, 1.0, curve: Curves.easeOut),
+      ),
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.6,
-    ).animate(CurvedAnimation(parent: _pulseController, curve: Curves.easeOut));
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
 
     _initSpeech();
   }
@@ -65,7 +85,8 @@ class _ChatInputBarState extends State<ChatInputBar>
     if (!_speechAvailable) return;
     _textBeforeListening = widget.controller.text; // save before listening
     setState(() => _isListening = true);
-    _pulseController.repeat(reverse: true);
+    _rippleController.repeat();
+    _waveController.repeat(reverse: true);
 
     await _speech.listen(
       localeId: 'ar_EG',
@@ -87,8 +108,10 @@ class _ChatInputBarState extends State<ChatInputBar>
 
   void _stopListening() {
     _speech.stop();
-    _pulseController.stop();
-    _pulseController.reset();
+    _rippleController.stop();
+    _rippleController.reset();
+    _waveController.stop();
+    _waveController.reset();
     setState(() => _isListening = false);
   }
 
@@ -102,9 +125,37 @@ class _ChatInputBarState extends State<ChatInputBar>
 
   @override
   void dispose() {
-    _pulseController.dispose();
+    _rippleController.dispose();
+    _waveController.dispose();
     _speech.stop();
     super.dispose();
+  }
+
+  Widget _buildWaveform() {
+    return AnimatedBuilder(
+      animation: _waveController,
+      builder: (context, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: List.generate(_barHeights.length, (i) {
+            final phase = (_waveController.value + _barDelays[i]) % 1.0;
+            final h =
+                _barHeights[i] *
+                (0.2 + 0.8 * (1 - (phase - 0.5).abs() * 2).clamp(0.0, 1.0));
+            return Container(
+              width: 3,
+              height: h.clamp(4.0, 30.0),
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            );
+          }),
+        );
+      },
+    );
   }
 
   @override
@@ -116,6 +167,7 @@ class _ChatInputBarState extends State<ChatInputBar>
         border: Border(top: BorderSide(color: AppColors.borderColor)),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // Text field
           Expanded(
@@ -125,13 +177,11 @@ class _ChatInputBarState extends State<ChatInputBar>
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: _isListening
-                      ? Colors.red.withOpacity(0.4)
+                      ? _activeBorderColor.withOpacity(0.5)
                       : AppColors.borderColor,
                   width: _isListening ? 1.5 : 1.0,
                 ),
-                color: _isListening
-                    ? Colors.red.withOpacity(0.03)
-                    : const Color(0xFFF9FAFB),
+                color: _isListening ? _activeBgColor : const Color(0xFFF9FAFB),
               ),
               child: TextField(
                 maxLines: null,
@@ -142,7 +192,7 @@ class _ChatInputBarState extends State<ChatInputBar>
                       : 'اكتب رسالتك هنا...',
                   hintStyle: TextStyles.regular14.copyWith(
                     color: _isListening
-                        ? Colors.red.withOpacity(0.5)
+                        ? _activeBorderColor
                         : AppColors.subtitleColor.withOpacity(0.5),
                   ),
                   border: InputBorder.none,
@@ -156,42 +206,73 @@ class _ChatInputBarState extends State<ChatInputBar>
           ),
           const SizedBox(width: 8),
 
-          // Mic button with pulse
+          // Mic button with ripple + breathing + waveform
           SizedBox(
-            width: 44,
-            height: 44,
+            width: 56,
+            height: 56,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // Pulse rings
-                if (_isListening) ...[
+                // Ripple ring 1
+                if (_isListening)
                   AnimatedBuilder(
-                    animation: _pulseAnimation,
+                    animation: _rippleAnimation1,
                     builder: (context, child) {
-                      return Container(
-                        width: 44 * _pulseAnimation.value,
-                        height: 44 * _pulseAnimation.value,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red.withOpacity(
-                            0.12 * (2.0 - _pulseAnimation.value),
+                      return Opacity(
+                        opacity: (1.0 - (_rippleAnimation1.value - 1.0)).clamp(
+                          0.0,
+                          0.3,
+                        ),
+                        child: Container(
+                          width: 44 * _rippleAnimation1.value,
+                          height: 44 * _rippleAnimation1.value,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              14 * _rippleAnimation1.value,
+                            ),
+                            color: _activeColor,
                           ),
                         ),
                       );
                     },
                   ),
-                ],
 
-                // Mic button
+                // Ripple ring 2
+                if (_isListening)
+                  AnimatedBuilder(
+                    animation: _rippleAnimation2,
+                    builder: (context, child) {
+                      return Opacity(
+                        opacity: (1.0 - (_rippleAnimation2.value - 1.0)).clamp(
+                          0.0,
+                          0.2,
+                        ),
+                        child: Container(
+                          width: 44 * _rippleAnimation2.value,
+                          height: 44 * _rippleAnimation2.value,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              14 * _rippleAnimation2.value,
+                            ),
+                            color: _activeColor,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                // mic button
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: _isListening ? Colors.red : Colors.white,
+                    color: _isListening ? _activeColor : Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: _isListening ? Colors.red : AppColors.borderColor,
+                      color: _isListening
+                          ? _activeColor
+                          : AppColors.borderColor,
                     ),
                   ),
                   child: Material(
@@ -199,15 +280,14 @@ class _ChatInputBarState extends State<ChatInputBar>
                     child: InkWell(
                       borderRadius: BorderRadius.circular(14),
                       onTap: _speechAvailable ? _toggleMic : null,
-                      child: Icon(
-                        _isListening
-                            ? Icons.mic_rounded
-                            : Icons.mic_none_rounded,
-                        color: _isListening
-                            ? Colors.white
-                            : AppColors.primaryColor,
-                        size: 22,
-                      ),
+                      // Waveform inside button when listening, mic icon when idle
+                      child: _isListening
+                          ? Center(child: _buildWaveform())
+                          : const Icon(
+                              Icons.mic_none_rounded,
+                              color: AppColors.primaryColor,
+                              size: 22,
+                            ),
                     ),
                   ),
                 ),
@@ -217,25 +297,28 @@ class _ChatInputBarState extends State<ChatInputBar>
           const SizedBox(width: 8),
 
           // Send button
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(14),
-              overlayColor: WidgetStatePropertyAll(
-                AppColors.primaryColor.withOpacity(0.06),
-              ),
-              onTap: widget.onSend,
-              child: Ink(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryColor,
-                  borderRadius: BorderRadius.circular(14),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(14),
+                overlayColor: WidgetStatePropertyAll(
+                  AppColors.primaryColor.withOpacity(0.06),
                 ),
-                child: const Icon(
-                  Icons.send_rounded,
-                  color: AppColors.primaryColor,
-                  size: 20,
+                onTap: widget.onSend,
+                child: Ink(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppColors.secondaryColor,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(
+                    Icons.send_rounded,
+                    color: AppColors.primaryColor,
+                    size: 20,
+                  ),
                 ),
               ),
             ),
