@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uni/features/faheem/data/models/faheem_message_model.dart';
 import 'package:uni/features/faheem/domain/entities/chat_message_entity.dart';
 import 'package:uni/features/faheem/domain/use_cases/get_conversation_messages_use_case.dart';
 import 'package:uni/features/faheem/domain/use_cases/get_conversations_use_case.dart';
@@ -22,7 +23,7 @@ class FaheemCubit extends Cubit<FaheemState> {
   List<ChatMessageEntity> get messages => List.unmodifiable(_messages);
 
   // Called when user opens an existing conversation from history
-  void loadConversationMessages(int conversationId) async { 
+  void loadConversationMessages(int conversationId) async {
     _currentConversationId = conversationId;
     emit(FaheemConversationMessagesLoading());
 
@@ -92,26 +93,13 @@ class FaheemCubit extends Cubit<FaheemState> {
         );
       },
       (faheemMessage) {
+        // Capture conversation_id from response if not already set
+        if (_currentConversationId == null &&
+            faheemMessage is FaheemMessageModel) {
+          _currentConversationId = faheemMessage.conversationId;
+        }
         _messages.add(faheemMessage);
         emit(FaheemMessageReceived(List.from(_messages)));
-
-        // If this was the first message, fetch conversations to get the new conversation id
-        if (_currentConversationId == null) {
-          _fetchAndSetConversationId();
-        }
-      },
-    );
-  }
-
-  // After first message, fetch conversations list and take the most recent id
-  Future<void> _fetchAndSetConversationId() async {
-    final result = await getConversationsUseCase();
-    result.fold(
-      (_) {}, // silently ignore — not critical for UX
-      (conversations) {
-        if (conversations.isNotEmpty) {
-          _currentConversationId = conversations.first.id;
-        }
       },
     );
   }

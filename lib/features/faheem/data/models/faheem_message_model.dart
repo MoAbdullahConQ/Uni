@@ -8,7 +8,7 @@ class FaheemMessageModel extends ChatMessageEntity {
 
   factory FaheemMessageModel.fromJson(Map<String, dynamic> json) {
     return FaheemMessageModel(
-      text: json['content'] ?? '',
+      text: json['response']?['content'] ?? '',
       conversationId: json['conversation_id'],
     );
   }
