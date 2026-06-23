@@ -99,12 +99,14 @@ class _FaheemHistoryViewBodyState extends State<FaheemHistoryViewBody> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const CustomBackButton(),
+                        const Spacer(flex: 1),
                         Text(
                           'سجل استشارات فهيم',
                           style: TextStyles.bold20.copyWith(
                             color: AppColors.primaryColor,
                           ),
                         ),
+                        const Spacer(flex: 2),
                       ],
                     ),
                     const SizedBox(height: 20),
