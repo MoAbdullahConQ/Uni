@@ -105,20 +105,6 @@ class _FaheemHistoryViewBodyState extends State<FaheemHistoryViewBody> {
                             color: AppColors.primaryColor,
                           ),
                         ),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: AppColors.lightSecondaryColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.borderColor),
-                          ),
-                          child: const Icon(
-                            Icons.menu_rounded,
-                            size: 20,
-                            color: AppColors.primaryColor,
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
