@@ -52,6 +52,9 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
         if (state is FaheemSending || state is FaheemMessageReceived) {
           _scrollToBottom();
         }
+        if (state is FaheemConversationMessagesSuccess) {
+          _scrollToBottom();
+        }
         if (state is FaheemSendFailure) {
           if (state.errMessage.toLowerCase().contains('unauthenticated'))
             return;
@@ -61,10 +64,16 @@ class _FaheemChatViewBodyState extends State<FaheemChatViewBody> {
         }
       },
       builder: (context, state) {
+        // Show loading spinner while fetching history messages
+        if (state is FaheemConversationMessagesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
         final messages = switch (state) {
           FaheemSending s => s.messages,
           FaheemMessageReceived s => s.messages,
           FaheemSendFailure s => s.messages,
+          FaheemConversationMessagesSuccess s => s.messages,
           _ => _cubit.messages,
         };
 

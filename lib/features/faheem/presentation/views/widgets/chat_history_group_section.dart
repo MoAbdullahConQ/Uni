@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
-import 'package:uni/features/faheem/domain/entities/chat_history_entity.dart';
+import 'package:uni/features/faheem/domain/entities/conversation_entity.dart';
 import 'package:uni/features/faheem/presentation/views/widgets/chat_history_card.dart';
 
 class ChatHistoryGroupSection extends StatelessWidget {
-
   const ChatHistoryGroupSection({
     super.key,
     required this.label,
-    required this.chatHistoryEntities,
+    required this.conversations,
+    required this.onTap,
   });
 
   final String label;
-  final List<ChatHistoryEntity> chatHistoryEntities;
+  final List<ConversationEntity> conversations;
+  final void Function(ConversationEntity) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +31,12 @@ class ChatHistoryGroupSection extends StatelessWidget {
         ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: chatHistoryEntities.length,
+          itemCount: conversations.length,
           separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (_, i) => ChatHistoryCard(chatHistoryEntity: chatHistoryEntities[i]),
+          itemBuilder: (_, i) => ChatHistoryCard(
+            conversation: conversations[i],
+            onTap: () => onTap(conversations[i]),
+          ),
         ),
       ],
     );
