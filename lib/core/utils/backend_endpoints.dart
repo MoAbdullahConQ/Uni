@@ -53,4 +53,6 @@ class BackendEndpoints {
 
   // Faheem AI Chat
   static const String sendMessage = '/aiChat/send';
+  static const String getConversations = '/aiChat/getConversations';
+  static String getConversationMessages(int id) => '/aiChat/messages/$id';
 }
