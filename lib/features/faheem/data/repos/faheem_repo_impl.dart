@@ -15,11 +15,13 @@ class FaheemRepoImpl implements FaheemRepo {
   @override
   Future<Either<Failure, ChatMessageEntity>> sendMessage({
     required String message,
-    int? conversationId
+    int? conversationId,
   }) async {
     try {
-      final result =
-          await faheemRemoteDataSource.sendMessage(message: message);
+      final result = await faheemRemoteDataSource.sendMessage(
+        message: message,
+        conversationId: conversationId,
+      );
       return right(result);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioError(e));
@@ -27,14 +29,24 @@ class FaheemRepoImpl implements FaheemRepo {
   }
 
   @override
-  Future<Either<Failure, ConversationDetailsEntity>> getConversationMessages(int id) {
-    // TODO: implement getConversationMessages
-    throw UnimplementedError();
+  Future<Either<Failure, List<ConversationEntity>>> getConversations() async {
+    try {
+      final result = await faheemRemoteDataSource.getConversations();
+      return right(result);
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
+    }
   }
 
   @override
-  Future<Either<Failure, List<ConversationEntity>>> getConversations() {
-    // TODO: implement getConversations
-    throw UnimplementedError();
+  Future<Either<Failure, ConversationDetailsEntity>> getConversationMessages(
+    int id,
+  ) async {
+    try {
+      final result = await faheemRemoteDataSource.getConversationMessages(id);
+      return right(result);
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
+    }
   }
 }
