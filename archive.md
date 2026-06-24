@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: APK release + search debounce + release debug fixes)
+> Last updated: June 2026 (session: Faheem History — full backend integration)
 
 ---
 
@@ -44,7 +44,7 @@ lib/
 │   │   ├── app_images.dart
 │   │   ├── app_fonts.dart
 │   │   ├── api_service.dart            (postFormData() for multipart uploads)
-│   │   └── backend_endpoints.dart      (addAvatar endpoint)
+│   │   └── backend_endpoints.dart      (getConversations + getConversationMessages added)
 │   └── widgets/
 │       ├── uni_card.dart
 │       ├── uni_card_image.dart
@@ -80,8 +80,8 @@ lib/
 │       └── legal_sheet.dart                 (shared DraggableScrollableSheet for Terms + Privacy)
 └── features/
     ├── browse/ ... (done)
-    ├── search/ ... (done — debounce ✅ done this session)
-    ├── fav/ ... (done — pagination code confirmed correct; backend bug resolved by sayed)
+    ├── search/ ... (done — debounce ✅)
+    ├── fav/ ... (done — pagination code confirmed correct)
     ├── guide/ ... (done)
     ├── notifications/ ... (done, stable)
     ├── home/
@@ -125,8 +125,36 @@ lib/
     │           ├── robot_section.dart
     │           └── role_badge.dart, profile_header.dart, profile_menu_item.dart,
     │               profile_menu_section.dart, version_info.dart
-    └── faheem/ ✅ DONE (separate chat) — full integration: domain + data + cubit + view wired
-               history UI done — waiting on sayed for history endpoint
+    └── faheem/ ✅ FULLY DONE — chat + history fully integrated
+        ├── domain/
+        │   ├── entities/
+        │   │   ├── chat_message_entity.dart
+        │   │   ├── chat_history_entity.dart        (legacy dummy — no longer used in UI)
+        │   │   ├── conversation_entity.dart         (NEW)
+        │   │   ├── conversation_message_entity.dart (NEW)
+        │   │   └── conversation_details_entity.dart (NEW)
+        │   ├── repos/faheem_repo.dart
+        │   └── use_cases/
+        │       ├── send_message_use_case.dart       (updated — conversationId optional param)
+        │       ├── get_conversations_use_case.dart  (NEW)
+        │       └── get_conversation_messages_use_case.dart (NEW)
+        ├── data/
+        │   ├── data_sources/faheem_remote_data_source.dart  (updated)
+        │   ├── models/
+        │   │   ├── faheem_message_model.dart        (updated — reads conversation_id + response.content)
+        │   │   ├── conversation_model.dart          (NEW)
+        │   │   ├── conversation_message_model.dart  (NEW)
+        │   │   └── conversation_details_model.dart  (NEW)
+        │   └── repos/faheem_repo_impl.dart          (updated)
+        └── presentation/
+            ├── manager/faheem_cubit/
+            │   ├── faheem_cubit.dart   (updated — _currentConversationId, loadConversations, loadConversationMessages, startNewConversation)
+            │   └── faheem_state.dart   (updated — 6 new states for history)
+            └── views/widgets/
+                ├── faheem_chat_view_body.dart        (updated — handles history open + new chat)
+                ├── faheem_history_view_body.dart     (updated — real data + grouping + search + FAB)
+                ├── chat_history_card.dart            (updated — uses ConversationEntity)
+                └── chat_history_group_section.dart  (updated — uses ConversationEntity)
 ```
 
 ---
@@ -183,6 +211,35 @@ class ChatMessageEntity {
 }
 ```
 
+### ConversationEntity (faheem history)
+```dart
+class ConversationEntity {
+  final int id;
+  final String title;
+  final DateTime createdAt;
+}
+```
+
+### ConversationMessageEntity (faheem history detail)
+```dart
+class ConversationMessageEntity {
+  final int id;
+  final int conversationId;
+  final String message;
+  final String reply;
+  final DateTime createdAt;
+}
+```
+
+### ConversationDetailsEntity (faheem history detail)
+```dart
+class ConversationDetailsEntity {
+  final int id;
+  final String title;
+  final List<ConversationMessageEntity> messages;
+}
+```
+
 ---
 
 ## 3. Backend Endpoints
@@ -217,7 +274,10 @@ class BackendEndpoints {
   static const String getMe = '/auth/me';
   static const String refreshToken = '/auth/refresh';
   static const String addAvatar = '/auth/addAvatar';
+  // Faheem AI Chat
   static const String sendMessage = '/aiChat/send';
+  static const String getConversations = '/aiChat/getConversations';
+  static String getConversationMessages(int id) => '/aiChat/messages/$id';
 }
 ```
 
@@ -262,8 +322,6 @@ class ApiService {
       },
     ));
   }
-
-  // get, post, getList, patch, postWithToken — all unchanged
 
   Future<Map<String, dynamic>> postFormData({
     required String endpoint,
@@ -360,7 +418,9 @@ Dio (with BaseOptions) → ApiService
   → ForgetPasswordUseCase → ResendOtpUseCase → ResetPasswordUseCase
   → SaveStudentInfoUseCase → UpdatePasswordUseCase → GetMeUseCase → UploadAvatarUseCase
 → ProfileCubit (singleton)
-→ FaheemRemoteDataSource → FaheemRepo → SendMessageUseCase → FaheemCubit
+→ FaheemRemoteDataSource → FaheemRepo
+  → SendMessageUseCase → GetConversationsUseCase → GetConversationMessagesUseCase
+  → FaheemCubit (singleton)
 ```
 
 ---
@@ -455,51 +515,34 @@ abstract class AppColors {
 
 ## 18. Known Bugs & Pending Issues (current)
 
-- **Search Debounce:** ✅ DONE this session
-- **Fav Pagination backend bug:** ✅ code confirmed correct — was waiting on sayed, now resolved
-- **`current_password` for update-Password:** ✅ CLOSED — not needed (token = auth proof)
 - **`withOpacity` deprecated:** works but newer Flutter suggests `.withValues(alpha:...)`
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
 - **Auth — duplicate-email-unverified edge case:** needs sayed conversation
-- **Faheem History:** no backend endpoint yet — screen is UI-only
 - **Real contact info:** dummy data in `quick_contact.dart` — needs sayed to provide
+- **Fav Pagination backend bug:** code correct — waiting on sayed
 
 ---
 
-## 19. Release Build — Fixes & Decisions (this session)
+## 19. Release Build — Fixes & Decisions
 
 ### INTERNET Permission
 Flutter debug adds `INTERNET` permission automatically. Release does **not**. Must be explicit in `AndroidManifest.xml`:
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 ```
-Root cause was diagnosed via:
-1. `flutter build apk --release --verbose 2>&1 | findstr /i "\.env"` — confirmed `.env` included
-2. Unzipping APK manually (rename to .zip → open in 7-Zip) — confirmed `.env` in `assets/flutter_assets/`
-3. `isMinifyEnabled = false` test — ruled out R8/ProGuard
-4. Checking `AndroidManifest.xml` — found missing permission
 
 ### `.env` in release
-`.env` IS included in release APK correctly without any `aaptOptions` workaround — `pubspec.yaml` assets declaration is sufficient. `aaptOptions` block is NOT needed.
-
-### `build.gradle.kts` — final clean state
-No `aaptOptions`, no `isMinifyEnabled`/`isShrinkResources` overrides. Only `signingConfig = debug` for now.
+`pubspec.yaml` assets declaration is sufficient — no `aaptOptions` needed.
 
 ### App icon & name
-- Icon: `flutter_launcher_icons` package, `dart run flutter_launcher_icons`, image at `assets/images/app_icon.png`
+- Icon: `flutter_launcher_icons` package, `dart run flutter_launcher_icons`
 - Name: `android:label="جامعتي"` in `AndroidManifest.xml`
 
 ---
 
-## 20. Search Debounce — Implementation (this session)
+## 20. Search Debounce — Implementation
 
 **File:** `search_view_body.dart`
-
-**Changes:**
-- Added `import 'dart:async'`
-- Added `Timer? _debounce` field
-- `_onSearchChanged` now cancels previous timer + starts 500ms new one before calling cubit
-- `dispose()` cancels timer
 
 ```dart
 void _onSearchChanged(String query) {
@@ -510,27 +553,101 @@ void _onSearchChanged(String query) {
 }
 ```
 
-Note: `_onSearchSubmitted` still calls `_onSearchChanged` directly (intentional — submit should trigger search even if within 500ms window, but the debounce timer handles it anyway).
+---
+
+## 21. Faheem History — Full Integration (هذه الجلسة)
+
+### Endpoints
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/aiChat/send` | POST | إرسال رسالة — `message` + `conversation_id` (optional) |
+| `/aiChat/getConversations` | GET | قائمة كل المحادثات (بدون pagination) |
+| `/aiChat/messages/{id}` | GET | رسايل محادثة معينة (بدون pagination) |
+
+### POST /aiChat/send — Response Structure
+```json
+{
+  "conversation_id": 21,
+  "response": {
+    "role": "assistant",
+    "content": "...",
+    "refusal": null,
+    "annotations": []
+  }
+}
+```
+- `conversation_id` في الـ root
+- الـ reply في `response.content`
+
+### Flow
+**شات جديد:**
+1. بعت بدون `conversation_id`
+2. الـ response بيرجع `conversation_id` → الـ cubit يحتفظ بيه في `_currentConversationId`
+3. كل رسالة بعد كده بتتبعت مع نفس الـ id
+
+**فتح من الهستوري:**
+1. `loadConversations()` → GET `/aiChat/getConversations`
+2. يضغط محادثة → `loadConversationMessages(id)` → GET `/aiChat/messages/{id}`
+3. كل `ConversationMessageEntity` بيتحول لـ رسالتين: user + faheem
+4. `_currentConversationId` = id → أي رسالة جديدة تضاف لنفس الشات
+
+### FaheemCubit — المتغيرات الجديدة
+```dart
+int? _currentConversationId;  // null = new chat, set after first message or when opening history
+
+void startNewConversation()           // clears messages + resets _currentConversationId
+Future<void> loadConversations()      // emits FaheemConversationsLoading/Success/Failure
+void loadConversationMessages(int id) // emits FaheemConversationMessagesLoading/Success/Failure
+```
+
+### FaheemState — الـ States الجديدة
+```dart
+class FaheemConversationsLoading extends FaheemState {}
+class FaheemConversationsSuccess extends FaheemState { final List<ConversationEntity> conversations; }
+class FaheemConversationsFailure extends FaheemState { final String errMessage; }
+class FaheemConversationMessagesLoading extends FaheemState {}
+class FaheemConversationMessagesSuccess extends FaheemState { final List<ChatMessageEntity> messages; }
+class FaheemConversationMessagesFailure extends FaheemState { final String errMessage; }
+```
+
+### History View Grouping
+المحادثات بتتقسم: **اليوم / هذا الأسبوع / أقدم** حسب `createdAt`.
+
+### ChatHistoryCard — timeLabel Logic
+```
+diff == 0  → HH:MM ص/م
+diff == 1  → 'أمس'
+diff < 7   → اسم اليوم بالعربي
+else       → dd/mm/yyyy
+```
+
+### Decisions
+| Decision | Reason |
+|---|---|
+| `conversation_id` يييجي في response من الباكند مباشرة | sayed عدل الـ response — مفيش حاجة لـ `getConversations` بعد أول رسالة |
+| بدون pagination في getConversations و messages | sayed بيبعت الكل مرة واحدة |
+| `startNewConversation()` بدل ما الـ cubit يعمل reset تلقائي | explict و واضح — الـ FAB في History يستدعيه |
+| `ChatHistoryEntity` لسه موجودة في المشروع | legacy — مش بتستخدمها في UI بعد كده، لكن متشلتش لتجنب compile errors في ملفات تانية |
 
 ---
 
-## 21. All Decisions Made
+## 22. All Decisions Made
 
 | Decision | Reason |
 |---|---|
-| `current_password` not needed for update-Password | Token presence = user is authenticated — no extra verification needed |
-| `aaptOptions` NOT needed for `.env` in release | `pubspec.yaml` assets declaration is sufficient — Gradle doesn't strip it |
+| `current_password` not needed for update-Password | Token presence = user is authenticated |
+| `aaptOptions` NOT needed for `.env` in release | `pubspec.yaml` assets declaration sufficient |
 | `INTERNET` permission must be explicit in release | Flutter debug adds it automatically; release does not |
 | Search debounce 500ms via `Timer` in view body | Simple, no cubit changes needed |
-| `flutter_launcher_icons` package for app icon | Generates all density variants automatically |
+| `flutter_launcher_icons` for app icon | Generates all density variants automatically |
 | `android:label="جامعتي"` in AndroidManifest | Display name shown under icon on device |
 | `apiService.postFormData()` for file uploads | Dedicated multipart method — interceptor still fires |
 | `Dio()` given explicit `BaseOptions` | Clearer error diagnosis on uploads |
 | `maxWidth`/`maxHeight: 1024` on avatar `pickImage()` | Fixes 413 nginx limit |
 | `_isPicking` guard around full avatar tap flow | Prevents `PlatformException(already_active)` |
 | `ProfileCubit.uploadAvatar()` emits no intermediate loading | Avoids blanking `CustomHomeAppBar` |
-| `getMe()` auto-triggers after avatar upload | Server response has no URL — only way to get new URL |
-| `scientific_department` key omitted (not null/'') when absent | Confirmed via Postman — backend 422s on both |
+| `getMe()` auto-triggers after avatar upload | Server response has no URL |
+| `scientific_department` key omitted when absent | Backend 422s on null or "" |
 | `getIt<ProfileCubit>().getMe()` in `MainView.initState()` | Was never called on cold start |
 | `<queries>` entries for `mailto`/`tel` | Android 11+ package visibility restrictions |
 | Logout → `LogoutConfirmationSheet` | Confirmation before execute |
@@ -539,10 +656,12 @@ Note: `_onSearchSubmitted` still calls `_onSearchChanged` directly (intentional 
 | `logout()` in `ProfileCubit` | Only GetIt singleton owning session state |
 | Code comments English-only | Hard rule |
 | SnackBar over Toast | Cleaner UX |
+| `conversation_id` from response not `getConversations` | sayed added it to response — cleaner, no extra call |
+| No pagination for faheem history | sayed returns all at once |
 
 ---
 
-## 22. Session Summaries — تاريخي
+## 23. Session Summaries — تاريخي
 
 **جلسة: Auth Polish + UX Fixes**
 **جلسة: Splash + Onboarding + 401 Interceptor + Validator Fixes**
@@ -552,11 +671,13 @@ Note: `_onSearchSubmitted` still calls `_onSearchChanged` directly (intentional 
 **جلسة: Profile Feature — all open items** (401 ordering, no-op guard, home AppBar, logout, contact us, legal sheet)
 **جلسة: Faheem Feature — full integration** (separate chat)
 **جلسة: mailto fix + Home AppBar fix + scientific_department fix + Avatar Upload**
-**جلسة: APK release + search debounce + release debug fixes (هذه الجلسة)**
-1. **App icon** — `flutter_launcher_icons` configured, `dart run flutter_launcher_icons` run successfully
-2. **App display name** — `android:label="جامعتي"` set in AndroidManifest
-3. **Search Debounce** — 500ms `Timer` added to `search_view_body.dart` — confirmed working
-4. **Fav pagination** — reviewed code, confirmed correct implementation, no changes needed
-5. **`current_password`** — closed: token presence = auth proof, not needed
-6. **Release APK "No Internet Connection" bug** — diagnosed and fixed: missing `INTERNET` permission in `AndroidManifest.xml`. Flutter debug adds it automatically; release does not. Ruled out: `.env` path, R8/ProGuard, API key issues.
-7. Next up: waiting on sayed for Faheem history + contact data + duplicate-email edge case.
+**جلسة: APK release + search debounce + release debug fixes**
+**جلسة: Faheem History — full backend integration (هذه الجلسة) ✅**
+1. تحليل الـ API endpoints الثلاثة مع sayed
+2. sayed عدل response من `/aiChat/send` يرجع `conversation_id` في الـ root
+3. بنينا كامل الـ domain + data + cubit + presentation للـ history
+4. `FaheemMessageModel` يقرأ `conversation_id` من root و `content` من `response.content`
+5. `FaheemCubit` يحتفظ بـ `_currentConversationId` ويستخدمه في كل رسالة بعد الأولى
+6. History view: real data + grouping (اليوم/هذا الأسبوع/أقدم) + search + FAB لشات جديد
+7. Opening history conversation → loads messages → converts to chat pairs → continues seamlessly
+8. الباقي waiting on sayed: contact data + duplicate-email edge case + fav pagination

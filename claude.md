@@ -1,5 +1,5 @@
 # Claude Memory File — Core (Active)
-> Last updated: June 2026 (session: APK release + search debounce + release debug fixes)
+> Last updated: June 2026 (session: Faheem History — full backend integration)
 
 ---
 
@@ -34,7 +34,7 @@ Flutter app helping Egyptian high school students choose universities.
 | ----------------- | ------ | ---- | ------------ | --------------------------------------------------------------------------------------------------- |
 | **browse**        | ✅     | ✅   | ✅           | Cursor pagination + FavCubit + per_page=10 + NoInternetWidget + retry                               |
 | **fav**           | ✅     | ✅   | ✅           | add/remove + optimistic update + rollback + deduplication + NoInternetWidget + retry + pagination ✅ |
-| **search**        | ✅     | ✅   | ✅           | Cubit + page-based pagination + recent searches + **debounce 500ms ✅ this session**                |
+| **search**        | ✅     | ✅   | ✅           | Cubit + page-based pagination + recent searches + debounce 500ms ✅                                 |
 | **home**          | ✅     | ✅   | ✅           | Trending + Recommended + retry — `CustomHomeAppBar` wired to `ProfileCubit`                        |
 | **notifications** | ✅     | ✅   | ✅           | Global cubit + RouteObserver + unread count + NoInternetWidget + retry + ActionFailure as snackbar  |
 | **guide**         | ✅     | ✅   | ✅           | Articles + pagination + UI search filter + retry + NoInternetWidget                                 |
@@ -43,7 +43,7 @@ Flutter app helping Egyptian high school students choose universities.
 | **splash**        | ✅     | ✅   | ✅           | token check → MainView or OnBoarding or LoginView                                                   |
 | **on_boarding**   | ✅     | ✅   | ✅           | marks seen in SharedPreferences → navigates to LoginView                                            |
 | **profile**       | ✅     | ✅   | ✅           | Fully done — avatar upload ✅, logout ✅, contact us ✅, legal sheet ✅                              |
-| **faheem**        | ✅     | ❌   | ✅           | Chat UI + entities — waiting on backend; history UI done but no endpoint yet                        |
+| **faheem**        | ✅     | ✅   | ✅           | Chat + History fully integrated ✅ — see archive §Faheem History                                    |
 
 ---
 
@@ -89,10 +89,6 @@ Flutter app helping Egyptian high school students choose universities.
 - App icon configured via `flutter_launcher_icons` — command: `dart run flutter_launcher_icons`
 - Display name set in `AndroidManifest.xml` → `android:label="جامعتي"`
 
-### Bugs fixed this session (see archive §21):
-1. **INTERNET permission missing** — added `<uses-permission android:name="android.permission.INTERNET"/>` to `AndroidManifest.xml`. Root cause: Flutter debug adds it automatically, release does not.
-2. **`.env` removed during release build** — Gradle's asset merger was stripping dotfiles. Fixed by confirming `.env` is in `pubspec.yaml` assets. `aaptOptions` workaround was tried but NOT needed — removing it kept things clean.
-
 ### `android/app/build.gradle.kts` — current clean state:
 ```kotlin
 // no aaptOptions block needed
@@ -121,16 +117,14 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 ## 7. Next Steps (in order)
 
-1. **Faheem History** — waiting on sayed for `POST /aiChat/send` history endpoint
-2. **Replace dummy contact data** in `quick_contact.dart` — waiting on sayed
-3. **Duplicate-email-unverified edge case** — waiting on sayed conversation
-4. **Fav Pagination backend bug** — waiting on sayed fix
+**كل حاجة جاهزة — الباقي كله waiting on sayed:**
 
-**`current_password` for update-Password** — CLOSED: not needed. Token presence = user is authenticated. No UI change required.
+1. **Replace dummy contact data** في `quick_contact.dart` — waiting on sayed
+2. **Duplicate-email-unverified edge case** — waiting on sayed conversation
+3. **Fav Pagination backend bug** — waiting on sayed fix
 
 **Backend items needed from sayed:**
 - Real WhatsApp number, phone, email for contact page
-- Faheem `/aiChat/send` history endpoint status
 - Duplicate-email-unverified edge case fix
 
 ---
@@ -169,6 +163,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 - **Asks same architectural question twice** — answer consistently
 - **"متبعتش الفايل"** = send the full file, not just a snippet
 - **When closing a feature/item with "سيبها" + clear reasoning** → accept it, close it, don't re-open unless new evidence
-- **Verifies Fav pagination by reading the cubit + view code directly** — doesn't need a live test if code is correct
+- **Verifies code by reading cubit + view directly** — doesn't need a live test if code is correct
+- **Asks "اشرحلي البروسيس والفلو"** after implementation — wants a plain-language summary of what was built, no code
 
 > 📂 Full reference → see `archive.md`
