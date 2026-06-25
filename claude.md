@@ -1,5 +1,5 @@
 # Claude Memory File — Core (Active)
-> Last updated: June 2026 (session: Faheem History — full backend integration)
+> Last updated: June 2026 (session: SpeechService — mic animation lifecycle fix)
 
 ---
 
@@ -23,7 +23,7 @@ Flutter app helping Egyptian high school students choose universities.
 - **Stack:** Flutter + Dart, Clean Architecture, flutter_bloc (Cubit), Dio + ApiService, GetIt, SharedPreferences (Prefs), flutter_dotenv, dartz (Either)
 - **Fonts:** `IBMPlexSansArabic` (default in ThemeData) + `Palestine` (special use)
 - **Colors:** see archive §AppColors
-- **Added packages:** `url_launcher` ✅, `pinput` ✅, `image_picker` ✅, `flutter_launcher_icons` ✅
+- **Added packages:** `url_launcher` ✅, `pinput` ✅, `image_picker` ✅, `flutter_launcher_icons` ✅, `speech_to_text: ^7.4.0` ✅
 - **Code comments:** **English only** (hard rule)
 
 ---
@@ -115,21 +115,45 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 ---
 
-## 7. Next Steps (in order)
+## 7. Mic / Speech Feature — Current State
 
-**كل حاجة جاهزة — الباقي كله waiting on sayed:**
+**Feature:** زرار مايك في `ChatInputBar` بيستخدم `speech_to_text: ^7.4.0`
 
-1. **Replace dummy contact data** في `quick_contact.dart` — waiting on sayed
-2. **Duplicate-email-unverified edge case** — waiting on sayed conversation
-3. **Fav Pagination backend bug** — waiting on sayed fix
+**المشكلة المكتشفة:** `speech_to_text` بيستخدم platform channel singleton على مستوى Android. لما الـ widget يتعمل dispose وينشأ من أول، الـ native listener القديم لسه registered — فالـ `onStatus` الجديد مش بيتكال لما التسجيل يوقف، والأنيميشن بيفضل شغال.
 
-**Backend items needed from sayed:**
-- Real WhatsApp number, phone, email for contact page
-- Duplicate-email-unverified edge case fix
+**القرار:** عمل `SpeechService` singleton في GetIt — الـ `SpeechToText` instance بتعيش طول عمر الـ app، مش بتتعمل dispose مع الـ widget.
+
+**الـ animations المبنية في `ChatInputBar`:**
+- **Ripple rings** — دايرتين بتتمددوا من الزرار
+- **Waveform bars** — 5 أعمدة جوه الزرار بترقص أثناء التسجيل
+- الألوان: `AppColors.secondaryColor` (أخضر فاتح) أثناء التسجيل
+- الـ TextField بيتغير border وbackground لما التسجيل يبدأ
+
+**الـ `SpeechService` — مش متبنية لسه، دي الخطوة الجاية:**
+- `core/services/speech_service.dart`
+- تتسجل في `get_it_service.dart` كـ singleton
+- `startListening({onResult, onStop})` — callbacks من الـ widget
+- `stopListening()`
+- `isListening` getter
+- `ChatInputBar` يكلمها من GetIt، مش بيعمل أي `SpeechToText` بنفسه
+
+**RECORD_AUDIO permission** مضاف في `AndroidManifest.xml` ✅
 
 ---
 
-## 8. Preferences & Working Style
+## 8. Next Steps (in order)
+
+**الخطوة الجاية مباشرة:**
+1. **بناء `SpeechService`** — `core/services/speech_service.dart` + register في GetIt + تعديل `ChatInputBar`
+
+**Waiting on sayed:**
+2. Real contact data — واتساب + تليفون + إيميل
+3. Duplicate-email-unverified edge case
+4. Fav pagination backend bug (code is correct — backend side)
+
+---
+
+## 9. Preferences & Working Style
 
 - **Responds in Arabic** even for technical topics
 - **Sends code and asks "what do you think" or "explain"** — wants to understand
@@ -156,14 +180,18 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 - **When debugging:** don't guess — isolate root cause with prints/logs first
 - **Wants Claude to track "waiting on third party" items** and resurface without being asked
 - **When asked to re-order open items** — group into buckets (ready / needs input / needs diagnosis / waiting on third party)
-- **Sends back files with TODO comments** as his preferred way to request changes — treat the pasted file as ground truth
+- **Sends back files with TODO comments** as his preferred way to request changes
 - **Rapid-fire multi-point messages** — don't let new asks get lost among answers to old questions
 - **Sometimes pastes full transcript from another session** — absorb as ground truth
 - **"معاك كل حاجة"** when Claude asks for a file that's in the zip — use the zip
 - **Asks same architectural question twice** — answer consistently
 - **"متبعتش الفايل"** = send the full file, not just a snippet
-- **When closing a feature/item with "سيبها" + clear reasoning** → accept it, close it, don't re-open unless new evidence
-- **Verifies code by reading cubit + view directly** — doesn't need a live test if code is correct
-- **Asks "اشرحلي البروسيس والفلو"** after implementation — wants a plain-language summary of what was built, no code
+- **When closing a feature/item with "سيبها" + clear reasoning** → accept it, close it
+- **Verifies code by reading cubit + view directly**
+- **Asks "اشرحلي البروسيس والفلو"** after implementation — wants plain-language summary
+- **When sending back a file that came from Claude** — treat it as current ground truth, apply changes on it
+- **When asking for animations/UI** — wants to see preview first before building
+- **"جربهم بالترتيب"** — يعني اعرضهم واحد واحد للمقارنة
+- **بيصحح Claude بشكل مباشر لو قرأ الـ log غلط** — اعترف فوراً وصحح
 
 > 📂 Full reference → see `archive.md`
