@@ -58,6 +58,7 @@ import 'package:uni/features/uni_detail/data/data_sources/uni_detail_remote_data
 import 'package:uni/features/uni_detail/data/repos/uni_detail_repo_impl.dart';
 import 'package:uni/features/uni_detail/domain/repos/uni_detail_repo.dart';
 import 'package:uni/features/uni_detail/domain/use_cases/get_uni_detail_use_case.dart';
+import 'package:uni/core/services/speech_service.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -249,4 +250,9 @@ Future<void> setupGetIt() async {
       getConversationMessagesUseCase: getIt<GetConversationMessagesUseCase>(),
     ),
   );
+
+  // ===== SPEECH =====
+  final speechService = SpeechService();
+  await speechService.initialize();
+  getIt.registerSingleton<SpeechService>(speechService);
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:uni/core/services/get_it_service.dart';
+import 'package:uni/core/services/speech_service.dart';
 import 'package:uni/core/utils/app_colors.dart';
 import 'package:uni/core/utils/app_text_style.dart';
 
@@ -19,9 +20,10 @@ class ChatInputBar extends StatefulWidget {
 
 class _ChatInputBarState extends State<ChatInputBar>
     with TickerProviderStateMixin {
-  final stt.SpeechToText _speech = stt.SpeechToText();
+  // SpeechService lives in GetIt — never re-initialized with the widget
+  late final SpeechService _speechService;
+
   bool _isListening = false;
-  bool _speechAvailable = false;
 
   // Ripple animation
   late AnimationController _rippleController;
@@ -44,6 +46,8 @@ class _ChatInputBarState extends State<ChatInputBar>
   void initState() {
     super.initState();
 
+    _speechService = getIt<SpeechService>();
+
     _rippleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
@@ -62,51 +66,11 @@ class _ChatInputBarState extends State<ChatInputBar>
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-
-    _initSpeech();
   }
 
-  Future<void> _initSpeech() async {
-    _speechAvailable = await _speech.initialize(
-      onStatus: (status) {
-        // When speech engine stops on its own (e.g. silence timeout)
-        if (status == 'done' || status == 'notListening') {
-          if (_isListening) {
-            _stopAnimations(); //stop animations
-            setState(() => _isListening = false); // stop listening
-          }
-        }
-      },
-      onError: (error) {
-        if (_isListening) _stopListening();
-      },
-    );
-    setState(() {});
-  }
-
-  Future<void> _startListening() async {
-    if (!_speechAvailable) return;
-    _textBeforeListening = widget.controller.text; // save before listening
-    setState(() => _isListening = true);
+  void _startAnimations() {
     _rippleController.repeat();
     _waveController.repeat(reverse: true);
-
-    await _speech.listen(
-      localeId: 'ar_EG',
-      onResult: (result) {
-        final newText = _textBeforeListening.isEmpty
-            ? result.recognizedWords
-            : '${_textBeforeListening} ${result.recognizedWords}';
-        widget.controller.text = newText;
-        widget.controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: widget.controller.text.length),
-        );
-      },
-      listenOptions: stt.SpeechListenOptions(
-        partialResults: true,
-        cancelOnError: true,
-      ),
-    );
   }
 
   void _stopAnimations() {
@@ -116,10 +80,38 @@ class _ChatInputBarState extends State<ChatInputBar>
     _waveController.reset();
   }
 
-  void _stopListening() {
-    _speech.stop();
+  // Called by SpeechService when the engine stops on its own (silence timeout)
+  void _onSpeechStop() {
+    if (!mounted) return;
     _stopAnimations();
     setState(() => _isListening = false);
+  }
+
+  Future<void> _startListening() async {
+    if (!_speechService.isAvailable) return;
+    _textBeforeListening = widget.controller.text;
+    setState(() => _isListening = true);
+    _startAnimations();
+
+    await _speechService.startListening(
+      onResult: (words) {
+        if (!mounted) return;
+        final newText = _textBeforeListening.isEmpty
+            ? words
+            : '$_textBeforeListening $words';
+        widget.controller.text = newText;
+        widget.controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: widget.controller.text.length),
+        );
+      },
+      onStop: _onSpeechStop,
+    );
+  }
+
+  Future<void> _stopListening() async {
+    await _speechService.stopListening();
+    _stopAnimations();
+    if (mounted) setState(() => _isListening = false);
   }
 
   void _toggleMic() {
@@ -134,7 +126,7 @@ class _ChatInputBarState extends State<ChatInputBar>
   void dispose() {
     _rippleController.dispose();
     _waveController.dispose();
-    _speech.stop();
+    // Do NOT dispose or stop _speechService here — it is a global singleton
     super.dispose();
   }
 
@@ -220,7 +212,7 @@ class _ChatInputBarState extends State<ChatInputBar>
 
           Row(
             children: [
-              // Mic button with ripple + breathing + waveform
+              // Mic button with ripple + waveform
               SizedBox(
                 width: 56,
                 height: 56,
@@ -271,7 +263,7 @@ class _ChatInputBarState extends State<ChatInputBar>
                         },
                       ),
 
-                    // mic button
+                    // Mic button
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
                       width: 44,
@@ -289,7 +281,7 @@ class _ChatInputBarState extends State<ChatInputBar>
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(14),
-                          onTap: _speechAvailable ? _toggleMic : null,
+                          onTap: _speechService.isAvailable ? _toggleMic : null,
                           // Waveform inside button when listening, mic icon when idle
                           child: _isListening
                               ? Center(child: _buildWaveform())
@@ -304,7 +296,6 @@ class _ChatInputBarState extends State<ChatInputBar>
                   ],
                 ),
               ),
-              // const SizedBox(width: 8),
 
               // Send button
               Material(
