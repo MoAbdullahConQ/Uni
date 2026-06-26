@@ -1,5 +1,5 @@
 # Claude Memory File — Core (Active)
-> Last updated: June 2026 (session: SpeechService — mic animation lifecycle fix)
+> Last updated: June 2026 (session: SpeechService — DONE ✅)
 
 ---
 
@@ -43,7 +43,7 @@ Flutter app helping Egyptian high school students choose universities.
 | **splash**        | ✅     | ✅   | ✅           | token check → MainView or OnBoarding or LoginView                                                   |
 | **on_boarding**   | ✅     | ✅   | ✅           | marks seen in SharedPreferences → navigates to LoginView                                            |
 | **profile**       | ✅     | ✅   | ✅           | Fully done — avatar upload ✅, logout ✅, contact us ✅, legal sheet ✅                              |
-| **faheem**        | ✅     | ✅   | ✅           | Chat + History fully integrated ✅ — see archive §Faheem History                                    |
+| **faheem**        | ✅     | ✅   | ✅           | Chat + History + Mic/STT fully done ✅ — see archive §Faheem + §SpeechService                      |
 
 ---
 
@@ -74,6 +74,7 @@ Flutter app helping Egyptian high school students choose universities.
 19. **No global mutable variables for cross-screen one-off messages** — pass via route `arguments` instead
 20. **401 interceptor must guard against concurrent-request double-redirect** — `_isHandlingUnauthorized` bool flag in `ApiService`
 21. **401 SnackBar ordering:** in any cubit failure listener, if `errMessage.toLowerCase().contains('unauthenticated')` → return early, let the interceptor handle the redirect.
+22. **SpeechService pattern:** `SpeechToText` instance must live in `SpeechService` singleton (GetIt) — `initialize()` called ONCE at app startup — never re-initialize inside a widget or inside `startListening`.
 
 > ⚠️ If a new error occurs → always ask for the related file before attempting a fix.
 > ⚠️ Before proposing a debugging fix → confirm the actual root cause via prints/logs first.
@@ -115,27 +116,22 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 ---
 
-## 7. Mic / Speech Feature — Current State
+## 7. Mic / Speech Feature — DONE ✅
 
 **Feature:** زرار مايك في `ChatInputBar` بيستخدم `speech_to_text: ^7.4.0`
 
-**المشكلة المكتشفة:** `speech_to_text` بيستخدم platform channel singleton على مستوى Android. لما الـ widget يتعمل dispose وينشأ من أول، الـ native listener القديم لسه registered — فالـ `onStatus` الجديد مش بيتكال لما التسجيل يوقف، والأنيميشن بيفضل شغال.
+**الحل المطبق:** `SpeechService` singleton في GetIt — `SpeechToText` instance واحدة بتعيش طول عمر الـ app. `initialize()` بيتكال مرة واحدة بس في `setupGetIt()`. الـ `onStatus`/`onError` متسجلين مرة واحدة على الـ platform channel. الـ `_onStopCallback` pointer بيتحدث في كل `startListening` عشان يشاور على الـ widget الحالي.
 
-**القرار:** عمل `SpeechService` singleton في GetIt — الـ `SpeechToText` instance بتعيش طول عمر الـ app، مش بتتعمل dispose مع الـ widget.
+**الملفات المتأثرة:**
+- `core/services/speech_service.dart` ← جديد ✅
+- `core/services/get_it_service.dart` ← أضيف تسجيل `SpeechService` في الآخر ✅
+- `features/faheem/.../widgets/chat_input_bar.dart` ← بقت بتكلم `SpeechService` من GetIt ✅
 
-**الـ animations المبنية في `ChatInputBar`:**
+**الـ animations في `ChatInputBar` (محلية في الـ widget):**
 - **Ripple rings** — دايرتين بتتمددوا من الزرار
 - **Waveform bars** — 5 أعمدة جوه الزرار بترقص أثناء التسجيل
-- الألوان: `AppColors.secondaryColor` (أخضر فاتح) أثناء التسجيل
+- الألوان: `AppColors.secondaryColor` أثناء التسجيل
 - الـ TextField بيتغير border وbackground لما التسجيل يبدأ
-
-**الـ `SpeechService` — مش متبنية لسه، دي الخطوة الجاية:**
-- `core/services/speech_service.dart`
-- تتسجل في `get_it_service.dart` كـ singleton
-- `startListening({onResult, onStop})` — callbacks من الـ widget
-- `stopListening()`
-- `isListening` getter
-- `ChatInputBar` يكلمها من GetIt، مش بيعمل أي `SpeechToText` بنفسه
 
 **RECORD_AUDIO permission** مضاف في `AndroidManifest.xml` ✅
 
@@ -143,13 +139,11 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 ## 8. Next Steps (in order)
 
-**الخطوة الجاية مباشرة:**
-1. **بناء `SpeechService`** — `core/services/speech_service.dart` + register في GetIt + تعديل `ChatInputBar`
+**كل الـ features خلصت ✅**
 
 **Waiting on sayed:**
-2. Real contact data — واتساب + تليفون + إيميل
-3. Duplicate-email-unverified edge case
-4. Fav pagination backend bug (code is correct — backend side)
+1. Real contact data — واتساب + تليفون + إيميل
+2. Duplicate-email-unverified edge case
 
 ---
 
@@ -188,10 +182,11 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 - **"متبعتش الفايل"** = send the full file, not just a snippet
 - **When closing a feature/item with "سيبها" + clear reasoning** → accept it, close it
 - **Verifies code by reading cubit + view directly**
-- **Asks "اشرحلي البروسيس والفلو"** after implementation — wants plain-language summary
+- **Asks "اشرحلي البروسيس والفلو"** / **"فهمني"** after implementation — wants plain-language summary
 - **When sending back a file that came from Claude** — treat it as current ground truth, apply changes on it
 - **When asking for animations/UI** — wants to see preview first before building
 - **"جربهم بالترتيب"** — يعني اعرضهم واحد واحد للمقارنة
 - **بيصحح Claude بشكل مباشر لو قرأ الـ log غلط** — اعترف فوراً وصحح
+- **"فهمني بقا انت عملت ايه بالضبط"** بعد ما حاجة تشتغل = يريد شرح المشكلة والحل بأسلوب بسيط، مش technical walkthrough
 
 > 📂 Full reference → see `archive.md`

@@ -17,7 +17,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Never assume a discussion turn means "implement it"**
 - **When debugging, don't jump to a fix based on assumption** — isolate root cause with prints/logs first, then fix.
 - **When I say "سيبها"** → final decision, don't re-raise unless something changes.
-- **If I ask "اشرح بأسلوب بسيط"** → drop jargon, use plain short sentences.
+- **If I ask "اشرح بأسلوب بسيط"** or **"فهمني"** or **"فهمني بقا انت عملت ايه بالضبط"** → explain the problem and solution in plain language — what was wrong, why, and how the fix works. No jargon dumps. Use an analogy if it helps.
 - **Don't forget items flagged as "next up" or waiting** — mention them with blocked status when asked "what's next".
 - **When I send back a file with `// TODO` comments inline** → treat each TODO as a distinct, separately-addressable item.
 - **Multi-point messages** → parse each point separately.
@@ -31,6 +31,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **When I ask for animation/UI previews** → show a visual preview first before writing any Flutter code.
 - **"جربهم بالترتيب"** → اعرض كل option لوحده للمقارنة، مش كلهم مع بعض.
 - **When I send back a file that came from Claude** → treat it as current ground truth, apply changes on it exactly.
+- **When something works and I ask "فهمني بقا"** → give a plain-language explanation of: (1) what the problem was, (2) why it happened, (3) how the fix solved it. Keep it concise, use simple terms.
 
 ---
 
@@ -60,6 +61,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **I confirm a fix worked tersely** ("اشتغلت خلاص", "تمام اتحلت") — treat this as sufficient to close
 - **When I ask for animation/UI options** → I want to see them visually before deciding
 - **When debugging native/platform issues** → don't propose fixes before seeing logs. Read logs precisely before concluding anything.
+- **"اشتغلت زي الفل"** = feature confirmed working, close it
 
 ---
 
@@ -86,6 +88,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **For release build issues → always check `AndroidManifest.xml` for missing permissions early.**
 - **When asked "كان فاضلنا اي" or "اي اللي بعدو"** → list items grouped by: ready-to-build / waiting on sayed / needs clarification.
 - **When debugging platform/native issues** → always ask for logs first, read them precisely, don't assume root cause before seeing them.
+- **When a fix works and I ask for explanation** → explain: problem → root cause → fix, in plain Arabic, concisely.
 
 **Never:**
 - Don't rewrite working code unless asked
@@ -111,6 +114,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Don't leave debug `print()` statements in place once a bug is confirmed fixed**
 - **Don't assume `INTERNET` permission exists in release**
 - **Don't propose animation/UI code before showing a visual preview when options are being discussed**
+- **Don't call `initialize()` on `SpeechToText` more than once — ever. Not in `startListening`, not in a widget.**
 
 ---
 
@@ -131,8 +135,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Entity rule:** only create an Entity if its data is shown in UI or used in business logic
 - **Shared widgets → `core/widgets/`** when used by 2+ features
 - **Shared constants → root `lib/constants.dart`**
-- **Speech:** `SpeechToText` instance must live in `SpeechService` singleton (GetIt) — never in a widget
-- **`speech_to_text` platform channel** is a singleton in Android — re-initializing in a widget causes stale native listeners
+- **Speech:** `SpeechToText` instance must live in `SpeechService` singleton (GetIt) — `initialize()` called ONCE in `setupGetIt()` — never call `initialize()` again anywhere else
+- **`_onStopCallback` pattern:** `SpeechService` holds a nullable `void Function()?` that gets updated on every `startListening` call — this is how the current widget gets notified without re-registering platform callbacks
 
 ---
 
@@ -169,7 +173,7 @@ Material(color: Colors.transparent,
 
 **Search debounce:** `Timer? _debounce` in view body state. Cancel + restart on every `onChanged`. Cancel in `dispose()`.
 
-**Speech pattern:** `SpeechService` singleton in GetIt. Widget calls `startListening({onResult, onStop})` and `stopListening()`. Widget handles animations locally via callbacks.
+**Speech pattern:** `SpeechService` singleton in GetIt. `initialize()` once in `setupGetIt()`. Widget calls `startListening({onResult, onStop})` and `stopListening()`. Widget handles animations locally via `onStop` callback. Never call `initialize()` in widget or inside `startListening`.
 
 ---
 
@@ -189,16 +193,13 @@ Material(color: Colors.transparent,
 
 ## 8. Current Focus
 
-**Features done:** browse, fav, search, home, notifications, guide, uni_detail, auth, splash, on_boarding, profile, faheem ✅
+**Features done:** browse, fav, search, home, notifications, guide, uni_detail, auth, splash, on_boarding, profile, faheem, mic/STT ✅
 
-**In progress:**
-- `ChatInputBar` mic button — animations built ✅, speech works ✅, lifecycle bug identified ✅
-- **Next immediate step:** بناء `SpeechService` singleton في GetIt
+**كل الـ features خلصت ✅**
 
 **Waiting on sayed:**
 1. Real contact data — واتساب + تليفون + إيميل
 2. Duplicate-email-unverified edge case
-3. Fav pagination backend bug (code is correct — backend side)
 
 ---
 
@@ -214,4 +215,10 @@ Material(color: Colors.transparent,
 **جلسة: mailto fix + Home AppBar fix + scientific_department fix + Avatar Upload ✅**
 **جلسة: APK release + search debounce + release debug fixes ✅**
 **جلسة: Faheem History — full backend integration ✅**
-**جلسة: Mic Button — Speech + Animations (هذه الجلسة) ✅ (جزئياً)**
+**جلسة: Mic Button — Speech + Animations ✅ (جزئياً)**
+**جلسة: SpeechService — DONE ✅**
+- Fav pagination bug closed (sayed)
+- `SpeechService` singleton بُني وشغّل
+- الـ bug الأساسي: re-initialize بيكسر الـ platform channel callbacks
+- الحل: `initialize()` مرة واحدة + `_onStopCallback` pointer
+- اشتغلت على الجهاز ✅

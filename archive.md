@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: SpeechService — mic animation lifecycle fix)
+> Last updated: June 2026 (session: SpeechService — DONE ✅)
 
 ---
 
@@ -26,11 +26,11 @@ lib/
 │   │   ├── calc_strength.dart
 │   │   └── build_error_bar.dart
 │   ├── services/
-│   │   ├── get_it_service.dart         (Dio gets BaseOptions, UploadAvatarUseCase registered)
+│   │   ├── get_it_service.dart         (Dio gets BaseOptions, UploadAvatarUseCase registered, SpeechService registered)
 │   │   ├── shared_preferences_singleton.dart
 │   │   ├── custom_bloc_observer.dart
 │   │   ├── database_service.dart      (abstract — unused)
-│   │   └── speech_service.dart        (NEXT — to be built)
+│   │   └── speech_service.dart        ✅ DONE
 │   ├── cubits/trending_cubit/
 │   │   ├── trending_cubit.dart
 │   │   └── trending_state.dart
@@ -104,13 +104,13 @@ lib/
     │       ├── contact_us_view_body.dart
     │       ├── quick_contact.dart              (dummy data — replace when sayed provides)
     │       └── ... (all other profile widgets)
-    └── faheem/ ✅ FULLY DONE — chat + history fully integrated
+    └── faheem/ ✅ FULLY DONE — chat + history + mic/STT
         └── presentation/views/widgets/
             ├── faheem_chat_view_body.dart
             ├── faheem_history_view_body.dart
             ├── chat_history_card.dart
             ├── chat_history_group_section.dart
-            └── chat_input_bar.dart             (updated this session — animations + mic)
+            └── chat_input_bar.dart             ✅ updated — uses SpeechService from GetIt
 ```
 
 ---
@@ -369,7 +369,7 @@ Dio (with BaseOptions) → ApiService
 → FaheemRemoteDataSource → FaheemRepo
   → SendMessageUseCase → GetConversationsUseCase → GetConversationMessagesUseCase
   → FaheemCubit (singleton)
-→ SpeechService (singleton)          ← NEXT: to be added
+→ SpeechService (singleton)          ✅ DONE — initialize() called here, registered last
 ```
 
 ---
@@ -468,8 +468,9 @@ abstract class AppColors {
 - **`RecommendedRemoteDataSource`:** temporarily uses `getTrendingUnis` endpoint
 - **Auth — duplicate-email-unverified edge case:** needs sayed conversation
 - **Real contact info:** dummy data in `quick_contact.dart` — needs sayed to provide
-- **Fav Pagination backend bug:** code correct — waiting on sayed
-- **ChatInputBar mic animation lifecycle bug:** fixed by moving to `SpeechService` — NEXT
+
+> ✅ Fav Pagination backend bug — **خلص** (sayed side)
+> ✅ ChatInputBar mic animation lifecycle bug — **خلص** بـ `SpeechService` singleton
 
 ---
 
@@ -538,7 +539,7 @@ void loadConversationMessages(int id)
 
 ---
 
-## 22. ChatInputBar — Speech + Animations
+## 22. ChatInputBar — Speech + Animations ✅ FULLY DONE
 
 ### Package
 `speech_to_text: ^7.4.0`
@@ -575,26 +576,74 @@ void loadConversationMessages(int id)
 5. session ID pattern
 6. top-level `_micActive` flag
 7. `await _speech.listen()` كـ blocking future — مش blocking
+8. `SpeechService` singleton + re-initialize داخل `startListening` — فشل كمان لنفس السبب
 
-### القرار النهائي
-**`SpeechService` singleton في GetIt** — `SpeechToText` instance بتعيش طول عمر الـ app.
+### الحل النهائي ✅
+**`SpeechService` singleton في GetIt + `initialize()` مرة واحدة بس في app startup.**
 
-### SpeechService — المطلوب بناؤه
-```
-core/services/speech_service.dart
-- SpeechToText instance واحدة
-- initialize() مرة واحدة عند registration
-- startListening({onResult, onStop})
-- stopListening()
-- isListening getter
-```
-- تتسجل في `get_it_service.dart` كـ singleton
-- `ChatInputBar` يكلمها من GetIt، مش بيعمل أي `SpeechToText` بنفسه
-- الـ widget يتعامل مع الأنيميشن محلياً عن طريق `onStop` callback
+السر: الـ `onStatus`/`onError` بيتسجلوا على الـ platform channel **مرة واحدة بس** في `initialize()`. الـ `_onStopCallback` pointer instance variable بيتحدث في كل `startListening` — فالـ widget الحالي دايماً هو اللي بياخد الـ callback لما الـ engine يوقف. في `stopListening()` بنعمل `_onStopCallback = null` عشان لو الـ engine بعت `done` بعد الإيقاف اليدوي، مش بيتكال مرتين.
 
 ---
 
-## 23. All Decisions Made
+## 23. SpeechService — Final Implementation
+
+```dart
+class SpeechService {
+  SpeechService._();
+  static final SpeechService _instance = SpeechService._();
+  factory SpeechService() => _instance;
+
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _available = false;
+  void Function()? _onStopCallback;
+
+  // Called ONCE in setupGetIt()
+  Future<void> initialize() async {
+    _available = await _speech.initialize(
+      onStatus: (status) {
+        if (status == 'done' || status == 'notListening') {
+          _onStopCallback?.call();
+        }
+      },
+      onError: (error) {
+        _onStopCallback?.call();
+      },
+    );
+  }
+
+  bool get isAvailable => _available;
+  bool get isListening => _speech.isListening;
+
+  Future<void> startListening({
+    required void Function(String words) onResult,
+    required void Function() onStop,
+  }) async {
+    if (!_available || _speech.isListening) return;
+    _onStopCallback = onStop;  // update pointer, never re-initialize
+    await _speech.listen(
+      localeId: 'ar_EG',
+      onResult: (result) => onResult(result.recognizedWords),
+      listenOptions: stt.SpeechListenOptions(partialResults: true, cancelOnError: true),
+    );
+  }
+
+  Future<void> stopListening() async {
+    _onStopCallback = null;  // prevent double-call if engine fires 'done' after manual stop
+    await _speech.stop();
+  }
+}
+```
+
+### ChatInputBar — التغييرات الجوهرية
+- حذف `final stt.SpeechToText _speech` من الـ widget
+- حذف `_initSpeech()` من `initState`
+- أضاف `late final SpeechService _speechService = getIt<SpeechService>()`
+- `dispose()` مش بيمس الـ service خالص
+- الأنيميشن بيوقف عن طريق `_onSpeechStop()` callback اللي `SpeechService` بيكاله
+
+---
+
+## 24. All Decisions Made
 
 | Decision | Reason |
 |---|---|
@@ -604,6 +653,9 @@ core/services/speech_service.dart
 | ألوان التسجيل: أخضر من ثيم التطبيق | طلب Mu |
 | `SpeechService` singleton في GetIt | platform channel singleton bug |
 | `SpeechService` في `core/services` مش في FaheemCubit | أنظف معمارياً |
+| `initialize()` مرة واحدة بس في `setupGetIt()` | re-initialize بيكسر الـ platform channel callbacks |
+| `_onStopCallback` pointer pattern | يخلي الـ widget الحالي دايماً هو اللي بياخد الـ callback |
+| `_onStopCallback = null` في `stopListening()` | يمنع double-call لو engine بعت `done` بعد الإيقاف اليدوي |
 | `current_password` not needed for update-Password | Token presence = user is authenticated |
 | `aaptOptions` NOT needed for `.env` in release | pubspec.yaml assets declaration sufficient |
 | `INTERNET` permission must be explicit in release | Flutter debug adds it automatically |
@@ -627,10 +679,11 @@ core/services/speech_service.dart
 | SnackBar over Toast | Cleaner UX |
 | `conversation_id` from response not `getConversations` | sayed added it to response |
 | No pagination for faheem history | sayed returns all at once |
+| Fav pagination backend bug closed | sayed fixed on backend — code was always correct |
 
 ---
 
-## 24. Session Summaries — تاريخي
+## 25. Session Summaries — تاريخي
 
 **جلسة: Auth Polish + UX Fixes**
 **جلسة: Splash + Onboarding + 401 Interceptor + Validator Fixes**
@@ -642,11 +695,13 @@ core/services/speech_service.dart
 **جلسة: mailto fix + Home AppBar fix + scientific_department fix + Avatar Upload ✅**
 **جلسة: APK release + search debounce + release debug fixes ✅**
 **جلسة: Faheem History — full backend integration ✅**
+**جلسة: Mic Button — Speech + Animations ✅ (جزئياً — animations + STT شغالين، bug مكتشف)**
 
-**جلسة: Mic Button — Speech + Animations ✅ (جزئياً)**
-1. أضفنا `speech_to_text: ^7.4.0`
-2. بنينا الـ 3 animations: waveform جوه الزرار + ripple rings + ألوان خضراء
-3. Arabic STT شغال على الأجهزة اللي عندها Arabic language pack
-4. اكتشفنا الـ platform channel singleton bug
-5. قررنا الحل: `SpeechService` singleton في GetIt
-6. الـ `SpeechService` لسه مش متبنية — دي الخطوة الجاية
+**جلسة: SpeechService — DONE ✅**
+1. Fav pagination bug أُغلق — sayed خلصه من backend
+2. قرأنا `chat_input_bar.dart` و`get_it_service.dart` من الـ zip
+3. بنينا `SpeechService` singleton — أول نسخة فشلت (re-initialize داخل `startListening`)
+4. اكتشفنا إن المشكلة في إن `initialize()` لازم يتكال مرة واحدة بس
+5. ثاني نسخة: `initialize()` في `setupGetIt()` فقط + `_onStopCallback` pointer pattern
+6. اشتغلت على الجهاز — الأنيميشن بيوقف لوحده صح
+7. Mu طلب شرح بسيط للمشكلة والحل
