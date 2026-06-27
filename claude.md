@@ -1,5 +1,5 @@
 # Claude Memory File — Core (Active)
-> Last updated: June 2026 (session: SpeechService — DONE ✅)
+> Last updated: June 2026 (session: Trello Board Review + Backlog Planning)
 
 ---
 
@@ -25,6 +25,7 @@ Flutter app helping Egyptian high school students choose universities.
 - **Colors:** see archive §AppColors
 - **Added packages:** `url_launcher` ✅, `pinput` ✅, `image_picker` ✅, `flutter_launcher_icons` ✅, `speech_to_text: ^7.4.0` ✅
 - **Code comments:** **English only** (hard rule)
+- **Trello board:** https://trello.com/b/jy2eXHMj/uniguide
 
 ---
 
@@ -127,21 +128,32 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 - `core/services/get_it_service.dart` ← أضيف تسجيل `SpeechService` في الآخر ✅
 - `features/faheem/.../widgets/chat_input_bar.dart` ← بقت بتكلم `SpeechService` من GetIt ✅
 
-**الـ animations في `ChatInputBar` (محلية في الـ widget):**
-- **Ripple rings** — دايرتين بتتمددوا من الزرار
-- **Waveform bars** — 5 أعمدة جوه الزرار بترقص أثناء التسجيل
-- الألوان: `AppColors.secondaryColor` أثناء التسجيل
-- الـ TextField بيتغير border وbackground لما التسجيل يبدأ
-
 **RECORD_AUDIO permission** مضاف في `AndroidManifest.xml` ✅
 
 ---
 
-## 8. Next Steps (in order)
+## 8. Current Backlog — الـ 41 حاجة الباقية
 
-**كل الـ features خلصت ✅**
+> تفاصيل كاملة في archive §Trello Backlog
 
-**Waiting on sayed:**
+**🐛 Bugs (3 مفتوحة):**
+- صور فهيم بطيئة
+- History Scroll بطيء
+- Faheem Navigation بطيء
+
+**🔧 Refactor (8 مفتوحة):**
+- UniDetail Content تحت AppBar
+- فلتر التخصص Static
+- Bottom Nav Hit Area
+- Smooth Scroll
+- Keyboard Scroll (Password Field)
+- refactor DetailsField reuse
+- unAuthenticated → no internet widget (مش snackbar)
+- GovernorateDropdown refactor
+
+**📋 ToDo (30 مفتوحة):** — see archive §Trello Backlog
+
+**⏳ Waiting on sayed:**
 1. Real contact data — واتساب + تليفون + إيميل
 2. Duplicate-email-unverified edge case
 
@@ -188,5 +200,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 - **"جربهم بالترتيب"** — يعني اعرضهم واحد واحد للمقارنة
 - **بيصحح Claude بشكل مباشر لو قرأ الـ log غلط** — اعترف فوراً وصحح
 - **"فهمني بقا انت عملت ايه بالضبط"** بعد ما حاجة تشتغل = يريد شرح المشكلة والحل بأسلوب بسيط، مش technical walkthrough
+- **بيبعت Trello board export (JSON)** — اقرأه عشان تعرف الحالة الحقيقية للـ backlog
+- **بيصحح Claude لو قرأ الـ board غلط** — اقرأ الـ closed status صح قبل ما تحكم
+- **لما بيقول "اقرأ كويس"** = راجع الـ data تاني، مش بس الـ output
 
 > 📂 Full reference → see `archive.md`

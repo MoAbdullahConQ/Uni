@@ -1,5 +1,5 @@
 # Claude Memory File — Archive / Reference (Gameaty)
-> Last updated: June 2026 (session: SpeechService — DONE ✅)
+> Last updated: June 2026 (session: Trello Board Review + Backlog Planning)
 
 ---
 
@@ -705,3 +705,84 @@ class SpeechService {
 5. ثاني نسخة: `initialize()` في `setupGetIt()` فقط + `_onStopCallback` pointer pattern
 6. اشتغلت على الجهاز — الأنيميشن بيوقف لوحده صح
 7. Mu طلب شرح بسيط للمشكلة والحل
+
+**جلسة: Trello Board Review + Backlog Planning**
+1. Mu راجع الـ app وحدد 34 حاجة ناقصة (bugs + refactor + todo + features جديدة)
+2. اتعمل تصنيف كامل لكل حاجة: نوعها + اسمها + هل تعتمد على backend
+3. Mu بعت Trello board export (JSON) — اتقرأ وتم تحليله
+4. اتأكدنا من الـ closed status لكل كارد — Bugs مفتوحة 3 فعلاً، Refactor 8، ToDo 30
+5. إجمالي الـ backlog: **41 حاجة**
+
+---
+
+## 26. Trello Backlog — الحالة الكاملة
+
+> Board: https://trello.com/b/jy2eXHMj/uniguide
+> آخر تحديث: June 27, 2026
+
+### 🐛 Bugs (3 مفتوحة)
+
+| الكارد | يعتمد على Backend؟ |
+|---|---|
+| صور فهيم بطيئة | ❌ |
+| History Scroll بطيء | ❌ |
+| Faheem Navigation بطيء | ❌ |
+
+> Bugs مغلقة (closed): Navigator from home to GuideView، press in bottom navigation
+
+### 🔧 Refactor (8 مفتوحة)
+
+| الكارد | يعتمد على Backend؟ |
+|---|---|
+| UniDetail Content تحت AppBar | ❌ |
+| فلتر التخصص Static | ❌ |
+| Bottom Nav Hit Area | ❌ |
+| Smooth Scroll | ❌ |
+| Keyboard Scroll (Password Field) | ❌ |
+| refactor DetailsField reuse | ❌ |
+| unAuthenticated → no internet widget (مش snackbar) | ❌ |
+| GovernorateDropdown --- SetupGovernorateDropdown | ❌ |
+
+> Refactor مغلقة (closed): make search widget reuse، PersonalDataViewBody TODOs (5 حاجات)، reuse SearchTextField/FavSearchBar/GuideSearchBar، calcStrength in password register، make badge widget reuse، make location widget reuse
+
+### 📋 ToDo (30 مفتوحة)
+
+| # | الكارد | النوع | Backend؟ |
+|---|---|---|---|
+| 1 | UI/UX Splash Screen Animation | UI/UX | ❌ |
+| 2 | Feat Google Sign-In | Feat | ✅ |
+| 3 | Feat Facebook Login | Feat | ✅ |
+| 4 | UI/UX Avatar → Navigate Profile | UI/UX | ❌ |
+| 5 | UI/UX Home UI تحسين | UI/UX | ❌ |
+| 6 | UI/UX "الذهاب للدليل" Navigation | UI/UX | ❌ |
+| 7 | Feat Push Notifications | Feat | ✅ |
+| 8 | Feat Share جامعة | Feat | ✅ (لو في لينك) |
+| 9 | Feat مقارنة جامعات | Feat | ✅ |
+| 10 | UI/UX Ripple على زرار فهيم | UI/UX | ❌ |
+| 11 | Feat Faheem Welcome Cards → Controller | Feat | ❌ |
+| 12 | Feat New Chat Button أثناء الدردشة | Feat | ❌ |
+| 13 | Feat Onboarding حقيقي | Feat | ❌ |
+| 14 | Feat Empty States مخصصة | Feat | ❌ |
+| 15 | Feat Skeleton Loading | Feat | ❌ |
+| 16 | Feat Advanced Filter في البحث | Feat | ✅ |
+| 17 | Feat APK Protection | Feat | ❌ |
+| 18 | Feat App Security Hardening | Feat | ❌ |
+| 19 | Feat Testing / Unit Tests | Feat | ❌ |
+| 20 | Feat Faheem AI Harness | Feat | ✅ |
+| 21 | Feat زرار "قدم الآن" | Feat | ✅ |
+| 22 | Feat زرار "المزيد من التفاصيل" | Feat | ✅ |
+| 23 | [Logic] Guide Podcast Audio Player | Feat | ✅ |
+| 24 | [Logic] Guide Video Player | Feat | ✅ |
+| 25 | Feat Offline Mode | Feat | ✅ (caching) |
+| 26 | [Infra] Local DB — Hive / Drift | Infra | ❌ |
+| 27 | [Infra] Offline Mode & Connectivity | Infra | ❌ |
+| 28 | Make Fav Sort | Feat | ✅ |
+| 29 | fading widgets (shimmer on load) | Refactor | ❌ |
+| 30 | Maps | Feat | ❌ |
+
+> ToDo مغلقة (closed): كل الـ UI screens، كل الـ Logic items، كل الـ Infra items القديمة — كلها اتعملت
+
+### ⏳ Waiting on sayed
+- Real contact data (واتساب + تليفون + إيميل)
+- Duplicate-email-unverified edge case
+- Backend endpoints لـ: Google Sign-In، Facebook Login، Push Notifications، Share جامعة، مقارنة جامعات، Advanced Filter، زرار "قدم الآن"، زرار "المزيد من التفاصيل"، Guide Podcast/Video، Offline caching، Make Fav Sort، Faheem AI Harness

@@ -32,6 +32,9 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **"جربهم بالترتيب"** → اعرض كل option لوحده للمقارنة، مش كلهم مع بعض.
 - **When I send back a file that came from Claude** → treat it as current ground truth, apply changes on it exactly.
 - **When something works and I ask "فهمني بقا"** → give a plain-language explanation of: (1) what the problem was, (2) why it happened, (3) how the fix solved it. Keep it concise, use simple terms.
+- **When I send a Trello JSON export** → parse it carefully, read `closed` field on every card before concluding what's open/done. Don't summarize from names only.
+- **When I say "اقرا كويس"** → re-read the raw data again, don't defend the previous reading.
+- **When I ask "اي اللي لسه متعملش"** → cross-reference the actual board data (closed=false) not assumptions.
 
 ---
 
@@ -62,6 +65,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **When I ask for animation/UI options** → I want to see them visually before deciding
 - **When debugging native/platform issues** → don't propose fixes before seeing logs. Read logs precisely before concluding anything.
 - **"اشتغلت زي الفل"** = feature confirmed working, close it
+- **I send Trello board JSON exports** → parse them to understand the real state of the backlog — always check `closed` field
 
 ---
 
@@ -89,6 +93,8 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **When asked "كان فاضلنا اي" or "اي اللي بعدو"** → list items grouped by: ready-to-build / waiting on sayed / needs clarification.
 - **When debugging platform/native issues** → always ask for logs first, read them precisely, don't assume root cause before seeing them.
 - **When a fix works and I ask for explanation** → explain: problem → root cause → fix, in plain Arabic, concisely.
+- **When I send a Trello JSON export** → parse the `closed` field on every card. Only cards with `closed=false` are open. Don't guess from names or list position.
+- **When I say "اقرا الفايل كويس"** or correct a reading → re-parse the raw data immediately, acknowledge the error, give corrected output.
 
 **Never:**
 - Don't rewrite working code unless asked
@@ -115,6 +121,7 @@ Mohamed (Mu) — Egyptian Flutter developer, intermediate-to-advanced. App: **Ga
 - **Don't assume `INTERNET` permission exists in release**
 - **Don't propose animation/UI code before showing a visual preview when options are being discussed**
 - **Don't call `initialize()` on `SpeechToText` more than once — ever. Not in `startListening`, not in a widget.**
+- **Don't read Trello card status from names alone — always check the `closed` boolean field**
 
 ---
 
@@ -195,11 +202,12 @@ Material(color: Colors.transparent,
 
 **Features done:** browse, fav, search, home, notifications, guide, uni_detail, auth, splash, on_boarding, profile, faheem, mic/STT ✅
 
-**كل الـ features خلصت ✅**
+**Backlog (41 حاجة):** 3 bugs + 8 refactor + 30 todo — تفاصيل في archive §Trello Backlog
 
 **Waiting on sayed:**
 1. Real contact data — واتساب + تليفون + إيميل
 2. Duplicate-email-unverified edge case
+3. Backend endpoints لعدة features جديدة
 
 ---
 
@@ -222,3 +230,10 @@ Material(color: Colors.transparent,
 - الـ bug الأساسي: re-initialize بيكسر الـ platform channel callbacks
 - الحل: `initialize()` مرة واحدة + `_onStopCallback` pointer
 - اشتغلت على الجهاز ✅
+
+**جلسة: Trello Board Review + Backlog Planning**
+- Mu حدد 34 حاجة ناقصة في الـ app
+- اتعمل تصنيف كامل: نوع + اسم + backend dependency لكل حاجة
+- Mu بعت Trello JSON export — اتقرأ وتم تحليل الـ closed status بدقة
+- النتيجة النهائية: 3 bugs + 8 refactor + 30 todo = **41 حاجة مفتوحة**
+- Claude قرأ الـ board غلط في البداية (مش اتحقق من closed field) — Mu صحح مباشرة
